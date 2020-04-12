@@ -1,6 +1,10 @@
-import 'package:app_invernadero/pages/login_page.dart';
+
+import 'package:app_invernadero/src/pages/login_page.dart';
+import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
- 
+
+
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -9,10 +13,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'App Invernadero',
+      theme: miTema,
       home: LoginPage(),
-      theme: ThemeData(
-        primaryColor: Colors.green
-      ),
     );
   }
 }
