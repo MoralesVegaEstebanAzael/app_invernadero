@@ -7,8 +7,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Material App',
-      home: LoginPage()
+      debugShowCheckedModeBanner: false,
+      title: 'App Invernadero',
+      home: LoginPage(),
+      theme: ThemeData(
+        primaryColor: Colors.green
+      ),
     );
   }
 }
