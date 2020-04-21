@@ -1,8 +1,13 @@
 
 import 'package:after_layout/after_layout.dart';
 import 'package:app_invernadero/src/animation/fade_animation.dart';
+import 'package:app_invernadero/src/blocs/login_bloc.dart';
+import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/input_password.dart';
+import 'package:app_invernadero/src/widgets/input_text.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:app_invernadero/src/widgets/welcome.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +21,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
-  bool _obscureText=true;
+  final _authAPI = UserProvider();
+  final _formKey = GlobalKey<FormState>();
   // @override
   // void initState(){
   //   super.initState();
@@ -24,22 +30,6 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
   //   //   SystemUiOverlayStyle.dark
   //   // );
 
-  //   SystemChrome.setPreferredOrientations([
-  //       DeviceOrientation.portraitDown,
-  //       DeviceOrientation.portraitUp,
-  //   ]);
-  // }
-
-  // @override
-  // dispose(){
-  //   SystemChrome.setPreferredOrientations([
-  //     DeviceOrientation.landscapeRight,
-  //     DeviceOrientation.landscapeLeft,
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown,
-  //   ]);
-  //   super.dispose();
-  // }
 
 
 
@@ -47,7 +37,6 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
   void afterFirstLayout(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.shortestSide>=600;
     if(!isTablet){
-     
       SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     }
   }
@@ -102,69 +91,101 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
       )
     );
   }
+  
+   _login(BuildContext context,LoginBloc bloc)async{
+      print('Teléfono:${bloc.telefono}');
+      print('Password:${bloc.password}'); 
+
+     
+    final isOk = await _authAPI
+    .login(context, telefono: bloc.telefono, password: bloc.password);
+
+    if(isOk) print("Login correcto");
+
+    //Navigator.pushReplacementNamed(context, 'home');
+
+
+   // _formKey.currentState.validate();
+  }
+
+  _noLogin()=>print("campos incorrectos");
+
+
 
   Widget _loginForm(){
+    final bloc = Provider.of(context);
     final Responsive responsive = Responsive.of(context);
-    return SafeArea(
-        top: false,
-        child: Container(
-        width: 330,
+    return Container(
+    width: 330,
+    child: Form(
+        key: _formKey,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children:<Widget>[
-            CupertinoTextField(
-              padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-              prefix: Container(
-                width: 40,
-                height: 30,
-                child: Icon(LineIcons.mobile,color: Color(0xFFCCCCCC),),
-              ),
-              placeholder: "Teléfono",
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width:1,
-                    color: Color(0xffdddddd)
-                  )),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                WhitelistingTextInputFormatter.digitsOnly]
-            ),
-            SizedBox(height:responsive.ip(2)),
-            // TODO: contraseña
-            InputPassword(obscureText: _obscureText),
-            
-            
-            Container(
-              alignment: Alignment.bottomRight,
-              child: CupertinoButton(
-                padding: EdgeInsets.symmetric(vertical:15),
-                child: Text("Olvide mi contraseña",style: TextStyle(color:miTema.accentColor),), 
-                onPressed: (){}),
-            ),
-            
-            RoundedButton(
-              label: "Ingresar",
-              onPressed: (){},
-            ),
-            SizedBox(height:responsive.ip(10)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:<Widget>[
-                Text("¿No tienes cuenta?",),
-                CupertinoButton(
-                  child: Text("Crear",style: TextStyle(fontWeight: FontWeight.bold,color:miTema.accentColor),), 
-                  onPressed: ()=>Navigator.pushReplacementNamed(context, 'create_account'),)
-              ]
-            ),
-           
-          ]
-        ) ,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children:<Widget>[
+          StreamBuilder(
+            stream: bloc.telefonoStream,
+            builder: (BuildContext context,AsyncSnapshot snapshot){
+            return InputText(
+              placeholder: 'Teléfono',
+              validator: (String text){
+                
+              },
+              inputType: TextInputType.phone,
+              icon: LineIcons.mobile_phone,
+              onChange: bloc.changeTelefono,
+              counterText: snapshot.data,
+              errorText: snapshot.error,
+            );
+          }),
+          SizedBox(height:responsive.ip(2)),
+          // TODO: contraseña
+          StreamBuilder(
+            stream: bloc.passwordStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return InputPassword(
+                placeholder: "Contraseña",
+               
+                onChange: bloc.changePassword,
+                counterText: snapshot.data,
+                errorText: snapshot.error,
+              );
+            },
+          ),
+          Container(
+            alignment: Alignment.bottomRight,
+            child: CupertinoButton(
+              padding: EdgeInsets.symmetric(vertical:15),
+              child: Text("Olvide mi contraseña",style: TextStyle(color:miTema.accentColor),), 
+              onPressed: (){}),
+          ),
+          
+          StreamBuilder(
+            stream: bloc.formValidStream,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return RoundedButton(
+                label: "Ingresar",
+                onPressed:snapshot.hasData?()=>_login(context,bloc):()=>_noLogin,
+              );
+            },
+          ),
+          SizedBox(height:responsive.ip(10)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children:<Widget>[
+              Text("¿No tienes una cuenta?",),
+              CupertinoButton(
+                child: Text("Crear",style: TextStyle(fontWeight: FontWeight.bold,color:miTema.accentColor),), 
+                onPressed: ()=>Navigator.pushReplacementNamed(context, 'create_account'),)
+            ]
+          ),
+        ]
       ),
-    );
+    ) ,
+      );
   }
+
+
 
   Widget _welcome() {
     return  Welcome(
@@ -175,63 +196,6 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
       topPercent:0.21
     );
   }
-}
 
-class InputPassword extends StatefulWidget {
-  const InputPassword({
-    Key key,
-    @required bool obscureText,
-  }) : _obscureText = obscureText, super(key: key);
 
-  final bool _obscureText;
-
-  @override
-  _InputPasswordState createState() => _InputPasswordState();
-}
-
-class _InputPasswordState extends State<InputPassword> {
-  bool show;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    show = widget._obscureText;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoTextField(
-      padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-      prefix: Container(
-        width: 40,
-        height: 30,
-        child: Icon(LineIcons.key,color: Color(0xFFCCCCCC),),
-      ),
-      placeholder: "Contraseña",
-      obscureText: show,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            width:1,
-            color: Color(0xffdddddd)
-          )),
-      ),
-      suffix: IconButton(
-        icon: Icon(
-          // Based on passwordVisible state choose the icon
-          show
-          ? LineIcons.eye
-          : LineIcons.eye_slash,
-          color: Color(0xffdddddd),
-          ),
-          onPressed: _toggle
-        ),
-          );
-  }
-
-  void _toggle() {
-    setState(() {
-      show = !show;
-    });
-  }
 }

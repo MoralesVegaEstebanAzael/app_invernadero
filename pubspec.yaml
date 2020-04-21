@@ -26,9 +26,10 @@ dependencies:
   line_icons: 
   flutter_svg: ^0.17.4
   after_layout: ^1.0.7+2
-
-
-
+  rxdart: ^0.24.0
+  http: ^0.12.0+4  
+  pin_code_fields: ^2.5.1
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -55,6 +56,7 @@ flutter:
     - assets/images/
     - assets/icon/
     - assets/images/intro_screen/
+    - assets/images/verify_screen/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -2,6 +2,8 @@ import 'package:after_layout/after_layout.dart';
 import 'package:app_invernadero/src/animation/fade_animation.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/input_password.dart';
+import 'package:app_invernadero/src/widgets/input_text.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:app_invernadero/src/widgets/welcome.dart';
 import 'package:flutter/cupertino.dart';
@@ -105,79 +107,37 @@ class _CreateAccountPageState extends State<CreateAccountPage> with AfterLayoutM
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children:<Widget>[
-             CupertinoTextField(
-              padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-              prefix: Container(
-                width: 40,
-                height: 30,
-                child: Icon(LineIcons.user,color: Color(0xFFCCCCCC),),
-              ),
-              placeholder: "Nombre",
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width:1,
-                    color: Color(0xffdddddd)
-                  )),
-              ),
+            InputText(
+              placeholder: 'Nombre',
+              validator: (String text){
+              
+              },
+              inputType: TextInputType.text,
+              icon: LineIcons.user,
             ),
-            SizedBox(height:responsive.ip(2)),
-            CupertinoTextField(
-              padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-              prefix: Container(
-                width: 40,
-                height: 30,
-                child: Icon(LineIcons.mobile,color: Color(0xFFCCCCCC),),
-              ),
-              placeholder: "Teléfono",
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width:1,
-                    color: Color(0xffdddddd)
-                  )),
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                WhitelistingTextInputFormatter.digitsOnly]
+            SizedBox(height:responsive.ip(1)),
+           InputText(
+              placeholder: 'Teléfono',
+              validator: (String text){
+                
+              },
+              inputType: TextInputType.phone,
+              icon: LineIcons.mobile_phone,
             ),
-            SizedBox(height:responsive.ip(2)),
-           
-            CupertinoTextField(
-              padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-              prefix: Container(
-                width: 40,
-                height: 30,
-                child: Icon(LineIcons.key,color: Color(0xFFCCCCCC),),
-              ),
-              placeholder: "Contraseña",
-              obscureText: true,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width:1,
-                    color: Color(0xffdddddd)
-                  )),
-              ),
-            ),
+            SizedBox(height:responsive.ip(1)),
 
-            SizedBox(height:responsive.ip(2)),
-             CupertinoTextField(
-              padding: EdgeInsets.symmetric(vertical:5,horizontal:10),
-              prefix: Container(
-                width: 40,
-                height: 30,
-                child: Icon(LineIcons.key,color: Color(0xFFCCCCCC),),
-              ),
-              placeholder: "Contraseña(repetir)",
-              obscureText: true,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width:1,
-                    color: Color(0xffdddddd)
-                  )),
-              ),
+            InputPassword(
+              placeholder: 'Contraseña',
+              validator: (String text){
+
+              },
+            ),
+            SizedBox(height:responsive.ip(1)),
+            InputPassword(
+              placeholder: 'Contraseña (Repetir)',
+              validator: (String text){
+
+              },
             ),
              SizedBox(height:responsive.ip(5)),
             
