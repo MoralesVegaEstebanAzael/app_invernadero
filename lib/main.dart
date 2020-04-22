@@ -2,11 +2,13 @@
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/pages/code_verification/code_verification_page1.dart';
 import 'package:app_invernadero/src/pages/code_verification/code_verification_page2.dart';
+import 'package:app_invernadero/src/pages/code_verification/code_verification_page3.dart';
 import 'package:app_invernadero/src/pages/create_account_page.dart';
 import 'package:app_invernadero/src/pages/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/login_page.dart';
 import 'package:app_invernadero/src/pages/splash_screen_page.dart';
+import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: 'code_verification_1',
+        initialRoute: 'user_profile',
         routes: {
           'splash_screen'         : (BuildContext)=>SignInOne(),
           'login'                 : (BuildContext)=>LoginPage(),
@@ -29,7 +31,10 @@ class MyApp extends StatelessWidget {
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>HomePage(),
           'code_verification_1'   : (BuildContext)=>CodeVerificationPage1(),
-          'code_verification_2'   : (BuildContext)=>CodeVerificationPage2()
+          'code_verification_2'   : (BuildContext)=>CodeVerificationPage2(),
+          'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
+
+          'user_profile'          : (BuildContext)=>UserProfilePage(),
         },
       ),
     );

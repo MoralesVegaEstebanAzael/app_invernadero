@@ -1,0 +1,31 @@
+{
+    "nombreApp" : "App Invernadero",
+    "rutas"     : [
+        {
+            "ruta"  :   "favoritos",
+            "icon"  :   "heart",
+            "texto" :   "Favoritos"
+        },
+        {
+            "ruta"  :   "notificaciones",
+            "icon"  :   "bell",
+            "texto" :   "Notificaciones"
+        },
+
+        {
+            "ruta"  :   "about",
+            "icon"  :   "info-circle",
+            "texto" :   "Acerca de"
+        },
+        {
+            "ruta"  :   "faq",
+            "icon"  :   "question_circle",
+            "texto" :   "Ayuda"
+        },
+        {
+            "ruta"  :   "logout",
+            "icon"  :   "sign_in",
+            "texto" :   "Salir"
+        }
+    ]
+}

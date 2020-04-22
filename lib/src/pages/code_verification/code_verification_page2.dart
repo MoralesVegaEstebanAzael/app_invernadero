@@ -96,7 +96,7 @@ class _CodeVerificationPageState extends State<CodeVerificationPage2> with After
                         Text("¿No recibiste el código?",),
                         CupertinoButton(
                           child: Text("REENVIAR",style: TextStyle(fontWeight: FontWeight.bold,color:miTema.accentColor),), 
-                          onPressed: ()=>Navigator.pushReplacementNamed(context, 'code_verification_1'),)
+                          onPressed: ()=>Navigator.pushReplacementNamed(context, 'code_verification_3'),)
                       ]
                     ),
                     SizedBox(height: responsive.ip(2),),  

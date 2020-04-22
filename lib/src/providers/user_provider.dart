@@ -14,7 +14,7 @@ class UserProvider{
       final response = await http.post(url,body: {"email":telefono,"password":password});
       
       final parsed = jsonDecode(response.body);
-
+      
       if(response.statusCode==200){
         final token = parsed['token'] as String;
         final token_type = parsed['token_type'] as String;
@@ -30,9 +30,7 @@ class UserProvider{
 
 
     }on PlatformException catch(e){
-      print("Error ${e.code}:${e.message}");
-
-      
+      print("Error ${e.code}:${e.message}");  
       return false;
     }
 
