@@ -17,7 +17,7 @@ class RoundedButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal:35,vertical:10),
         decoration: BoxDecoration(
-          color: miTema.accentColor,
+          color: onPressed==null?Colors.grey:miTema.accentColor,
           borderRadius: BorderRadius.circular(30),
           boxShadow: [BoxShadow(
             color:Colors.black26,

@@ -29,7 +29,9 @@ dependencies:
   rxdart: ^0.24.0
   http: ^0.12.0+4  
   pin_code_fields: ^2.5.1
-  
+  nexmo_verify: ^1.0.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

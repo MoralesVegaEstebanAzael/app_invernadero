@@ -167,7 +167,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       )
       );
      
-      opciones..add(widgetTemp)..add( Container(
+      opciones..add(widgetTemp)..add(Container(
         
         padding: EdgeInsets.symmetric(horizontal:5),  
                       height: 2,

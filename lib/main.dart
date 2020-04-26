@@ -1,13 +1,15 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/pages/code_verification/code_verification_page1.dart';
-import 'package:app_invernadero/src/pages/code_verification/code_verification_page2.dart';
-import 'package:app_invernadero/src/pages/code_verification/code_verification_page3.dart';
-import 'package:app_invernadero/src/pages/create_account_page.dart';
 import 'package:app_invernadero/src/pages/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
-import 'package:app_invernadero/src/pages/login_page.dart';
-import 'package:app_invernadero/src/pages/splash_screen_page.dart';
+import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
+import 'package:app_invernadero/src/pages/login/config_account_page.dart';
+import 'package:app_invernadero/src/pages/login/config_password_page.dart';
+import 'package:app_invernadero/src/pages/login/create_account_page.dart';
+import 'package:app_invernadero/src/pages/login/login_page.dart';
+import 'package:app_invernadero/src/pages/login/login_password_page.dart';
+import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
+import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
@@ -23,18 +25,19 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: 'user_profile',
+        initialRoute: 'login_phone',
         routes: {
-          'splash_screen'         : (BuildContext)=>SignInOne(),
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>HomePage(),
-          'code_verification_1'   : (BuildContext)=>CodeVerificationPage1(),
-          'code_verification_2'   : (BuildContext)=>CodeVerificationPage2(),
+          'login_phone'           : (BuildContext)=>LoginPhonePage(),
+          'pin_code'              : (BuildContext)=>PinCodePage(),
           'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
-
+          'config_password'       : (BuildContext)=>ConfigPasswordPage(),
+          'config_account'        : (BuildContext)=>ConfigAccountPage(),
           'user_profile'          : (BuildContext)=>UserProfilePage(),
+          'login_password'        : (BuildContext)=>LoginPasswordPage(),
         },
       ),
     );

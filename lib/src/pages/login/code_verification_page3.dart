@@ -37,7 +37,7 @@ class CodeVerificationPage3 extends StatelessWidget {
                         }
                       )
                     )   ,
-                      
+                        
                     SizedBox(height: responsive.ip(5),),      
                      Text("Tu numéro de celular ha\n sido verificado correctamente",
                       style: TextStyle(color:Color(0xffbbbbbb),),

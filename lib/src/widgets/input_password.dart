@@ -9,7 +9,7 @@ class InputPassword extends StatefulWidget {
   final String counterText;
   final String errorText;
   const InputPassword({
-    @required this.placeholder, this.validator, this.onChange, this.counterText, this.errorText});
+     this.placeholder, this.validator, this.onChange, this.counterText, this.errorText});
   
   @override
   _InputPasswordState createState() => _InputPasswordState();

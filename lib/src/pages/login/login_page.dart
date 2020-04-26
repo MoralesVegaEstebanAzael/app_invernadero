@@ -44,7 +44,7 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive.of(context);
-
+  
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
             builder: (BuildContext context, AsyncSnapshot snapshot){
               return InputPassword(
                 placeholder: "Contraseña",
-               
+                
                 onChange: bloc.changePassword,
                 counterText: snapshot.data,
                 errorText: snapshot.error,
