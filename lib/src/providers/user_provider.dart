@@ -1,63 +1,52 @@
 import 'dart:convert';
 
 import 'package:app_invernadero/app_config.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
 class UserProvider{
-  
+  final _storage = SecureStorage();  
 
-  Future<bool> buscarUsuario(BuildContext context,{@required String telefono})async{
-    try{
+  Future<Map<String,dynamic>> buscarUsuario({@required String telefono})async{
+   
       final url = "${AppConfig.base_url}/api/auth/buscar_usuario";
       final response = await http.post(url,body: {"telefono":telefono});
-      final parsed = jsonDecode(response.body);
+      //final parsed = jsonDecode(response.body);
       
-      if(response.statusCode==200){
-        final message = parsed['message'] as String;
-        final telefono = parsed['telefono'] as String;
+      Map<String,dynamic> decodedResp = jsonDecode(response.body);
+      print(decodedResp);
 
-        print("Response 200: ${response.body}");
-        return true;
-      }else if(response.statusCode==422){
-        throw PlatformException(code: "422",message: parsed['errors']);
+
+      if(decodedResp.containsKey('telefono')){
+        return {'ok':true, 'telefono' : decodedResp};
+      }else{
+        return {'ok':false, 'mensaje' : decodedResp['error']};
       }
-      
-      throw PlatformException(code: response.statusCode.toString(),message: parsed['message']);
-    }on PlatformException catch(e){
-      print("Error ${e.code}:${e.message}");  
-      return false;
-    }
   }
 
 
-  Future<bool> login(BuildContext context,{@required String telefono,@required  String password})async{
-    try{
+   Future<Map<String,dynamic>> login({@required String telefono,@required  String password})async{
+
       final url = "${AppConfig.base_url}/api/auth/login";
       final response = await http.post(url,body: {"telefono":telefono,"password":password});
       
-      final parsed = jsonDecode(response.body);
+      Map<String,dynamic> decodedResp = jsonDecode(response.body);
       
-      if(response.statusCode==200){
-        final token = parsed['token'] as String;
-        final token_type = parsed['token_type'] as String;
-        final expires = parsed['expires_at'] as String;
+      
+      print(decodedResp); 
 
-        print("Response 200: ${response.body}");
-        return true;
-      }else if(response.statusCode==422){
-        throw PlatformException(code: "422",message: parsed['errors']);
+      
+      if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
+        // TODO: salvar e token preferences
+        _storage.write('token',decodedResp['access_token']);
+        
+        return {'ok':true, 'telefono' : decodedResp};
+      }else{
+        return {'ok':false, 'mensaje' : decodedResp['message']};
       }
-
-      throw PlatformException(code: response.statusCode.toString(),message: parsed['message']);
-
-
-    }on PlatformException catch(e){
-      print("Error ${e.code}:${e.message}");  
-      return false;
-    }
 
   }
 }

@@ -92,15 +92,15 @@ class _LoginPageState extends State<LoginPage> with AfterLayoutMixin{
     );
   }
   
-   _login(BuildContext context,LoginBloc bloc)async{
+   _login(BuildContext context,LoginBloc bloc){
       print('Teléfono:${bloc.telefono}');
       print('Password:${bloc.password}'); 
 
      
-    final isOk = await _authAPI
-    .login(context, telefono: bloc.telefono, password: bloc.password);
+    // final isOk = await _authAPI
+    // .login(context, telefono: bloc.telefono, password: bloc.password);
 
-    if(isOk) print("Login correcto");
+    // if(isOk) print("Login correcto");
 
     //Navigator.pushReplacementNamed(context, 'home');
 

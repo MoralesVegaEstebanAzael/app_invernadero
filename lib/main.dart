@@ -11,12 +11,21 @@ import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final prefs = new SecureStorage();
+  await prefs.initPrefs();
+
+  
+  runApp(MyApp());
+} 
 
 class MyApp extends StatelessWidget {
+ 
   @override
   Widget build(BuildContext context) {
     
