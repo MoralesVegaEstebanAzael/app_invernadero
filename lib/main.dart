@@ -19,22 +19,25 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
-
+  
   
   runApp(MyApp());
 } 
 
 class MyApp extends StatelessWidget {
- 
+  final prefs = new SecureStorage();
+
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     
     return Provider(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: 'login_phone',
+        initialRoute: prefs.sesion?'user_profile':'login_phone',
+
         routes: {
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 

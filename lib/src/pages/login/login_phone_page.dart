@@ -33,6 +33,10 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
   bool _isLoading=false;
 
+  
+ 
+
+
   @override
   void initState() {
     super.initState();
@@ -150,8 +154,10 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
      *  ->CONFIGURAR DATOS DE USUARIO
      *  ->HOME
      * **/
-    if(_isLoading)return;
+    
 
+    if(_isLoading)return;
+    
     if (bloc.telefono.isNotEmpty) {
       setState(() {
         _isLoading=true;

@@ -19,6 +19,14 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
   bool _isLoading=false;
   String _mobileNumber='';
+  final snackBar = SnackBar(
+    // shape: RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.all(Radius.circular(10))),
+    //  behavior: SnackBarBehavior.floating,
+    //   elevation: 6.0,
+    content: Text('Contraseña incorrecta'),
+    backgroundColor: Colors.redAccent,);
+
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +155,10 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
       }else{
         //Navigator.pushNamed(context, 'pin_code',arguments: AppConfig.nexmo_country_code+_telefono);
         print("contraseña incorrecta");  
+        Scaffold.of(context).showSnackBar(snackBar);
       }
     }
   }
+
+
 }
