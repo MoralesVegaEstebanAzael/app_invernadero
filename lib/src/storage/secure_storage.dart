@@ -15,7 +15,7 @@ class SecureStorage{
 
   initPrefs()async{
     this._storage = FlutterSecureStorage();
-    this._prefs = await SharedPreferences.getInstance();
+     this._prefs = await SharedPreferences.getInstance();
   }
   
   Future write(String _key,String _value) async {
@@ -38,9 +38,9 @@ class SecureStorage{
 
   //GET SET TOKEN
   get sesion{
-    return _prefs.getBool('sesion')?? false;
+    return _prefs.getString('sesion')?? '';
   }
-    
+  
   set sesion(bool value){
     _prefs.setBool('sesion', value);
   }

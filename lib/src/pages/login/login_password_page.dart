@@ -146,7 +146,7 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
       
       setState(() {
         _isLoading=false;
-      }); 
+      });   
       
       if(info['ok']){
         //inicio de sesión

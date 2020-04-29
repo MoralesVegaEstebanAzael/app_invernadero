@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         title: 'App Invernadero',
         theme: miTema,
         initialRoute: 'config_account',//prefs.sesion?'user_profile':'login_phone',
-        
+
         routes: {
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 
