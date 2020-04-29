@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: prefs.sesion?'user_profile':'login_phone',
+        initialRoute: 'config_account',//prefs.sesion?'user_profile':'login_phone',
 
         routes: {
           'login'                 : (BuildContext)=>LoginPage(),

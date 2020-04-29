@@ -223,7 +223,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
           icon: LineIcons.mobile_phone,
           onChange: bloc.changeTelefono,
           errorText: snapshot.error,
-           inputFormatters: [maskTextInputFormatter], 
+          inputFormatters: [maskTextInputFormatter], 
                         autocorrect: false, 
         );
       }),
