@@ -100,13 +100,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
           ]
         )
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        backgroundColor: miTema.accentColor,
-        child: Icon(LineIcons.plus),
-        ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomBar(),
+     
+      
     ); 
   }
 

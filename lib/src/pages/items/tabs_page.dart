@@ -64,10 +64,10 @@ class _Navegacion extends StatelessWidget {
              iconSize: 24, 
              
               items: [
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(Icons.home)), title: Container()), 
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(right: 70.0), child: Icon(Icons.people)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(left: 70.0), child: Icon(Icons.search)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(Icons.local_grocery_store),), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.home)), title: Container()), 
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(right: 70.0), child: Icon(LineIcons.user)), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(left: 70.0), child: Icon(LineIcons.search)), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.shopping_cart),), title: Container()),
               
               ], 
              elevation: 50.0,
