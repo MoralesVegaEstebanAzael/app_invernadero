@@ -33,6 +33,8 @@ dependencies:
   flutter_spinkit: ^ 3.1.0
   flutter_secure_storage: 
   shared_preferences: ^0.5.6+3
+  provider: ^4.0.5+1
+  animate_do: ^1.7.2
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +63,7 @@ flutter:
     - assets/icon/
     - assets/images/intro_screen/
     - assets/images/verify_screen/
-    - data/menu_opts.json
+    - data/menu_opts.json 
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

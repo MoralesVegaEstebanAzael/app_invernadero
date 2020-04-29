@@ -33,10 +33,6 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
   bool _isLoading=false;
 
-  
- 
-
-
   @override
   void initState() {
     super.initState();
@@ -154,10 +150,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
      *  ->CONFIGURAR DATOS DE USUARIO
      *  ->HOME
      * **/
-    
-
     if(_isLoading)return;
-    
+
     if (bloc.telefono.isNotEmpty) {
       setState(() {
         _isLoading=true;
@@ -223,7 +217,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
           icon: LineIcons.mobile_phone,
           onChange: bloc.changeTelefono,
           errorText: snapshot.error,
-          inputFormatters: [maskTextInputFormatter], 
+           inputFormatters: [maskTextInputFormatter], 
                         autocorrect: false, 
         );
       }),

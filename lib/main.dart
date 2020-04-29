@@ -2,6 +2,7 @@
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/pages/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
+import 'package:app_invernadero/src/pages/items/tabs_page.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
 import 'package:app_invernadero/src/pages/login/config_account_page.dart';
 import 'package:app_invernadero/src/pages/login/config_password_page.dart';
@@ -19,25 +20,22 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
-  
+
   
   runApp(MyApp());
 } 
 
 class MyApp extends StatelessWidget {
-  final prefs = new SecureStorage();
-
-
+ 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     
     return Provider(
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: 'config_account',//prefs.sesion?'user_profile':'login_phone',
-
+        initialRoute: 'tabsPage',
         routes: {
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 
@@ -50,6 +48,7 @@ class MyApp extends StatelessWidget {
           'config_account'        : (BuildContext)=>ConfigAccountPage(),
           'user_profile'          : (BuildContext)=>UserProfilePage(),
           'login_password'        : (BuildContext)=>LoginPasswordPage(),
+          'tabsPage'              : (BuildContext)=>TabsPages(),
         },
       ),
     );

@@ -1,12 +1,9 @@
 import 'package:app_invernadero/src/providers/menu_provider.dart';
-import 'package:app_invernadero/src/providers/user_provider.dart';
-import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/icon_string_util.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -17,9 +14,7 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  UserProvider userProvider = UserProvider();
   bool _blockCheck=true;
-  bool _isLoading=false;
   IconData _switch = LineIcons.toggle_on;
 
   @override
@@ -28,38 +23,33 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       backgroundColor: Color(0XFFEEEEEE),
       body: Container( 
-        
+        margin: EdgeInsets.symmetric(horizontal:10),
         height: responsive.height,
-        child: Stack(
-          children:<Widget>[
-            Positioned(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal:10),
-                child: Column(
+        child: Column(
         children: <Widget>[
           SafeArea(
-                child: AspectRatio(
-                aspectRatio: 16/5,
-                child: LayoutBuilder(
-                  builder:(_,contraints){
-                    return _header(contraints);
-                  }
-                )
+              child: AspectRatio(
+              aspectRatio: 16/5,
+              child: LayoutBuilder(
+                builder:(_,contraints){
+                  return _header(contraints);
+                }
+              )
             ),
           ) ,
           SizedBox(height: responsive.ip(2),),
           Container(
             decoration: BoxDecoration(
-                color : Colors.white,
-                borderRadius: BorderRadius.circular(2.0),
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    color:Colors.black26,
-                    blurRadius: 3.0,
-                    offset : Offset(0.0,5.0),
-                    spreadRadius: 1.0
-                  )
-                ]
+              color : Colors.white,
+              borderRadius: BorderRadius.circular(2.0),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color:Colors.black26,
+                  blurRadius: 3.0,
+                  offset : Offset(0.0,5.0),
+                  spreadRadius: 1.0
+                )
+              ]
             ),
 
             
@@ -68,45 +58,34 @@ class _UserProfilePageState extends State<UserProfilePage> {
           SizedBox(height: responsive.ip(2),),  
           Expanded(
             child: Container(
-                color: Color(0XFFEEEEEE),
-                child: Column(
-                  children:<Widget>[
-                    
+              color: Color(0XFFEEEEEE),
+              child: Column(
+                children:<Widget>[
+                  
 
-                       SvgPicture.asset('assets/images/logo_app.svg',
-                     
-                        height: 50,
-                      ),
+                     SvgPicture.asset('assets/images/logo_app.svg',
+                   
+                      height: 50,
+                    ),
 
-                      Text(
-                      "Invernadero Sebastián  Atoyaquillo",
-                      style: TextStyle(color: Colors.grey)
-                      ),
-                  ]
-                ),  
+                    Text(
+                    "Invernadero Sebastián  Atoyaquillo",
+                    style: TextStyle(color: Colors.grey)
+                    ),
+                ]
+              ),  
             )
           )
 
         ],),
-              ),),
-
-        Positioned.fill(
-         child: _isLoading? Container(  
-          color:Colors.black45,
-          child: Center(
-            child:SpinKitCircle(color: miTema.accentColor),
-          ),
-        ):Container()),
-          ]
-        )
       ),
-      floatingActionButton: FloatingActionButton(
+     /* floatingActionButton: FloatingActionButton(
         onPressed: (){},
         backgroundColor: miTema.accentColor,
         child: Icon(LineIcons.plus),
         ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(),*/
     ); 
   }
 
@@ -163,58 +142,39 @@ class _UserProfilePageState extends State<UserProfilePage> {
       
       Container(
         
-        padding: EdgeInsets.symmetric(horizontal:5),    
-        child:  ListTile(
+          padding: EdgeInsets.symmetric(horizontal:5),
+         
+          child:  ListTile(
+        
         title: Text(opt['texto']),
         leading: getIcon(opt['icon']),
         trailing:opt['texto']=='Notificaciones'? 
-            Icon(_switch, size: 40,color:miTema.primaryColor) 
-            : Icon(LineIcons.angle_right,color:Colors.grey),
+            Icon(_switch, size: 40,color:miTema.primaryColor) : Icon(LineIcons.angle_right,color:Colors.grey),
         onTap: (){
-          trailing:opt['texto']=='Notificaciones'
+           trailing:opt['texto']=='Notificaciones'
           ? 
-          _notifications()
+          setState(() {
+            _blockCheck=!_blockCheck;
+
+            _blockCheck?
+          _switch = LineIcons.toggle_on
           :
-          _logOut();
+          _switch = LineIcons.toggle_off;
+          })
+          :
+          print("arrow");
         },
       )
       );
      
       opciones..add(widgetTemp)..add(Container(
-      padding: EdgeInsets.symmetric(horizontal:5),  
+        
+        padding: EdgeInsets.symmetric(horizontal:5),  
                       height: 2,
                       color: Color(0xFFEEEEEE),
                     ),);//..add(Divider());
     });
     return opciones;
   } 
-
-  _notifications(){
-    setState(() {
-          _blockCheck=!_blockCheck;
-          _blockCheck?
-        _switch = LineIcons.toggle_on
-        :
-        _switch = LineIcons.toggle_off;
-        });
-  }
-
-  _logOut()async{
-    if(_isLoading)return;
-    setState(() {
-        _isLoading=true;
-    });
-
-    Map info = await userProvider.logout();
-    setState(() {
-      _isLoading=false;
-    });
-
-    if(info['ok']){
-      //inicio de sesión
-      Navigator.pushReplacementNamed(context, 'login_phone');
-    }else{
-      print("ERROR LOGOUT");
-    }
-  }
+  
 }

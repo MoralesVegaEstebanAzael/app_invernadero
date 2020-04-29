@@ -77,13 +77,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      /*floatingActionButton: FloatingActionButton(
         onPressed: (){},
         backgroundColor: miTema.accentColor,
         child: Icon(LineIcons.plus),
         ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: BottomBar(),
+      bottomNavigationBar: BottomBar(),*/
     );
   }
 
