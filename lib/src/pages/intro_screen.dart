@@ -1,4 +1,5 @@
 
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/flutkart.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -15,10 +16,17 @@ class IntroScreen extends StatefulWidget {
 }
 
 class IntroScreenState extends State<IntroScreen> {
+  SecureStorage _prefs = SecureStorage();
   final PageController controller = new PageController();
   int currentPage = 0;
   bool lastPage = false;
 
+
+  @override
+  void initState() { 
+    super.initState();
+    _prefs.route= 'intro';
+  }
   void _onPageChanged(int page) {
     setState(() {
       currentPage = page;
@@ -101,7 +109,7 @@ class IntroScreenState extends State<IntroScreen> {
                           fontWeight: FontWeight.bold,
                           fontSize: 16.0)),
                   onPressed: () =>
-                      lastPage ? null : Navigator.pushReplacementNamed(context, 'login'),
+                      lastPage ? null : Navigator.pushReplacementNamed(context, 'login_phone'),
                 ),
                 FlatButton(
                   child: Row(
@@ -123,7 +131,7 @@ class IntroScreenState extends State<IntroScreen> {
                     ],
                   ),
                   onPressed: () => lastPage
-                      ? Navigator.pushReplacementNamed(context, 'login')
+                      ? Navigator.pushReplacementNamed(context, 'login_phone')
                       : controller.nextPage(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.easeIn),

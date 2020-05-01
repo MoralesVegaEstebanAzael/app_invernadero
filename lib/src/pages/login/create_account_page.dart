@@ -18,7 +18,7 @@ class CreateAccountPage extends StatefulWidget {
 
 
 class _CreateAccountPageState extends State<CreateAccountPage> with AfterLayoutMixin {
-  
+  bool _isLoading=false;
   @override
   void afterFirstLayout(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.shortestSide>=600;

@@ -2,6 +2,7 @@
 import 'package:app_invernadero/src/pages/items/tab1.dart';
 import 'package:app_invernadero/src/pages/items/tab2.dart';
 import 'package:app_invernadero/src/pages/items/tab3.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -10,8 +11,21 @@ import '../../theme/theme.dart';
 import '../home_page.dart';
 import '../user/user_profile_page.dart'; 
 
-class TabsPages extends StatelessWidget {
+class TabsPages extends StatefulWidget {
   const TabsPages({Key key}) : super(key: key);
+
+  @override
+  _TabsPagesState createState() => _TabsPagesState();
+}
+
+class _TabsPagesState extends State<TabsPages> {
+  SecureStorage _prefs = SecureStorage();
+
+  @override
+  void initState() { 
+    super.initState();
+    _prefs.route= 'home';
+  }
 
   @override
   Widget build(BuildContext context) {

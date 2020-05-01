@@ -34,25 +34,25 @@ class MyApp extends StatelessWidget {
     
     return Provider(
       child: MaterialApp(
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: false,  
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: 'home',//prefs.sesion?'user_profile':'login_phone',
-
+        initialRoute:prefs.route,
+        
         routes: {
-          'login'                 : (BuildContext)=>LoginPage(),
-          'create_account'        : (BuildContext)=>CreateAccountPage(), 
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>TabsPages(),
           'login_phone'           : (BuildContext)=>LoginPhonePage(),
+          'login_password'        : (BuildContext)=>LoginPasswordPage(),
           'pin_code'              : (BuildContext)=>PinCodePage(),
-          'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
           'config_password'       : (BuildContext)=>ConfigPasswordPage(),
           'config_account'        : (BuildContext)=>ConfigAccountPage(),
           'user_profile'          : (BuildContext)=>UserProfilePage(),
-          'login_password'        : (BuildContext)=>LoginPasswordPage(),
           
-
+          
+          'login'                 : (BuildContext)=>LoginPage(),
+          'create_account'        : (BuildContext)=>CreateAccountPage(), 
+          'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
         },
       ),
     );

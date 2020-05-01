@@ -1,5 +1,9 @@
 
 import 'package:after_layout/after_layout.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/nexmo_sms_verify_provider.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/countdown_base.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -7,10 +11,11 @@ import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:nexmo_verify/basemodel.dart';
-import 'package:nexmo_verify/model/nexmo_response.dart';
-import 'package:nexmo_verify/nexmo_sms_verify.dart';
+// import 'package:nexmo_verify/basemodel.dart';
+// import 'package:nexmo_verify/model/nexmo_response.dart';
+// import 'package:nexmo_verify/nexmo_sms_verify.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../../app_config.dart';
@@ -25,36 +30,46 @@ class PinCodePage extends StatefulWidget {
 }
   
 class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
+  UserProvider userProvider = UserProvider();
+  SecureStorage _prefs = SecureStorage();
   String _pinCode = "";
   bool _isLoading = false;
   bool _isResendEnable = false;
   bool _cancel=false;
-
+  BuildContext _context;
   String otpWaitTimeLabel = "";
-  bool _isMobileNumberEnter = false;
-  String mobileNumber;  
-
+  User _user;
   
-  NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
-
+  final snackBar = SnackBar(
+    content: Text("Código incorrecto"),
+    backgroundColor: Colors.redAccent,);
+  
+  
+  // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
+  NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
   _PinCodePageState();//this.mobileNumber);
 
   @override
   void initState() {
     super.initState();
-
+    
+    _user = _prefs.user;
     startTimer();
 
-    _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
-    _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key,AppConfig.nexmo_secret_key);
+    // _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
+    // _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key,AppConfig.nexmo_secret_key);
+
+    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+    _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
   }
 
-  bool isVerified = false;
+  
 
 
-   @override
+  @override
   void dispose() {
     super.dispose();
+
     _cancel=true;
   }
 
@@ -69,7 +84,8 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
 
   @override
   Widget build(BuildContext context) {
-    final String mobileNumber = ModalRoute.of(context).settings.arguments;
+    _context =context;
+   
     final responsive = Responsive.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -85,7 +101,10 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
              SingleChildScrollView(
               child: Container( 
                 height: responsive.height,
-                child: Column(
+                child:Stack(
+                  children:<Widget>[
+                    Positioned(
+                      child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                     AspectRatio(
@@ -107,8 +126,8 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
                     SizedBox(height: responsive.ip(2),),
                     Padding(
                       padding:  EdgeInsets.symmetric(horizontal:10.0),
-                      child: Text("El código de verificación se ha enviado al: $mobileNumber",
-                        textWidthBasis: TextWidthBasis.longestLine, 
+                      child: Text("El código de verificación se ha enviado al:+${_user.phone}",
+                      textWidthBasis: TextWidthBasis.longestLine, 
                        style: TextStyle(color:Color(0xffbbbbbb),),
                         textAlign: TextAlign.left,
                       ),
@@ -142,7 +161,17 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
                       (_pinCode.length<4 || _isResendEnable)
                       ? null
                       :_submit)
-                ],),
+                ],) ,),
+
+                Positioned.fill(
+                  child: _isLoading? Container(
+                    color:Colors.black45,
+                    child: Center(
+                      child:SpinKitCircle(color: miTema.accentColor),
+                    ),
+                  ):Container()),
+                  ]
+                )
               ),
             )
         ),
@@ -152,44 +181,82 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
 
   
   
-  _submit(){
+  _submit()async{
     //enviar codigo de verificación para validar
-    /*if(_pinCode.length==4){
-      print("current: " + _pinCode);
-       showLoader();
-      _nexmoSmsVerificationUtil
-          .verifyOtp(_pinCode)
-          .then((dynamic res) {
-            
-          NexmoResponse nr = (res as BaseModel).nexmoResponse;
-          print("Estado de respuesta al enviar codigo: " + nr.status);
-            
-          if(nr.status=='0'){
-              //  
-            closeLoader();
-            isVerified = true;
-            _cancel=true;
-            print("*********************cancelando timer**********");
-            Navigator.pushReplacementNamed(context, 'code_verification_3');
-           }
-          
-          });
-    }else{
-     print("codigo incompleto");
-    }  */ 
-    
-    print("submit");
+    if(_isLoading)return;
 
+    if(_pinCode.length==4){
+      
+      setState(() {
+        _isLoading=true;
+      });
+    Map info = await _nexmoSmsVerifyProvider.verify(code: _pinCode);
+    
+    setState(() {
+      _isLoading=false;
+    });
+
+
+    if(info['ok']){//SOLICITUD API REST
+        _user.registered = '1';
+        _prefs.user = _user; //save new user
+        _cancel=true;    //stop timer   
+        if(_user.password==null)//si no ha configurado su contraseña
+          Navigator.pushReplacementNamed(context, 'config_password');
+        else if(_user.name==null) //si no ha configurado su información
+          Navigator.pushReplacementNamed(context, 'config_account');
+    }else{
+      print("ocurrio un error en la verificacion: " + info['message']);
+    }
+      /*
+      _nexmoSmsVerificationUtil
+          .verifyOtp(_pinCode) /* METODO DE VERIFICACIÓN*/
+          .then((dynamic res)async {
+            
+            NexmoResponse nr = (res as BaseModel).nexmoResponse;
+            print("Estado de respuesta al enviar codigo: " + nr.status);
+
+            if(nr.status=='0'){
+              _cancel=true;
+              //AL CONFIRMARSE EL PINCODE
+              //solicitar token-> numero de celular
+
+              if(_user.registered=='0')//registrar usuario
+                singup();
+              else if(_user.password=='0')//si no ha configurado su contraseña
+                Navigator.pushReplacementNamed(context, 'config_password');
+              else if(_user.name=='0') //si no ha configurado su información
+                Navigator.pushReplacementNamed(context, 'config_account');
+
+            }else{//***CODIGO DE VERIFICACIÓN INCORRECTO */
+              setState(() {
+                _isLoading=false;
+              });
+              Scaffold.of(_context).showSnackBar(snackBar);
+            }
+          
+          });*/
+    } 
   }
 
-
+ /* singup()async{
+    Map info = await userProvider.signup(telefono: _user.phone);
+    setState(() {
+      _isLoading=false;
+    });
+    if(info['ok']){
+      //configurar contraseña y perfil->
+      Navigator.pushReplacementNamed(context, 'config_password'); 
+    }else{
+      print("ERROR AL REGISTRAR");
+    }
+  }*/
 
 
   //solicitar nuevo codigo de verificación
   void _resendOtp() {
     if (_isResendEnable) {
      //_nexmoSmsVerificationUtil.resentOtp();
-     
      restarTimer();
      print("enviando codigo de verificacion");
     }else{
@@ -215,7 +282,6 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
       });
       }else{
         sub.cancel();
-
       }
 
     });
@@ -259,4 +325,6 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
       ),
     );
   }
+
+  
 }

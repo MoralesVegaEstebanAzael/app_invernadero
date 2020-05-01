@@ -1,5 +1,8 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/nexmo_sms_verify_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/widgets/mask_text_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,9 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:nexmo_verify/basemodel.dart';
-import 'package:nexmo_verify/model/nexmo_response.dart';
-import 'package:nexmo_verify/nexmo_sms_verify.dart';
+// import 'package:nexmo_verify/basemodel.dart';
+// import 'package:nexmo_verify/model/nexmo_response.dart';
+// import 'package:nexmo_verify/nexmo_sms_verify.dart';
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
@@ -26,11 +29,13 @@ class LoginPhonePage extends StatefulWidget  {
 
 class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   UserProvider userProvider = UserProvider();
-  String _telefono='';
+  SecureStorage _prefs = SecureStorage();
   var textEditingController = TextEditingController();
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
   filter: { "#": RegExp(r'[0-9]') });
-  NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
+  // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil  ;
+  NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
+
   bool _isLoading=false;
 
   
@@ -40,8 +45,15 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   @override
   void initState() {
     super.initState();
-    _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
-    _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
+    _prefs.route = 'login_phone'; //save route
+    
+    // _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
+    // _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
+
+
+
+    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+    _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
     
   }
 
@@ -141,21 +153,6 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
 
   _submit(BuildContext context,LoginBloc bloc)async {
-    /** BUSCAR TELEFONO ATRAVES DE LA API 
-     * SI EXISTE 
-     *  LANZAR LOGIN_PASSWORD_PAGE
-     *  ->OLVIDE MI CONTRASEÑA
-     *    -> ENVIAR CODIGO DE VERIFICACIÓN 
-     *    ->CONFIGURAR CONTRASEÑA
-     * ->HOME
-     * SI NO EXISTE
-     * LANZAR PIN_CODE_PAGE PARA VERIFICAR NUMERO
-     *  ->CONFIGURAR CONTRASEÑA
-     *  ->CONFIGURAR DATOS DE USUARIO
-     *  ->HOME
-     * **/
-    
-
     if(_isLoading)return;
     
     if (bloc.telefono.isNotEmpty) {
@@ -163,51 +160,81 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
         _isLoading=true;
       });
 
-      Map info = await userProvider.buscarUsuario( telefono:AppConfig.nexmo_country_code+ bloc.telefono);
+      //SOLICITUD A APIREST
+      Map info = await userProvider.buscarUsuario(
+         telefono:AppConfig.nexmo_country_code+ bloc.telefono);
+
       setState(() {
         _isLoading=false;
-      });
+      }); 
 
-      if(info['ok']){
-        //inicio de sesión
-        Navigator.pushReplacementNamed(context, 'login_password',arguments:AppConfig.nexmo_country_code+ bloc.telefono);
-        print("usuario encontrado");
-      }else{
-        //Navigator.pushNamed(context, 'pin_code',arguments: AppConfig.nexmo_country_code+_telefono);
-        print("registrar usuario");  
-        //registrarse
-        // _telefono=bloc.telefono;
-        // _nexmoSmsVerificationUtil
-        //   .sendOtp(AppConfig.nexmo_country_code + bloc.telefono, AppConfig.nexmo_business_name)
-        //   .then((dynamic res) {
-        //     NexmoResponse nr = (res as BaseModel).nexmoResponse;
-        //     print("Estado al enviar codigo :"+nr.status);
+      if(info['ok']){ //RESPUESTA API REST USUARIO ENCONTRADO
+        String telefono = AppConfig.nexmo_country_code + bloc.telefono;
+        
+        User user =  User(
+          phone:telefono, 
+          registered: '1',
+          password: info['psw'],
+          name:info['name']);
 
-        //     if(nr.status=='10'){
-        //       print("Concurrent verifications to the same number are not allowed");
-        //     }else if(nr.status=='0'){
-        //       nexmoSuccess( (res as BaseModel).nexmoResponse);
-        //     }
-        // });
+        _prefs.user= user; //save user
+
+
+        if(info['psw']==null)
+          Navigator.pushReplacementNamed(context, 'pin_code');
+        else //Registrado con datos completos
+          Navigator.pushReplacementNamed(context, 'login_password');
+
+      }else{ //USUARIO NO ENCONTRADO ->registrar
+        sendCode(bloc);
       }
-
-      
-    }else{
-      print("ingresa tu telefono");
     }
+  } 
 
+
+  sendCode(LoginBloc bloc)async{
+    final telefono = AppConfig.nexmo_country_code + bloc.telefono;
+    
+    Map info = await _nexmoSmsVerifyProvider.sendCode(
+        telefono:telefono ,brand: AppConfig.nexmo_business_name);
+    
+    if(info['ok']){ //mensaje enviado
+      print("MENSAJE ENVIADO ");
+        String telefono = AppConfig.nexmo_country_code + bloc.telefono;
+        User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
+        _prefs.user= user; //save user
+        Navigator.pushNamed(context, 'pin_code');
+    }else{
+      print("ERRROR AL ENVIAR EL MENSAJE: " + info['message']);
+    }
+    
   }
+
+
+
   
-  @override
-  void nexmoSuccess(NexmoResponse nexmoResponse) {
-    Navigator.pushNamed(context, 'pin_code',arguments: AppConfig.nexmo_country_code+_telefono);
-    // Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(
-    //         builder: (BuildContext context) => CodeVerificationPage2(
-    //             AppConfig.nexmo_country_code + _telefono)));
-  }
+  // register(LoginBloc bloc){
+  //    _nexmoSmsVerificationUtil
+  //         .sendOtp(AppConfig.nexmo_country_code + bloc.telefono, AppConfig.nexmo_business_name)
+  //         .then((dynamic res) {
+  //           NexmoResponse nr = (res as BaseModel).nexmoResponse;
+  //           if(nr.status=='10'){
+  //             print("Concurrent verifications to the same number are not allowed");
+  //           }else if(nr.status=='0'){
+  //             nexmoSuccess( (res as BaseModel).nexmoResponse,bloc);
+  //           }
+  //       });
+  // }
+  // @override
+  // void nexmoSuccess(NexmoResponse nexmoResponse,LoginBloc bloc) {
+
+  //   String telefono = AppConfig.nexmo_country_code + bloc.telefono;
+  //   User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
+  //   _prefs.user= user; //save user
+  //   Navigator.pushNamed(context, 'pin_code');
+  // }
   
+
   Widget _inputText(LoginBloc bloc) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal:40),
@@ -230,8 +257,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
     );
   }
 
-
-
+  
+  
   Widget _image() {
     return AspectRatio(
       aspectRatio: 16/8,

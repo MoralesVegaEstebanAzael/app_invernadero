@@ -1,8 +1,14 @@
+import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
+import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/input_password.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_icons/line_icons.dart';
 
 
@@ -12,11 +18,29 @@ class ConfigPasswordPage extends StatefulWidget {
 }
 
 class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
+  UserProvider userProvider = UserProvider();
+  SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
+  User _user;
+  bool _isLoading=false;
+  final snackBar = SnackBar(
+    content: Text('Algo ha salido mal'),
+    backgroundColor: Colors.redAccent,);
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _prefs.route = 'config_password';
+    _user = _prefs.user;
+    
+  }
   
   @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
+
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -30,10 +54,25 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
           child:
             SingleChildScrollView( 
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal:20,vertical:20),
+               
                 height: responsive.height,
                 child: SafeArea(
-                  child: _content(responsive),
+                  child: Stack(
+                    children:<Widget>[
+                      Positioned(
+                        child:Container(
+                          padding: EdgeInsets.symmetric(horizontal:20,vertical:20),
+                          child:  _content(responsive),
+                        ),),
+
+                      _isLoading? Positioned.fill(
+                        child:  Container(
+                        color:Colors.black45,
+                        child: Center(
+                          child:SpinKitCircle(color: miTema.accentColor),
+                        ),),) :Container(),
+                    ]
+                  ),
                 ),
               ),
             )     
@@ -41,7 +80,7 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
       )
     );
   }
-
+  
   Widget _content(Responsive responsive){
     final bloc = Provider.of(context);
     return  Column(
@@ -78,8 +117,8 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
             return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text("Debes incluir al menos 2 numeros, letras o signos.",
-                style: TextStyle(color:Colors.grey),
+              Text("Debes incluir al menos 2 numeros, letras o signos.", 
+                style: TextStyle(color:Colors.grey,fontSize: responsive.ip(1.5)),
               ),
               
               (bloc.password==null|| snapshot.error!=null)?
@@ -97,9 +136,9 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                
+              
               Text("Tu contraseña debe tener entre 8 y 16 caracteres.",
-                style: TextStyle(color:Colors.grey),
+                style: TextStyle(color:Colors.grey,fontSize: responsive.ip(1.5)),
               ),
               (bloc.password==null|| bloc.password.length>16||bloc.password.length<8)?
               Icon(Icons.close,size: 15,color:Colors.red,)
@@ -116,7 +155,7 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
               return  Center(
               child: RoundedButton(
                 label: "Siguiente", 
-                onPressed: snapshot.hasData?()=>_submit() : null)
+                onPressed: snapshot.hasData?()=>_submit(bloc) : null)
               );
             },
           ),
@@ -125,7 +164,27 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
       ],);
   }
   
-  _submit(){
-    Navigator.pushReplacementNamed(context, 'config_account');
+  _submit(LoginBloc bloc)async{
+    if(_isLoading)return;
+
+    if(bloc.password.isNotEmpty){ 
+       setState(() {
+        _isLoading=true;
+      });
+
+      //API
+      Map info = await userProvider.changePassword(telefono: _user.phone , password: bloc.password);
+      
+       setState(() {
+        _isLoading=false;
+      });
+
+      if(info['ok']){
+        Navigator.pushReplacementNamed(context, 'config_account');
+      }else{
+        print("ocurrio un error durante la peticion");
+        Scaffold.of(context).showSnackBar(snackBar);
+      }
+    }
   }
 }

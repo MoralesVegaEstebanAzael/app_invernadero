@@ -1,3 +1,5 @@
+
+import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +21,7 @@ class SecureStorage{
   }
   
   Future write(String _key,String _value) async {
-    _storage.write(key: _key, value: _value);
+    await _storage.write(key: _key, value: _value);
   }
 
   Future read(String _key) async {
@@ -35,13 +37,51 @@ class SecureStorage{
   }
 
 
-
-  //GET SET TOKEN
+  
+  
   get sesion{
-    return _prefs.getString('sesion')?? '';
+    return _prefs.getBool('sesion')?? false;
   }
   
+
   set sesion(bool value){
     _prefs.setBool('sesion', value);
   }
+
+  
+  get route{
+    return _prefs.getString('route')??'intro';
+  }
+
+  set route(String route){
+    _prefs.setString('route', route);
+  }
+
+  set user(User user){
+    List<String> userList = [
+      user.phone,
+      user.registered,
+      user.password,
+      user.name,
+    ];
+    _prefs.setStringList('user', userList);
+  }
+
+  
+  User get user{
+    List<String> us= _prefs.getStringList('user');
+    if(us!=null){
+      User u = User(
+        phone:us[0],
+        registered:us[1],
+        password: us[2],
+        name: us[3]);
+      return u;
+    }
+    return null;
+  }
+
+
+
+
 }

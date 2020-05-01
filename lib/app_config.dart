@@ -6,9 +6,8 @@ class AppConfig{
   static const nexmo_country_code='52';
   static const String  nexmo_business_name= "SA Invernadero";
 
-
+  
   /** serve heroku ps:exec -a yurtapp
    *  php artisan passport:keys
-*/
-  
+  */
 }

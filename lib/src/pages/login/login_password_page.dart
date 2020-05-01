@@ -1,6 +1,8 @@
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/input_password.dart';
@@ -16,9 +18,11 @@ class LoginPasswordPage extends StatefulWidget {
 
 class _LoginPasswordPageState extends State<LoginPasswordPage> {
   UserProvider userProvider = UserProvider();
+  SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
   bool _isLoading=false;
   String _mobileNumber='';
+  User _user;
   final snackBar = SnackBar(
     // shape: RoundedRectangleBorder(
     //             borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -27,6 +31,13 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
     content: Text('Contraseña incorrecta'),
     backgroundColor: Colors.redAccent,);
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _prefs.route = 'login_password';
+    _user = _prefs.user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +163,9 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
         //inicio de sesión
         //Navigator.pushReplacementNamed(context, 'login_password',arguments:AppConfig.nexmo_country_code+ bloc.telefono);
         print("telefono y contraseña encontrados->login");
+
+        _user.name==null?print("->Configurar nombre"):("->home");
+
       }else{
         //Navigator.pushNamed(context, 'pin_code',arguments: AppConfig.nexmo_country_code+_telefono);
         print("contraseña incorrecta");  

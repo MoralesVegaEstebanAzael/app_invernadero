@@ -1,9 +1,15 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
+import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConfigAccountPage extends StatefulWidget {
   @override
@@ -13,9 +19,23 @@ class ConfigAccountPage extends StatefulWidget {
 
 
 class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayoutMixin{
+  UserProvider userProvider = UserProvider();
+  SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
-    
-   @override
+  bool _isLoading=false;
+  User _user;
+
+   final snackBar = SnackBar(
+    content: Text('Algo ha salido mal'),
+    backgroundColor: Colors.redAccent,);
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.route = 'config_account';
+    _user = _prefs.user;
+  }  
+  @override
   void afterFirstLayout(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.shortestSide>=600;
     if(!isTablet){
@@ -39,10 +59,25 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
           child:
             SingleChildScrollView( 
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal:20,vertical:20),
+               
                 height: responsive.height,
                 child: SafeArea(
-                  child: _content(responsive),
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                      child: Container(
+                         padding: EdgeInsets.symmetric(horizontal:20,vertical:20),
+                        child: _content(responsive)
+                      ),),
+
+                      _isLoading? Positioned.fill(
+                        child:  Container(
+                        color:Colors.black45,
+                        child: Center(
+                          child:SpinKitCircle(color: miTema.accentColor),
+                        ),),) :Container(),
+                    ],
+                  ),
                 ),
               ),
             )     
@@ -105,7 +140,7 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
               child: Center(
                 child: RoundedButton(
                 label: "Siguiente", 
-                onPressed: snapshot.hasData?()=>_submit() : null),
+                onPressed: snapshot.hasData?()=>_submit(bloc) : null),
               ),
             );
           },
@@ -114,8 +149,28 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
       ],);
   }
 
-  _submit(){
-    
+  _submit(LoginBloc bloc)async{
+    if(_isLoading)return;
+
+    if(bloc.name.isNotEmpty){
+       setState(() {
+        _isLoading=true;
+      });
+      //API
+      Map info = await userProvider.changeInf(
+        telefono: _user.phone , name: bloc.name,email: bloc.email);
+
+      setState(() {
+        _isLoading=false;
+      });
+
+      if(info['ok']){
+        Navigator.pushReplacementNamed(context, 'config_account');
+      }else{
+        print("ocurrio un error durante la peticion");
+        Scaffold.of(context).showSnackBar(snackBar);
+      }
+    }
   }
 
 
