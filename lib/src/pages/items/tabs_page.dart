@@ -79,9 +79,9 @@ class _Navegacion extends StatelessWidget {
              
               items: [
                 BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.home)), title: Container()), 
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(right: 70.0), child: Icon(LineIcons.user)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(left: 70.0), child: Icon(LineIcons.search)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.shopping_cart),), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(right: 70.0), child: Icon(LineIcons.search)), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(left: 70.0), child: Icon(LineIcons.shopping_cart)), title: Container()),
+                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.user),), title: Container()),
               
               ], 
              elevation: 50.0,
@@ -103,10 +103,10 @@ class _Paginas extends StatelessWidget {
         controller: navegacionModel.pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          UserProfilePage(),
-          UserProfilePage(),
+          UserProfilePage(),          
           Tab1(),
-          Tab3()
+          Tab3(),
+          UserProfilePage(),
         ], 
     );
   }

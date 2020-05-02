@@ -10,6 +10,9 @@ import 'package:app_invernadero/src/pages/login/login_page.dart';
 import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
+import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
+import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
+import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,  
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute:prefs.route,
+        initialRoute: prefs.route,
 
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
@@ -52,6 +55,10 @@ class MyApp extends StatelessWidget {
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 
           'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
+
+          'favoritos'             : (BuildContext)=>FavoritosPage(),
+          'ayuda'                 : (BuildContext)=>AyudaPage(), 
+          'acercade'              : (BuildContext)=>AcercaDePage(),            
         },
       ),
     );

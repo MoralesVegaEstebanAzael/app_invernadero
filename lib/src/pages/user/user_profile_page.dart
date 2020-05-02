@@ -166,11 +166,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
             Icon(_switch, size: 40,color:miTema.primaryColor) 
             : Icon(LineIcons.angle_right,color:Colors.grey),
         onTap: (){
-          trailing:opt['texto']=='Notificaciones'
+          trailing: opt['texto']=='Notificaciones'
+          
           ? 
           _notifications()
-          :
-          _logOut();
+          : 
+          _opciones(opt['texto']);
         },
       )
       );
@@ -211,5 +212,23 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }else{
       print("ERROR LOGOUT");
     }
+  } 
+
+  _opciones(String texto){
+     switch (texto) {
+            case 'Favoritos':  
+              Navigator.pushNamed(context, 'favoritos');
+            break;
+            case 'Acerca de':
+              Navigator.pushNamed(context, 'acercade');
+            break;
+            case 'Ayuda':
+              Navigator.pushNamed(context, 'ayuda');
+            break;
+              case 'Salir':
+              _logOut();
+            break;
+            default:
+          }
   }
 }
