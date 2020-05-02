@@ -17,7 +17,7 @@ class SecureStorage{
 
   initPrefs()async{
     this._storage = FlutterSecureStorage();
-     this._prefs = await SharedPreferences.getInstance();
+    this._prefs = await SharedPreferences.getInstance();
   }
   
   Future write(String _key,String _value) async {
@@ -71,12 +71,19 @@ class SecureStorage{
   User get user{
     List<String> us= _prefs.getStringList('user');
     if(us!=null){
-      User u = User(
+       User _user = User();
+       _user.initUser(
         phone:us[0],
         registered:us[1],
         password: us[2],
-        name: us[3]);
-      return u;
+        name: us[3]
+       );
+      /*User u = User(
+        phone:us[0],
+        registered:us[1],
+        password: us[2],
+        name: us[3]);*/
+      return _user;
     }
     return null;
   }

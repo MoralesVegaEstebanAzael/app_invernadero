@@ -24,6 +24,8 @@ class UserProvider{
   Future<Map<String,dynamic>> buscarUsuario({@required String telefono})async{
       await _storage.write('telefono', telefono);
       final url = "${AppConfig.base_url}/api/auth/buscar_usuario";
+     
+
       final response = await http.post(url,body: {"telefono":telefono});
       //final parsed = jsonDecode(response.body);
       
@@ -36,6 +38,7 @@ class UserProvider{
         return {'ok':false, 'mensaje' : decodedResp['error']};
       }
   }
+  
 
   Future<Map<String,dynamic>> login({@required String telefono,@required  String password})async{
       Map<String, String> headers = {"Accept": "application/json"};
@@ -89,7 +92,7 @@ class UserProvider{
 
   Future<Map<String,dynamic>> changeInf({@required String telefono,@required  String name,String email})async{
     
-    final url = "${AppConfig.base_url}/api/auth/change_password";
+    final url = "${AppConfig.base_url}/api/auth/change_inf";
     final token = await _storage.read('token');
 
     
@@ -103,7 +106,7 @@ class UserProvider{
       body: {
         "telefono":telefono,
         "name":name,
-        "email":email
+        "email":email==null?'no_email':email,
         });
     
     Map<String,dynamic> decodedResp = jsonDecode(response.body);

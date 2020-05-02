@@ -3,13 +3,26 @@ class User{
   String _registered;
   String _password;
   String _name;
+  static User _instance =
+      User.internal();
 
-  User({String phone,String registered,String password,String name}){
-    _phone = phone;
+  User.internal();
+  
+  factory User() => _instance;
+
+  initUser({String phone,String registered,String password,String name}) {
+     _phone = phone;
     _registered = registered;
     _password = password;
     _name = name;
   }
+
+ /* User({String phone,String registered,String password,String name}){
+    _phone = phone;
+    _registered = registered;
+    _password = password;
+    _name = name;
+  }*/
 
   set phone(String phone){
     this._phone = phone;

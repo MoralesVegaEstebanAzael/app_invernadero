@@ -1,6 +1,5 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/pages/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/items/tabs_page.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
@@ -38,7 +37,7 @@ class MyApp extends StatelessWidget {
         title: 'App Invernadero',
         theme: miTema,
         initialRoute:prefs.route,
-        
+
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>TabsPages(),

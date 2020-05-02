@@ -7,6 +7,7 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/input_password.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,19 +22,11 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
   bool _isLoading=false;
-  String _mobileNumber='';
   User _user;
-  final snackBar = SnackBar(
-    // shape: RoundedRectangleBorder(
-    //             borderRadius: BorderRadius.all(Radius.circular(10))),
-    //  behavior: SnackBarBehavior.floating,
-    //   elevation: 6.0,
-    content: Text('Contraseña incorrecta'),
-    backgroundColor: Colors.redAccent,);
+  
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _prefs.route = 'login_password';
     _user = _prefs.user;
@@ -41,11 +34,8 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    _mobileNumber = ModalRoute.of(context).settings.arguments;
-    Responsive responsive = Responsive.of(context);
-
     
-    print("telf"+_mobileNumber);
+    Responsive responsive = Responsive.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(
@@ -141,7 +131,7 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   }
 
   _forgotPassword(){
-     Navigator.pushReplacementNamed(context, 'pin_code',arguments: _mobileNumber);
+     Navigator.pushReplacementNamed(context, 'pin_code',arguments: _user.phone);
   }
   
   _submit(BuildContext context,LoginBloc bloc)async{
@@ -153,23 +143,33 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
         _isLoading=true;
       });
       
-      Map info = await userProvider.login(telefono: _mobileNumber,password: bloc.password);
+      Map info = await userProvider.login(telefono: _user.phone,password: bloc.password);
       
       setState(() {
         _isLoading=false;
       });   
       
       if(info['ok']){
-        //inicio de sesión
-        //Navigator.pushReplacementNamed(context, 'login_password',arguments:AppConfig.nexmo_country_code+ bloc.telefono);
-        print("telefono y contraseña encontrados->login");
-
-        _user.name==null?print("->Configurar nombre"):("->home");
-
+        if(_user.name==null){
+          Navigator.pushReplacementNamed(context, 'config_account');
+        }else{
+          Navigator.pushReplacementNamed(context, 'home');
+        }
       }else{
         //Navigator.pushNamed(context, 'pin_code',arguments: AppConfig.nexmo_country_code+_telefono);
         print("contraseña incorrecta");  
-        Scaffold.of(context).showSnackBar(snackBar);
+        Flushbar(
+        backgroundColor: Colors.black45,
+        icon: Icon(
+        Icons.close,
+        size: 28.0,
+        color: Colors.red,
+        ),
+        margin: EdgeInsets.all(4),
+        borderRadius: 5,
+        message:   "Contraseña incorrecta",
+        duration:  Duration(seconds:1),              
+      )..show(context);
       }
     }
   }

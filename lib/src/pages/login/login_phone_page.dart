@@ -5,6 +5,7 @@ import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/widgets/mask_text_input_formatter.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
@@ -12,15 +13,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
-// import 'package:nexmo_verify/basemodel.dart';
-// import 'package:nexmo_verify/model/nexmo_response.dart';
-// import 'package:nexmo_verify/nexmo_sms_verify.dart';
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/input_text.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:line_icons/line_icons.dart';
 
 class LoginPhonePage extends StatefulWidget  {
   @override
@@ -33,9 +33,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   var textEditingController = TextEditingController();
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
   filter: { "#": RegExp(r'[0-9]') });
-  // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil  ;
   NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
-
+  User _user; 
   bool _isLoading=false;
 
   
@@ -46,15 +45,11 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   void initState() {
     super.initState();
     _prefs.route = 'login_phone'; //save route
-    
-    // _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
-    // _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
-
-
-
     _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
     _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
     
+    _user = User();
+   
   }
 
   @override
@@ -171,16 +166,17 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
       if(info['ok']){ //RESPUESTA API REST USUARIO ENCONTRADO
         String telefono = AppConfig.nexmo_country_code + bloc.telefono;
         
-        User user =  User(
-          phone:telefono, 
+         _user.initUser(
+           phone:telefono, 
           registered: '1',
           password: info['psw'],
-          name:info['name']);
+          name:info['name']
+         );
 
-        _prefs.user= user; //save user
+        _prefs.user= _user; //save user
 
-
-        if(info['psw']==null)
+        
+        if(info['psw']=='0')
           Navigator.pushReplacementNamed(context, 'pin_code');
         else //Registrado con datos completos
           Navigator.pushReplacementNamed(context, 'login_password');
@@ -194,46 +190,42 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
   sendCode(LoginBloc bloc)async{
     final telefono = AppConfig.nexmo_country_code + bloc.telefono;
-    
+   
     Map info = await _nexmoSmsVerifyProvider.sendCode(
         telefono:telefono ,brand: AppConfig.nexmo_business_name);
     
     if(info['ok']){ //mensaje enviado
       print("MENSAJE ENVIADO ");
         String telefono = AppConfig.nexmo_country_code + bloc.telefono;
-        User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
-        _prefs.user= user; //save user
+
+        _user.initUser(
+          phone:telefono,
+          registered: '0',
+          password: '0',
+          name: '0'
+        );
+        //User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
+        _prefs.user= _user; //save user
         Navigator.pushNamed(context, 'pin_code');
     }else{
       print("ERRROR AL ENVIAR EL MENSAJE: " + info['message']);
+      
+      Flushbar(
+        backgroundColor: Colors.black45,
+        icon: Icon(
+        Icons.close,
+        size: 28.0,
+        color: Colors.red,
+        ),
+        margin: EdgeInsets.all(4),
+        borderRadius: 5,
+        message:   "Parece que algo ha ido mal",
+        duration:  Duration(seconds:1),              
+      )..show(context);
+
     }
     
   }
-
-
-
-  
-  // register(LoginBloc bloc){
-  //    _nexmoSmsVerificationUtil
-  //         .sendOtp(AppConfig.nexmo_country_code + bloc.telefono, AppConfig.nexmo_business_name)
-  //         .then((dynamic res) {
-  //           NexmoResponse nr = (res as BaseModel).nexmoResponse;
-  //           if(nr.status=='10'){
-  //             print("Concurrent verifications to the same number are not allowed");
-  //           }else if(nr.status=='0'){
-  //             nexmoSuccess( (res as BaseModel).nexmoResponse,bloc);
-  //           }
-  //       });
-  // }
-  // @override
-  // void nexmoSuccess(NexmoResponse nexmoResponse,LoginBloc bloc) {
-
-  //   String telefono = AppConfig.nexmo_country_code + bloc.telefono;
-  //   User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
-  //   _prefs.user= user; //save user
-  //   Navigator.pushNamed(context, 'pin_code');
-  // }
-  
 
   Widget _inputText(LoginBloc bloc) {
     return Padding(

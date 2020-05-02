@@ -103,7 +103,7 @@ class _Paginas extends StatelessWidget {
         controller: navegacionModel.pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          HomePage(),
+          UserProfilePage(),
           UserProfilePage(),
           Tab1(),
           Tab3()
@@ -129,19 +129,3 @@ class _NavegacionModel with ChangeNotifier{
   PageController get pageController => this._pageController;
 }
 
-
-/*
- return BottomNavigationBar(
-      currentIndex: navegacionModel.pagActual,
-      onTap: (i) => navegacionModel.pagActual = i,
-      type: BottomNavigationBarType.fixed, 
-      
-      items: [
-        BottomNavigationBarItem(icon: Icon(LineIcons.home,color:Color(0xFF676E79)), title: Container()),
-        BottomNavigationBarItem(icon: Icon(LineIcons.user,color:Color(0xFF676E79)), title: Container()),
-        BottomNavigationBarItem(icon: Icon(LineIcons.search,color:Color(0xFF676E79)), title: Container()),
-        BottomNavigationBarItem(icon: Icon(LineIcons.shopping_cart,color:Color(0xFF676E79)), title: Container()),
-      ],
-      selectedItemColor: miTema.primaryColor,
-    );
- */

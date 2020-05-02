@@ -43,7 +43,9 @@ class NexmoSmsVerifyProvider{
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       print(decodedResp);
       if(decodedResp.containsKey('request_id')){ 
+
         this.requestId = decodedResp['request_id'];
+        this.number = decodedResp['number'];
         return {'ok':true, 'request_id' : decodedResp['request_id']};
       }else{
         return {'ok':false, 'message' : decodedResp['message']};

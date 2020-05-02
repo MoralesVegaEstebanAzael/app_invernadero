@@ -8,11 +8,13 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/countdown_base.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:line_icons/line_icons.dart';
 // import 'package:nexmo_verify/basemodel.dart';
 // import 'package:nexmo_verify/model/nexmo_response.dart';
 // import 'package:nexmo_verify/nexmo_sms_verify.dart';
@@ -36,7 +38,6 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
   bool _isLoading = false;
   bool _isResendEnable = false;
   bool _cancel=false;
-  BuildContext _context;
   String otpWaitTimeLabel = "";
   User _user;
   
@@ -44,7 +45,10 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
     content: Text("Código incorrecto"),
     backgroundColor: Colors.redAccent,);
   
-  
+  final snackBarSucces = SnackBar(
+    content: Text("Verificado"),
+    backgroundColor: miTema.accentColor,);
+
   // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
   NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
   _PinCodePageState();//this.mobileNumber);
@@ -84,7 +88,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
 
   @override
   Widget build(BuildContext context) {
-    _context =context;
+    
    
     final responsive = Responsive.of(context);
     return Scaffold(
@@ -196,62 +200,51 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
       _isLoading=false;
     });
 
-
+    
     if(info['ok']){//SOLICITUD API REST
+        Flushbar(
+        backgroundColor: Colors.black45,
+        icon: Icon(
+        LineIcons.check,
+        size: 28.0,
+        color: miTema.accentColor,
+        ),
+        margin: EdgeInsets.all(4),
+        borderRadius: 5,
+        message:   "Verificado",
+        duration:  Duration(seconds:1),              
+      )..show(context);
+
+
         _user.registered = '1';
         _prefs.user = _user; //save new user
+       // Scaffold.of(context).showSnackBar(snackBarSucces);
         _cancel=true;    //stop timer   
-        if(_user.password==null)//si no ha configurado su contraseña
+        if(_user.password=='0')//si no ha configurado su contraseña
           Navigator.pushReplacementNamed(context, 'config_password');
-        else if(_user.name==null) //si no ha configurado su información
+        else if(_user.name=='0') //si no ha configurado su información
           Navigator.pushReplacementNamed(context, 'config_account');
     }else{
+      // Scaffold.of(context).showSnackBar(snackBar);
       print("ocurrio un error en la verificacion: " + info['message']);
+
+       Flushbar(
+        backgroundColor: Colors.black45,
+        icon: Icon(
+        Icons.close,
+        size: 28.0,
+        color: Colors.red,
+        ),
+        margin: EdgeInsets.all(4),
+        borderRadius: 5,
+        message:   "Código incorrecto",
+        duration:  Duration(seconds:1),              
+      )..show(context);
+
     }
-      /*
-      _nexmoSmsVerificationUtil
-          .verifyOtp(_pinCode) /* METODO DE VERIFICACIÓN*/
-          .then((dynamic res)async {
-            
-            NexmoResponse nr = (res as BaseModel).nexmoResponse;
-            print("Estado de respuesta al enviar codigo: " + nr.status);
-
-            if(nr.status=='0'){
-              _cancel=true;
-              //AL CONFIRMARSE EL PINCODE
-              //solicitar token-> numero de celular
-
-              if(_user.registered=='0')//registrar usuario
-                singup();
-              else if(_user.password=='0')//si no ha configurado su contraseña
-                Navigator.pushReplacementNamed(context, 'config_password');
-              else if(_user.name=='0') //si no ha configurado su información
-                Navigator.pushReplacementNamed(context, 'config_account');
-
-            }else{//***CODIGO DE VERIFICACIÓN INCORRECTO */
-              setState(() {
-                _isLoading=false;
-              });
-              Scaffold.of(_context).showSnackBar(snackBar);
-            }
-          
-          });*/
+    
     } 
   }
-
- /* singup()async{
-    Map info = await userProvider.signup(telefono: _user.phone);
-    setState(() {
-      _isLoading=false;
-    });
-    if(info['ok']){
-      //configurar contraseña y perfil->
-      Navigator.pushReplacementNamed(context, 'config_password'); 
-    }else{
-      print("ERROR AL REGISTRAR");
-    }
-  }*/
-
 
   //solicitar nuevo codigo de verificación
   void _resendOtp() {
@@ -278,7 +271,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
               setState(() {
         int sec = d.inSeconds % 60;
         otpWaitTimeLabel = d.inMinutes.toString() + ":" + sec.toString();
-        print("timer ejecutandose....");
+
       });
       }else{
         sub.cancel();

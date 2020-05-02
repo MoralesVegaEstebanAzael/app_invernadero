@@ -165,16 +165,16 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
       });
 
       if(info['ok']){
-        Navigator.pushReplacementNamed(context, 'config_account');
+        _user.name = '1';
+        _prefs.user = _user;
+        Navigator.pushReplacementNamed(context, 'home');
       }else{
         print("ocurrio un error durante la peticion");
-        Scaffold.of(context).showSnackBar(snackBar);
+        
       }
     }
   }
-
-
-
+  
   Widget _inputText(TextInputType textInput, String errorText,Function(String) func){
     return TextField(
       keyboardType: textInput,
