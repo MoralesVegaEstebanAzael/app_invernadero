@@ -1,15 +1,16 @@
 
+import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/items/tab1.dart';
 import 'package:app_invernadero/src/pages/items/tab2.dart';
-import 'package:app_invernadero/src/pages/items/tab3.dart';
+import 'package:app_invernadero/src/pages/tab3.dart';
+import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
+import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'package:provider/provider.dart';
-import '../../theme/theme.dart';
-import '../home_page.dart';
-import '../user/user_profile_page.dart'; 
+
 
 class TabsPages extends StatefulWidget {
   const TabsPages({Key key}) : super(key: key);
@@ -59,7 +60,7 @@ class _Navegacion extends StatelessWidget {
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:50.0,
+        height:60.0,
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),
@@ -75,12 +76,18 @@ class _Navegacion extends StatelessWidget {
              currentIndex: navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: 24, 
+             iconSize: 30, 
              
               items: [
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.home)), title: Container()), 
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(right: 70.0), child: Icon(LineIcons.search)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.only(left: 70.0), child: Icon(LineIcons.shopping_cart)), title: Container()),
+                BottomNavigationBarItem(
+                  icon: Container(padding: EdgeInsets.all(5), 
+                  child: Icon(LineIcons.home),), title: Container()), 
+                BottomNavigationBarItem(
+                  icon: Container(padding: EdgeInsets.only(right: 70.0), 
+                  child: Icon(LineIcons.search)), title: Container()),
+                BottomNavigationBarItem(
+                  icon: Container(padding: EdgeInsets.only(left: 70.0), 
+                  child: Icon(LineIcons.shopping_cart)), title: Container()),
                 BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.user),), title: Container()),
               
               ], 
@@ -103,7 +110,7 @@ class _Paginas extends StatelessWidget {
         controller: navegacionModel.pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          UserProfilePage(),          
+          HomePage(),          
           Tab1(),
           Tab3(),
           UserProfilePage(),

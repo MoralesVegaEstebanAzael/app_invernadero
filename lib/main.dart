@@ -1,7 +1,6 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
-import 'package:app_invernadero/src/pages/items/tabs_page.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
 import 'package:app_invernadero/src/pages/login/config_account_page.dart';
 import 'package:app_invernadero/src/pages/login/config_password_page.dart';
@@ -10,6 +9,7 @@ import 'package:app_invernadero/src/pages/login/login_page.dart';
 import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
+import 'package:app_invernadero/src/pages/tabs_page.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
