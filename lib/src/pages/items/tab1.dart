@@ -49,47 +49,47 @@ class _Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
             alignment: Alignment.center,
             children: <Widget>[
               Container(
-                decoration: BoxDecoration(
-                  color: Color(0xFF32A060),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 30.0),
-                child: Stack( children: <Widget>[
-                  Center(child: Hero(
-                    
-                    tag: plants[index].imageUrl,
-                    child: Image(
-                      height: 250.0, 
-                      width: 250.0, 
-                      image: AssetImage('assets/images/plant$index.png')),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF32A060),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                 ),
-                 Positioned(
-                   top: 30.0, 
-                   right: 30.0,
-                   child: Column(
-                     crossAxisAlignment: CrossAxisAlignment.center,
-                     children: <Widget>[
-                       Text('FROM', style: TextStyle(color: Colors.white, fontSize: 15),),
-                       Text('\$${plants[index].price}', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600))               
-                     ],
+                  margin: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 30.0),
+                  child: Stack( children: <Widget>[
+                    Center(child: Hero(
+                      
+                      tag: plants[index].imageUrl,
+                      child: Image(
+                        height: 250.0, 
+                        width: 250.0, 
+                        image: AssetImage('assets/images/plant$index.png')),
+                    ),
                    ),
+                   Positioned(
+                     top: 30.0, 
+                     right: 30.0,
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.center,
+                       children: <Widget>[
+                         Text('FROM', style: TextStyle(color: Colors.white, fontSize: 15),),
+                         Text('\$${plants[index].price}', style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600))               
+                       ],
+                     ),
+                    ),
+                    Positioned(
+                      left: 30.0,
+                      bottom: 40.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(plants[index].category.toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 15),),
+                          SizedBox(height: 5.0),
+                          Text(plants[index].name, style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),                 
+                        ],
+                      )
+                    ),
+                  ],
                   ),
-                  Positioned(
-                    left: 30.0,
-                    bottom: 40.0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(plants[index].category.toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 15),),
-                        SizedBox(height: 5.0),
-                        Text(plants[index].name, style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600)),                 
-                      ],
-                    )
-                  ),
-                ],
                 ),
-              ),
               Positioned(
                 bottom: 4.0,
                 child: RawMaterialButton(
@@ -128,7 +128,7 @@ class _Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
                 children: <Widget>[ 
                   Icon(
                     Icons.shopping_cart,
-                    size: 30.0,
+                    size: 25.0,
                     color: Colors.black,
                   )
                 ],
@@ -171,9 +171,14 @@ class _Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
                 ),
               ],
             ), 
-            Container(
-              height: 450.0,
-              width: double.infinity,
+
+            AspectRatio(
+            aspectRatio: 16/15,
+            child: LayoutBuilder(
+              builder:(_,contraints){
+          return Container(
+              height: contraints.maxHeight*.4,
+              width: contraints.maxWidth,
               child: PageView.builder(controller: _pageController,
               onPageChanged: (int index){
                 setState(() {
@@ -185,7 +190,11 @@ class _Tab1State extends State<Tab1> with SingleTickerProviderStateMixin {
                 return _plantSelector(index);
               },
              ),
-            ),
+            );
+        }
+      )
+    ),
+           
             Padding(padding: EdgeInsets.all(30.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

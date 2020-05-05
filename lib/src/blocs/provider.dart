@@ -1,5 +1,6 @@
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Provider extends InheritedWidget{
   final loginBloc = LoginBloc();

@@ -18,6 +18,7 @@ class ConfigPasswordPage extends StatefulWidget {
 }
 
 class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
+  LoginBloc bloc;
   UserProvider userProvider = UserProvider();
   SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
@@ -36,6 +37,12 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
     
   }
   
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Responsive responsive = Responsive.of(context);
@@ -82,7 +89,7 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
   }
   
   Widget _content(Responsive responsive){
-    final bloc = Provider.of(context);
+    bloc = Provider.of(context);
     return  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

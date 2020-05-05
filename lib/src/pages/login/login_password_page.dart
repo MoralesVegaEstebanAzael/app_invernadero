@@ -19,6 +19,7 @@ class LoginPasswordPage extends StatefulWidget {
 
 class _LoginPasswordPageState extends State<LoginPasswordPage> {
   UserProvider userProvider = UserProvider();
+  LoginBloc bloc;
   SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
   bool _isLoading=false;
@@ -32,6 +33,11 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
     _user = _prefs.user;
   }
 
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     
@@ -77,7 +83,7 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   }
 
   Widget _content(Responsive responsive){
-    final bloc = Provider.of(context);
+    bloc = Provider.of(context);
     return  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

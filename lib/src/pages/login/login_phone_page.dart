@@ -29,6 +29,8 @@ class LoginPhonePage extends StatefulWidget  {
 
 class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   UserProvider userProvider = UserProvider();
+  
+  LoginBloc bloc;
   SecureStorage _prefs = SecureStorage();
   var textEditingController = TextEditingController();
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
@@ -54,6 +56,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
   @override
   void dispose() {
+    bloc.dispose();
     super.dispose();
   }
   
@@ -68,7 +71,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of(context);
+    bloc = Provider.of(context);
     final responsive = Responsive.of(context);
 
 

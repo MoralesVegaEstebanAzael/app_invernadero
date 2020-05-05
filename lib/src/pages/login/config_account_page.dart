@@ -19,6 +19,7 @@ class ConfigAccountPage extends StatefulWidget {
 
 
 class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayoutMixin{
+  LoginBloc bloc;
   UserProvider userProvider = UserProvider();
   SecureStorage _prefs = SecureStorage();
   final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
@@ -35,6 +36,13 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
     _prefs.route = 'config_account';
     _user = _prefs.user;
   }  
+
+  @override
+  void dispose() {
+    bloc.dispose();
+    super.dispose();
+  }
+
   @override
   void afterFirstLayout(BuildContext context) {
     final bool isTablet = MediaQuery.of(context).size.shortestSide>=600;
@@ -86,7 +94,7 @@ class _ConfigAccountPageState extends State<ConfigAccountPage>  with AfterLayout
     );
   }
   Widget _content(Responsive responsive){
-    final bloc = Provider.of(context);
+    bloc = Provider.of(context);
     return  Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

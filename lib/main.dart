@@ -39,8 +39,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,  
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: prefs.route,
-
+        initialRoute:prefs.route,
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>TabsPages(),
@@ -50,15 +49,14 @@ class MyApp extends StatelessWidget {
           'config_password'       : (BuildContext)=>ConfigPasswordPage(),
           'config_account'        : (BuildContext)=>ConfigAccountPage(),
           'user_profile'          : (BuildContext)=>UserProfilePage(),
-          
-          
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 
           'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
 
           'favoritos'             : (BuildContext)=>FavoritosPage(),
-          'ayuda'                 : (BuildContext)=>AyudaPage(), 
-          'acercade'              : (BuildContext)=>AcercaDePage(),            
+          'faq'                 : (BuildContext)=>AyudaPage(), 
+          'about'              : (BuildContext)=>AcercaDePage(),   
+
         },
       ),
     );
