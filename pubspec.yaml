@@ -35,7 +35,9 @@ dependencies:
   shared_preferences: ^0.5.6+3
   provider: ^4.0.5+1
   flushbar: 1.9.1
+  carousel_slider: ^2.1.0
 
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -60,6 +62,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/
     - assets/images/
     - assets/icon/
     - assets/images/intro_screen/
