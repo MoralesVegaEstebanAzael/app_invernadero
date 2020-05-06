@@ -9,6 +9,7 @@ import 'package:app_invernadero/src/pages/login/login_page.dart';
 import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
+import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
@@ -57,6 +58,8 @@ class MyApp extends StatelessWidget {
           'faq'                 : (BuildContext)=>AyudaPage(), 
           'about'              : (BuildContext)=>AcercaDePage(),   
 
+
+          'product_detail'          : (BuildContext)=>ProductDetailPage(),
         },
       ),
     );

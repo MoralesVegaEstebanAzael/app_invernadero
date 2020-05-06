@@ -1,7 +1,7 @@
 
 import 'package:app_invernadero/src/pages/home/home_page.dart';
-import 'package:app_invernadero/src/pages/items/tab1.dart';
-import 'package:app_invernadero/src/pages/items/tab2.dart';
+
+import 'package:app_invernadero/src/pages/products/tab1.dart';
 import 'package:app_invernadero/src/pages/tab3.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -37,7 +37,7 @@ class _TabsPagesState extends State<TabsPages> {
         floatingActionButton: FloatingActionButton(
         onPressed: (){},
         backgroundColor: miTema.accentColor,
-        child: Icon(LineIcons.plus),
+        child: Icon(LineIcons.home,size: 30,),
         ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: _Navegacion(),
@@ -76,7 +76,7 @@ class _Navegacion extends StatelessWidget {
              currentIndex: navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: 30, 
+             iconSize: 28, 
              
               items: [
                 BottomNavigationBarItem(

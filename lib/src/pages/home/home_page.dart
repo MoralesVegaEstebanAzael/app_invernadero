@@ -3,16 +3,18 @@ import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   AnimationController _controller;
-
+  PromocionBloc _promocionBloc;
+ 
+  int _current=0;
   @override
   void initState() {
     super.initState();
@@ -21,52 +23,34 @@ class _HomePageState extends State<HomePage>
 
   @override
   void dispose() {
+    _controller.dispose(); 
+    
     super.dispose();
-    _controller.dispose();
+    
   }
 
   @override
   Widget build(BuildContext context) {
-    final promocionesBloc = Provider.promocionesBloc(context);
-    promocionesBloc.cargarPromociones();
-
-
+    _promocionBloc = Provider.promocionesBloc(context);
+    _promocionBloc.cargarPromociones();
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Inicio", style: TextStyle(color:Colors.grey),),
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-      ),
+      appBar: _appBar(),
 
-      body: _crearListado(promocionesBloc),
+      body: _sliderPage(_promocionBloc),
     );
   }
 
   
-
-
-   Widget _crearListado(PromocionBloc bloc) {
+  
+  
+  Widget _sliderPage(PromocionBloc bloc) {
     return StreamBuilder(
       stream: bloc.promocionStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
          if(snapshot.hasData){
-          final productos = snapshot.data;
           return Container(
-          child: CarouselSlider.builder(
-            itemCount: productos.length, 
-            itemBuilder: (ctx, index) {
-            return Container(
-              child: Image.network(productos[index].urlImagen, fit: BoxFit.cover, height: 150,)
-            );
-          }, 
-            options: CarouselOptions(
-            aspectRatio: 2.0,
-            enlargeCenterPage: true,
-            autoPlay: true,
-          ),),
-        );
-
-         
+          child: _crearItem(snapshot),
+        ); 
         }else{
           return Center(
             child: CircularProgressIndicator(),
@@ -78,32 +62,64 @@ class _HomePageState extends State<HomePage>
   
  
 
-  Widget _crearItem(BuildContext context, PromocionModel producto,PromocionBloc bloc){
-    return Dismissible(
-        key: UniqueKey(),
-        background: Container(
-          color : Colors.red
+  Widget _crearItem(AsyncSnapshot<List<PromocionModel>> snapshot){
+    final productos = snapshot.data;
+    return Column(
+      
+      children: <Widget>[
+        CarouselSlider.builder(
+          itemCount: productos.length, 
+          itemBuilder: (ctx, index) {
+            return Container(
+              child: Image.network(productos[index].urlImagen, fit: BoxFit.cover, height: 150,)
+            );
+            }, 
+          options: CarouselOptions(
+          aspectRatio: 16/9,
+          onPageChanged: (index, reason) {
+          setState(() {
+            _current = index;
+          });},
+          enlargeCenterPage: true,
+          autoPlay: true,
+        ),),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: productos.map((p) {
+            int index = productos.indexOf(p);
+            return Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _current == index
+                  ? Color.fromRGBO(0, 0, 0, 0.9)
+                  : Color.fromRGBO(0, 0, 0, 0.4),
+              ),
+            );
+          }).toList()),
+      ],
+      );
+  }
+
+
+  Widget _appBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0.0,
+      centerTitle: true,
+
+        title: Text('INVERNADERO',
+          style:TextStyle(
+            fontFamily: 'Varela',fontSize:25.0,color:Color(0xFF545D68)
+          ) ,
         ),
-       // onDismissed: (direction) => bloc.borrarProducto(producto.id),
-        child: Card(
-          child: Column(
-            children:<Widget>[
-            (producto.urlImagen==null) 
-              ? Image(image: AssetImage('assets/no-image.png'),)
-              : FadeInImage(
-                placeholder: AssetImage('assets/jar-loading.gif'), 
-                image: NetworkImage(producto.urlImagen),
-                height: 300.0,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                ),
-                ListTile(
-                  title: Text('${producto.descripcion } - ${producto.id}'),
-                  subtitle: Text(producto.id.toString()),
-                  onTap: ()=>Navigator.pushNamed(context, 'producto',arguments: producto),
-                  ),
-          ])
-        )
+        actions: <Widget>[
+          IconButton(
+          icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
+          onPressed: (){}),
+        ],
     );
   }
 }
