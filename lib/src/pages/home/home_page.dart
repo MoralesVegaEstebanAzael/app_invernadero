@@ -1,7 +1,9 @@
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
+import 'package:app_invernadero/src/widgets/app_bar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -13,44 +15,52 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   PromocionBloc _promocionBloc;
- 
+  
+  
   int _current=0;
   @override
   void initState() {
     super.initState();
+    print("CARGANDO PAGINA");
     _controller = AnimationController(vsync: this);
+
   }
 
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if(_promocionBloc==null){
+      _promocionBloc = Provider.promocionesBloc(context);
+      _promocionBloc.cargarPromociones(context);
+    }
+    
+  }
   @override
   void dispose() {
     _controller.dispose(); 
-    
-    super.dispose();
-    
+    super.dispose();  
   }
 
   @override
-  Widget build(BuildContext context) {
-    _promocionBloc = Provider.promocionesBloc(context);
-    _promocionBloc.cargarPromociones();
+  Widget build(BuildContext context) { 
     return Scaffold(
-      appBar: _appBar(),
-
+      appBar: PreferredSize(
+        child: MyAppBar(title: "INVERNADERO"),
+        preferredSize: Size.fromHeight(80),
+      ),
       body: _sliderPage(_promocionBloc),
+      
     );
   }
-
-  
-  
   
   Widget _sliderPage(PromocionBloc bloc) {
     return StreamBuilder(
       stream: bloc.promocionStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
-         if(snapshot.hasData){
+        if(snapshot.hasData){
           return Container(
-          child: _crearItem(snapshot),
-        ); 
+          child: _crearItem(snapshot,context),); 
         }else{
           return Center(
             child: CircularProgressIndicator(),
@@ -60,12 +70,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
   
- 
-
-  Widget _crearItem(AsyncSnapshot<List<PromocionModel>> snapshot){
+  Widget _crearItem(AsyncSnapshot<List<PromocionModel>> snapshot,BuildContext context){
     final productos = snapshot.data;
-    return Column(
-      
+    if(productos.length>0){
+      return Column(
       children: <Widget>[
         CarouselSlider.builder(
           itemCount: productos.length, 
@@ -101,25 +109,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           }).toList()),
       ],
       );
+    }else{
+      print("Ha ocurrido un error");
+      return Container();
+    }
   }
 
-
-  Widget _appBar() {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0.0,
-      centerTitle: true,
-
-        title: Text('INVERNADERO',
-          style:TextStyle(
-            fontFamily: 'Varela',fontSize:25.0,color:Color(0xFF545D68)
-          ) ,
-        ),
-        actions: <Widget>[
-          IconButton(
-          icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
-          onPressed: (){}),
-        ],
-    );
-  }
+  
+  
 }

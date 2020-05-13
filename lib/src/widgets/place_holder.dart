@@ -27,7 +27,7 @@ class PlaceHolder extends StatelessWidget {
                 children: <Widget>[
                   Container(
                       child: SvgPicture.asset(_imgPath,
-                        height: contraints.maxHeight*.6,
+                        height: contraints.maxHeight*.3,
                         width: contraints.maxWidth,
                       ),
                   ),
@@ -36,9 +36,9 @@ class PlaceHolder extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       letterSpacing: 1,
-                        fontSize: responsive.ip(3),
+                        fontSize: responsive.ip(1.5),
                         fontWeight: FontWeight.normal,
-                        color:miTema.primaryColor),
+                        color:Color(0xffbbbbbb)),
               ),
             ],
           ),

@@ -1,0 +1,238 @@
+import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/models/shopping_cart_model.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/app_bar.dart';
+import 'package:app_invernadero/src/widgets/place_holder.dart';
+import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+class ShoppingCartPage extends StatefulWidget { 
+
+
+  @override
+  _ShoppingCartPageState createState() => _ShoppingCartPageState();
+}
+
+class _ShoppingCartPageState extends State<ShoppingCartPage> {
+  Responsive responsive;
+  ShoppingCartBloc _shoppingCartBloc;
+  Stream<List<ShoppingCartModel>> _stream;
+  
+  @override
+  void initState() { 
+    super.initState();
+  }
+  @override
+  void dispose() {
+    _shoppingCartBloc.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _shoppingCartBloc = Provider.shoppingCartBloc(context);
+    _shoppingCartBloc.loadItems();
+    _stream = _shoppingCartBloc.shoppingCartStream;
+
+    responsive = Responsive.of(context);
+    super.didChangeDependencies();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: _appBar(),
+      body: _shoppingCartBloc.isEmpty()? 
+        PlaceHolder( 
+        img: 'assets/images/empty_states/empty_cart.svg',
+        title: 'No tienes productos',):
+        _listItems()
+    );
+  } 
+
+  Widget _listItems(){
+    return Container(
+      width: responsive.widht,
+      height: responsive.height,
+      child: Column(
+        children: <Widget>[
+          StreamBuilder(
+            stream: _stream ,
+            builder: (BuildContext context,AsyncSnapshot<List<ShoppingCartModel>> snapshot){
+              if(snapshot.hasData){
+                print("DATOSSS");
+                return Expanded(
+                  child: WatchBoxBuilder(
+                    box: _shoppingCartBloc.box(),
+                    builder: (BuildContext context,Box box){
+                      return  ListView.builder(
+                        itemCount:  snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          ShoppingCartModel item = snapshot.data[index];
+                          return _itemView(index,item);
+                          });
+                    },
+                                      
+                  ),
+                );
+              }else{
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }            
+            },
+          ),
+          Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  color:Colors.yellow,height:50,
+                  child: Row(
+                    children:<Widget>[
+                      Text("\$ ${_shoppingCartBloc.totalItems()} MX")
+                    ]
+                  ),
+                  )
+              )    
+      
+        ],
+      ),
+    ); 
+  }
+
+  Widget _itemView(int index,ShoppingCartModel item){
+    return Padding(
+        padding: const EdgeInsets.symmetric(vertical:4,horizontal: 8),
+        child: Container(
+         decoration: BoxDecoration(
+    border: Border(
+      bottom: BorderSide(width: 3, color: Color.fromRGBO(228, 228, 228, 1)),
+    ),),
+    width: responsive.widht,
+    height:90,
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children:<Widget>[
+        Padding(
+        padding: const EdgeInsets.all(4),
+        child: FadeInImage(
+          width: 90,
+          height: double.infinity,
+          image: NetworkImage(item.imagenUrl), 
+          placeholder: AssetImage('assets/no-image.png')),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children:<Widget>[
+          Text(item.nombre,
+            style: TextStyle(
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold,fontSize: responsive.ip(1.8)),),
+          Text("Precio Menudeo: \$ ${item.precioMenudeo}",
+              style: TextStyle(color:Colors.grey),
+              ),
+          _controlButtons(index,item),
+          ]
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children:<Widget>[
+
+           IconButton(icon:  Icon(Icons.remove_circle,color:Colors.redAccent,size: 18,),   
+           onPressed:(){
+            // setState(() {
+                _shoppingCartBloc.deleteItem(item);
+             //});
+
+              setState(() {});
+           }),
+            SizedBox(height:responsive.ip(2)),
+            Text("\$ ${item.precioMenudeo} MX",
+              style: TextStyle(fontWeight: FontWeight.bold,fontSize: responsive.ip(1.7),fontStyle:FontStyle.italic))
+          ]
+        )
+      ]
+    ),
+        ),
+      );
+  }
+
+
+  Widget _appBar(){
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0.0,
+      centerTitle: true,
+      title: Text("Carrito de compras",
+        style:TextStyle(
+          fontFamily: 'Varela',fontSize:responsive.ip(3),color:Color(0xFF545D68)
+        ) ,
+      ),
+      actions: <Widget>[
+        IconButton(
+        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
+        onPressed: (){
+          Navigator.pushNamed(context, 'notifications');
+        }),
+
+        IconButton(
+          icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
+          onPressed: (){
+            _shoppingCartBloc.deleteAllItems();
+            setState(() { });
+          })
+      ],
+    );
+  }
+  //add items or substract items
+  Widget _controlButtons(int index,ShoppingCartModel item){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+      GestureDetector(
+        onTap: ()=>_shoppingCartBloc.decItem(item),
+                          child: Container(
+            height: responsive.ip(3),
+            width: responsive.ip(6),
+            decoration: BoxDecoration(
+              color: miTema.accentColor,//Color.fromRGBO(172, 238, 180, 1),
+              borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+          
+              child: Icon(Icons.remove,color: Colors.white,)
+            ),
+      ),
+        SizedBox(width:responsive.ip(2)),
+        Text(item.cantidad.toString(),style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),),
+        SizedBox(width:responsive.ip(2)),
+        GestureDetector(
+          onTap: ()=>_shoppingCartBloc.incItem(item),
+                            child: Container(
+            height: responsive.ip(3),
+            width: responsive.ip(6),
+            decoration: BoxDecoration(
+              color: miTema.accentColor,//Color.fromRGBO(172, 238, 180, 1),
+              borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+              child: Icon(Icons.add,color:Colors.white,)
+            ),
+        ),
+        
+      ],
+    );
+  }
+
+  
+
+
+  
+
+}

@@ -1,8 +1,8 @@
 
 import 'package:app_invernadero/src/pages/home/home_page.dart';
+import 'package:app_invernadero/src/pages/products/products.dart';
+import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 
-import 'package:app_invernadero/src/pages/products/tab1.dart';
-import 'package:app_invernadero/src/pages/tab3.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -55,12 +55,12 @@ class _Navegacion extends StatelessWidget {
 
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
-      notchMargin: 6.0,
+      notchMargin:6,
       color: Colors.transparent,
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:60.0,
+        height:55,
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),
@@ -73,22 +73,34 @@ class _Navegacion extends StatelessWidget {
           borderRadius: BorderRadius.only(topRight: Radius.circular(25.0), topLeft: Radius.circular(25.0)),
             child: BottomNavigationBar(
             
-             currentIndex: navegacionModel.pagActual,
+             currentIndex:  navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: 28, 
+             iconSize: 24, 
              
               items: [
                 BottomNavigationBarItem(
-                  icon: Container(padding: EdgeInsets.all(5), 
-                  child: Icon(LineIcons.home),), title: Container()), 
+                    icon: Icon(LineIcons.home),
+                    title: Text('Inicio'),
+                  //icon: Container(padding: EdgeInsets.all(5), 
+                  ),//child: Icon(LineIcons.home),), title: Text("data",style:TextStyle(fontSize: 6))), 
                 BottomNavigationBarItem(
-                  icon: Container(padding: EdgeInsets.only(right: 70.0), 
-                  child: Icon(LineIcons.search)), title: Container()),
+                    icon: Icon(LineIcons.search),
+                    title: Text('Productos'),),
+                 BottomNavigationBarItem(
+                    icon: Container(),
+                    title: Container(),),
+                
+
                 BottomNavigationBarItem(
-                  icon: Container(padding: EdgeInsets.only(left: 70.0), 
-                  child: Icon(LineIcons.shopping_cart)), title: Container()),
-                BottomNavigationBarItem(icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.user),), title: Container()),
+                  icon: Icon(LineIcons.shopping_cart),
+                    title: Text('Compras'),
+                  //icon: Container(padding: EdgeInsets.only(left: 70.0), 
+                  ),//child: Icon(LineIcons.shopping_cart)), title: Container()),
+                BottomNavigationBarItem(
+                  icon: Icon(LineIcons.user),
+                    title: Text('Yo'),
+                  )//icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.user),), title: Container()),
               
               ], 
              elevation: 50.0,
@@ -111,8 +123,9 @@ class _Paginas extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           HomePage(),          
-          Tab1(),
-          Tab3(),
+          Products(),
+          ShoppingCartPage(),
+          ShoppingCartPage(),
           UserProfilePage(),
         ], 
     );
@@ -128,9 +141,11 @@ class _NavegacionModel with ChangeNotifier{
   int get pagActual => this._pagActual;
   
   set pagActual(int valor){
-    this._pagActual = valor;
-    _pageController.animateToPage(valor, duration: Duration(milliseconds: 50), curve: Curves.slowMiddle);
-    notifyListeners();
+    if(valor!=2){
+      this._pagActual = valor;
+      _pageController.animateToPage(valor, duration: Duration(milliseconds: 50), curve: Curves.slowMiddle);
+      notifyListeners();
+    }
   }
 
   PageController get pageController => this._pageController;

@@ -21,7 +21,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool _blockCheck=true;
   bool _isLoading=false;
   IconData _switch = LineIcons.toggle_on;
+  Future<List<dynamic>> options;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    options =  menuProvider.loadData();
 
+  
+  }
   @override
   Widget build(BuildContext context) {
     final responsive = Responsive.of(context);
@@ -138,8 +146,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Widget _options() {
     return FutureBuilder(
-      
-      future: menuProvider.loadData(),
+      future:options,
       initialData: [],
       builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
       return Column(

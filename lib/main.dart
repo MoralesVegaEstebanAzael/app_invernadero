@@ -9,21 +9,29 @@ import 'package:app_invernadero/src/pages/login/login_page.dart';
 import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
+import 'package:app_invernadero/src/pages/notifications/notifications_page.dart';
 import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async{
+  //var path = await getApplicationDocumentsDirectory();
+  //Hive.init(path.path );
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
-  
+
+  DBProvider db = DBProvider();
+  await db.initDB();
   
   runApp(MyApp());
 } 
@@ -31,7 +39,7 @@ void main() async{
 class MyApp extends StatelessWidget {
   final prefs = new SecureStorage();
 
-
+  
   @override
   Widget build(BuildContext context) { 
     
@@ -55,11 +63,13 @@ class MyApp extends StatelessWidget {
           'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
 
           'favoritos'             : (BuildContext)=>FavoritosPage(),
-          'faq'                 : (BuildContext)=>AyudaPage(), 
-          'about'              : (BuildContext)=>AcercaDePage(),   
+          'faq'                   : (BuildContext)=>AyudaPage(), 
+          'about'                 : (BuildContext)=>AcercaDePage(),   
 
 
-          'product_detail'          : (BuildContext)=>ProductDetailPage(),
+          'product_detail'        : (BuildContext)=>ProductDetailPage(),
+
+          'notifications'         : (BuildContext)=>NotificationsPage(),
         },
       ),
     );

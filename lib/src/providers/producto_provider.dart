@@ -5,7 +5,6 @@ import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 class ProductoProvider{
   final _storage = SecureStorage();  
@@ -26,7 +25,7 @@ class ProductoProvider{
       return [];
     } 
     var decodeData = jsonDecode(response.body)['productos'] as List;
-
+    
     List<ProductoModel> productos = 
     decodeData.map((productoJson) => ProductoModel.fromJson(productoJson)).toList();
     

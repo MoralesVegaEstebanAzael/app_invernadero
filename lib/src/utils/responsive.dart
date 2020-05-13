@@ -17,15 +17,15 @@ class Responsive{
     return Responsive(widht: size.width,height: size.height,inch: inch);
   }
 
-  double wp(double percent){
+  double wp(double percent){ //ancho porcentual
     return this.widht*percent/100;
   }
 
-  double hp(double percent){
+  double hp(double percent){ //altura porcentual
     return this.height*percent/100;
   }
 
-  double ip(double percent){
+  double ip(double percent){//pixelex porcentuales
     return this.inch*percent/100;
   }
 }
