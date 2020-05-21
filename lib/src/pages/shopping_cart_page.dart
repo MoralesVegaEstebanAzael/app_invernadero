@@ -7,6 +7,7 @@ import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/app_bar.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hive/hive.dart';
@@ -34,7 +35,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     _shoppingCartBloc.dispose();
     super.dispose();
   }
-
+  
   @override
   void didChangeDependencies() {
     _shoppingCartBloc = Provider.shoppingCartBloc(context);
@@ -58,54 +59,141 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   } 
 
   Widget _listItems(){
+    Box box = _shoppingCartBloc.box();
     return Container(
       width: responsive.widht,
       height: responsive.height,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          StreamBuilder(
-            stream: _stream ,
-            builder: (BuildContext context,AsyncSnapshot<List<ShoppingCartModel>> snapshot){
-              if(snapshot.hasData){
-                print("DATOSSS");
-                return Expanded(
-                  child: WatchBoxBuilder(
-                    box: _shoppingCartBloc.box(),
-                    builder: (BuildContext context,Box box){
-                      return  ListView.builder(
-                        itemCount:  snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          ShoppingCartModel item = snapshot.data[index];
-                          return _itemView(index,item);
-                          });
-                    },
-                                      
+          Container(
+            margin: EdgeInsets.only(left:responsive.ip(2),bottom:responsive.ip(2)),
+            child:
+            StreamBuilder(
+              stream: _shoppingCartBloc.count ,
+              initialData: 0 ,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                return Text( 
+                  "Mis productos (${snapshot.data})",
+                  style: TextStyle(
+                    fontSize: responsive.ip(2),
+                    color:Colors.grey,
+                    fontFamily:'Quicksand',
+                    fontWeight: FontWeight.w900
                   ),
                 );
-              }else{
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }            
-            },
-          ),
-          Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  color:Colors.yellow,height:50,
-                  child: Row(
-                    children:<Widget>[
-                      Text("\$ ${_shoppingCartBloc.totalItems()} MX")
-                    ]
-                  ),
-                  )
-              )    
-      
+              },
+            ),
+            ),
+            // StreamBuilder(
+            //   stream: _stream ,
+            //   builder: (BuildContext context,AsyncSnapshot<List<ShoppingCartModel>> snapshot){
+            //     if(snapshot.hasData){ 
+            //       return 
+            //           Expanded(
+            //             child:  ListView.builder(
+            //               itemCount:  snapshot.data.length,
+            //               itemBuilder: (context, index) {
+            //                 ShoppingCartModel item = snapshot.data[index];
+            //                 print("ITEM ${item.imagenUrl}");
+            //                 return _itemView(index,item);
+            //                 })
+            //       );
+            //     }else{
+            //       return Center(
+            //         child: CircularProgressIndicator(),
+            //       );
+            //     }            
+            //   },
+            // ),
+
+            WatchBoxBuilder(
+              box: box, 
+              builder: (BuildContext context,Box box){
+                return 
+                      Expanded(
+                        child:  ListView.builder(
+                          itemCount:  box.length,
+                          itemBuilder: (context, index) {
+                            ShoppingCartModel item = box.getAt(index);
+                            print("ITEM ${item.imagenUrl}");
+                            return _itemView(index,item);
+                            })
+                  );
+              }),
+            _order()
         ],
       ),
     ); 
   }
 
+  Widget _order(){
+    return //total ui
+      Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          margin: EdgeInsets.only(bottom:5,left: 4,right: 4),
+          padding: EdgeInsets.all(7),
+          height:responsive.ip(11),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children:<Widget>[
+                  Text("Total: \$",
+                    style: TextStyle(
+                          fontSize: responsive.ip(2),
+                          color:Colors.grey,
+                          fontFamily:'Quicksand',
+                          fontWeight: FontWeight.w900
+                        ),),
+                  SizedBox(width:responsive.ip(1)),
+                  Container(
+                    width: responsive.ip(10),
+                    child: StreamBuilder( 
+                      stream: _shoppingCartBloc.total ,
+                      initialData: 0 ,
+                      builder: (BuildContext context, AsyncSnapshot snapshot){
+                        return Text( 
+                          "${snapshot.data}",
+                          style: TextStyle(
+                            fontSize: responsive.ip(2),
+                            color:Colors.black,
+                            fontFamily:'Quicksand',
+                            fontWeight: FontWeight.w900
+                          ),
+                        );
+                      },
+                  ),
+                  ),
+                ]
+              ),
+              SizedBox(height:responsive.ip(1)),
+              CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Container(
+                padding: EdgeInsets.symmetric(horizontal:responsive.ip(2),vertical:8),
+                decoration: BoxDecoration(
+                  color:miTema.accentColor,
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [BoxShadow(
+                          color:Colors.black26,
+                          blurRadius: 5
+                  )]
+                ),
+                child:
+                Text("Ordenar ",style: TextStyle(color:Colors.white),)
+                  //Icon(LineIcons.shopping_cart,color:miTema.accentColor),//Text("Agregar",style: TextStyle(fontFamily: 'Quiksand',color:Colors.white,letterSpacing: 1,fontSize: 15),),
+                ),
+                onPressed: ()=>print("object")
+              ),
+            ],
+          ), 
+        )
+    );
+  }
   Widget _itemView(int index,ShoppingCartModel item){
     return Padding(
         padding: const EdgeInsets.symmetric(vertical:4,horizontal: 8),
@@ -125,7 +213,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           width: 90,
           height: double.infinity,
           image: NetworkImage(item.imagenUrl), 
-          placeholder: AssetImage('assets/no-image.png')),
+          placeholder: AssetImage('assets/placeholder.png')),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -146,15 +234,16 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children:<Widget>[
 
-           IconButton(icon:  Icon(Icons.remove_circle,color:Colors.redAccent,size: 18,),   
+           IconButton(icon:  Icon(LineIcons.times_circle,color:Colors.redAccent,size: 18,),   
            onPressed:(){
             // setState(() {
                 _shoppingCartBloc.deleteItem(item);
+                _shoppingCartBloc.totalItems();
              //});
 
               setState(() {});
            }),
-            SizedBox(height:responsive.ip(2)),
+          SizedBox(height:responsive.ip(2)),
             Text("\$ ${item.precioMenudeo} MX",
               style: TextStyle(fontWeight: FontWeight.bold,fontSize: responsive.ip(1.7),fontStyle:FontStyle.italic))
           ]
@@ -177,6 +266,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         ) ,
       ),
       actions: <Widget>[
+       
         IconButton(
         icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
         onPressed: (){
@@ -211,7 +301,12 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             ),
       ),
         SizedBox(width:responsive.ip(2)),
-        Text(item.cantidad.toString(),style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),),
+        
+        Container(
+          
+          width: responsive.ip(4),
+          child: Center(child: Text(item.cantidad.toString(),style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),))),
+        
         SizedBox(width:responsive.ip(2)),
         GestureDetector(
           onTap: ()=>_shoppingCartBloc.incItem(item),

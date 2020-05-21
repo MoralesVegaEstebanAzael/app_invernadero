@@ -39,7 +39,8 @@ dependencies:
   hive: ^1.4.1+1
   hive_flutter: ^0.3.0+2
   path_provider:
-  
+  like_button: ^0.2.0
+    
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -89,6 +90,9 @@ flutter:
     - family: Varela
       fonts:
         - asset: assets/font/VarelaRound-Regular.ttf
+    - family: Quicksand
+      fonts:
+        - asset: assets/font/Quicksand-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
