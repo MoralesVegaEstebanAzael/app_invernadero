@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_invernadero/src/blocs/validators.dart';
+import 'package:app_invernadero/src/models/userModel.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc with Validators{
@@ -11,6 +14,31 @@ class LoginBloc with Validators{
   final _passwordController = BehaviorSubject<String>();
   final _nombreController = BehaviorSubject<String>();
 
+  final _userControler = BehaviorSubject<UserModel>();
+  final _cargandoController =BehaviorSubject<bool>();
+  final _userProvider = new UserProvider();
+
+  Stream<UserModel> get userStream => _userControler.stream;
+  Stream<bool> get cargando => _cargandoController.stream;
+
+  void cargarUsuario()async{
+    final user = await _userProvider.cargarUsuario();
+    _userControler.sink.add(user);
+  }
+
+  Future<String> subirFoto(File foto) async{
+    _cargandoController.sink.add(true);
+    final fotoUrl = await _userProvider.subirImagenCloudinary(foto);
+    _cargandoController.sink.add(false);
+
+    return fotoUrl;
+  }
+
+  void editarUser(UserModel user) async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updateDatosUser(user);
+    _cargandoController.sink.add(false);
+  }
   
   //recuperar salida del stream
   Stream<String> get emailStream=> _emailController.stream.transform(validarEmail);
@@ -39,6 +67,8 @@ class LoginBloc with Validators{
     _passwordController?.close();
     _telefonoController?.close();
     _nombreController?.close();
+    _userControler?.close();
+    _cargandoController?.close();
   }
 
 }

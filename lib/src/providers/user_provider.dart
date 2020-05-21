@@ -1,5 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_invernadero/src/models/producto_model.dart';
+import 'package:app_invernadero/src/models/userModel.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:mime_type/mime_type.dart';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -174,4 +179,106 @@ class UserProvider{
     }
       
   }
+ 
+  Future<UserModel> cargarUsuario()async{
+      final telefono = _storage.user.phone;
+      final url = "${AppConfig.base_url}/api/auth/buscarUser";
+      final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+     
+
+      final response = await http.post(url, headers: headers, body: {"telefono":telefono}); 
+      
+      var decodeData = jsonDecode(response.body);
+      print(decodeData);
+      if(decodeData == null) return null; 
+      
+      return  UserModel.fromJson(decodeData); 
+      
+  }
+
+  Future<bool> updateDatosUser(UserModel user) async{
+    final url = "${AppConfig.base_url}/api/auth/update_user/${user.id}"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.put(
+      url, 
+      headers: headers,
+      body: {
+        "name":user.name, 
+        "email":user.email==null?'no_email':user.email, 
+        "url_avatar":user.urlAvatar,
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+   Future<String> subirImagen(File imagen, UserModel user) async{
+    final url = "${AppConfig.base_url}/api/auth/file/avatar/${user.id}"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+
+    String  foto  =  imagen.path.split('/').last;
+    
+    final resp = await http.post(
+      url,
+      headers:headers,
+      body: {
+        "bookcover":imagen,  
+      });
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+        print('Algo salio mal');
+        print(resp.body);
+        return null;
+    }  
+
+    final respData = json.decode(resp.body);
+    print(respData);
+
+    return respData['message'];  
+  }
+
+   Future<String> subirImagenCloudinary(File imagen) async{
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dtev8lpem/image/upload?upload_preset=f9k9os9d');
+    final mimeType = mime(imagen.path).split('/'); //image/jpeg
+
+    final imageUploadRequest = http.MultipartRequest( //peticion para subir el archivo
+      'POST',
+      url
+    );
+
+    final file = await http.MultipartFile.fromPath( //se carga el archivo
+      'file', 
+      imagen.path,
+      contentType: MediaType(mimeType[0], mimeType[1]),
+    );
+
+    imageUploadRequest.files.add(file);
+    
+    final streamResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(streamResponse);
+
+    if (resp.statusCode != 200 && resp.statusCode != 201) {
+        print('Algo salio mal');
+        print(resp.body);
+        return null;
+    }
+
+    final respData = json.decode(resp.body);
+    print(respData);
+
+    return respData['secure_url'];
+  }
+ 
+  
 }
