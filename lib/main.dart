@@ -14,6 +14,7 @@ import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
+import 'package:app_invernadero/src/pages/user/user_detalle_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,  
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute:prefs.route,
+        initialRoute: prefs.route,
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>TabsPages(),
@@ -64,7 +65,8 @@ class MyApp extends StatelessWidget {
 
           'favoritos'             : (BuildContext)=>FavoritosPage(),
           'faq'                   : (BuildContext)=>AyudaPage(), 
-          'about'                 : (BuildContext)=>AcercaDePage(),   
+          'about'                 : (BuildContext)=>AcercaDePage(), 
+          'user_detalle'          : (BuildContext)=>UserDetallePage(),
 
 
           'product_detail'        : (BuildContext)=>ProductDetailPage(),

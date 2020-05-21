@@ -1,10 +1,12 @@
+import 'package:app_invernadero/src/blocs/login_bloc.dart';
+import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/userModel.dart';
 import 'package:app_invernadero/src/providers/menu_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/icon_string_util.dart';
-import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/bottom_bar.dart';
+import 'package:app_invernadero/src/utils/responsive.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,6 +20,8 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   UserProvider userProvider = UserProvider();
+  SecureStorage storage = new SecureStorage();
+   
   bool _blockCheck=true;
   bool _isLoading=false;
   IconData _switch = LineIcons.toggle_on;
@@ -32,6 +36,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
   @override
   Widget build(BuildContext context) {
+    LoginBloc userBloc = Provider.of(context);
+    userBloc.cargarUsuario();
+
     final responsive = Responsive.of(context);
     return Scaffold(
       backgroundColor: Color(0XFFEEEEEE),
@@ -50,7 +57,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 aspectRatio: 16/5,
                 child: LayoutBuilder(
                   builder:(_,contraints){
-                    return _header(contraints);
+                    return _header(contraints, context, userBloc);
                   }
                 )
             ),
@@ -113,36 +120,81 @@ class _UserProfilePageState extends State<UserProfilePage> {
     ); 
   }
 
-  Widget _header(BoxConstraints contraints) {
-    return Container(
+  Widget _header(BoxConstraints contraints, BuildContext context, LoginBloc userBloc )  {     
+    return Container( 
       margin: EdgeInsets.only(top:15),
       decoration: BoxDecoration(
         color: miTema.accentColor,
         borderRadius: BorderRadius.circular(5.0)
       ),
-      child: Row(
-        
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children:<Widget>[
-         
-          SvgPicture.asset('assets/icon/user.svg',
-                   
-                      height: contraints.maxHeight*.6,
-                    ),
-          
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("My account",style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 20,)),
-              Divider(),
-              Text("example@example.com" ,style: TextStyle(color:Colors.white),),
-            ],
-          ),
-         Text("Edit" ,style: TextStyle(color:Colors.white),),
-        ]
+      child: StreamBuilder(
+        stream: userBloc.userStream, 
+        builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot){
+           if (snapshot.hasData) {
+            final user = snapshot.data;            
+            return _datosUser(contraints, user);
+          }else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
+
+  Widget _datosUser(BoxConstraints contraints, UserModel user){
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        /* SvgPicture.asset('assets/icon/user.svg',                  
+          height: contraints.maxHeight*.6,
+         ), */        
+        _mostrarFoto(user, contraints),
+
+        Column(
+           mainAxisAlignment: MainAxisAlignment.center,
+           children: <Widget>[ 
+            Text( (user.name == null || user.name == "") ?  'Nombre de usuario' : user.name, overflow: TextOverflow.ellipsis ,style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 18, )),
+             Divider(), 
+            Text( (user.email == null || user.email == "") ? 'email@noemail' : user.email, overflow: TextOverflow.ellipsis ,style: TextStyle(color:Colors.white)),
+ 
+           ],
+        ),  
+        
+        IconButton(
+          icon: Icon(Icons.create, size: 30.0),  
+          color: Colors.white,
+          onPressed: ()=> Navigator.pushNamed(context, 'user_detalle', arguments: user))
+       /* FlatButton(  
+          onPressed: () => {
+             Navigator.pushNamed(context, 'user_detalle', arguments: user),
+          },
+          child: Text("Edit" ,style: TextStyle(color:Colors.white)),
+        ),*/
+      ],
+    );
+  }  
+
+ _mostrarFoto(UserModel user, BoxConstraints contraints){
+   if(user.urlAvatar == null || user.urlAvatar == ""){      
+      return  SvgPicture.asset('assets/icon/user.svg',                  
+          height: contraints.maxHeight*.6);
+    }else {   
+    return Container( 
+          child:  ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: Container(
+              height: contraints.maxHeight*.6,
+              width: contraints.maxHeight*.6,
+              child: FadeInImage(
+              image: NetworkImage(user.urlAvatar),
+              placeholder: AssetImage('assets/jar-loading.gif'), 
+              fit: BoxFit.fill,
+             ),
+            ),
+          )
+     );
+    }
+ } 
 
   Widget _options() {
     return FutureBuilder(
