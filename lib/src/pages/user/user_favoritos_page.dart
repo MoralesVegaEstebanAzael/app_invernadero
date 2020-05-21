@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
@@ -14,14 +15,14 @@ class FavoritosPage extends StatefulWidget {
 
 class _FavoritosPageState extends State<FavoritosPage> {
   Responsive responsive;
-  ProductoBloc _productoBloc;
+  FavoritosBloc _favoritosBloc;
   Stream<List<ProductoModel>> _stream;
 
   @override
   void didChangeDependencies() {
-    _productoBloc = Provider.productoBloc(context);
-    _productoBloc.loadFavorites();
-    _stream = _productoBloc.productoStream;
+    _favoritosBloc = Provider.favoritosBloc(context);
+    _favoritosBloc.loadFavorites();
+    _stream = _favoritosBloc.favoritosStream;
     
     responsive = Responsive.of(context);
     super.didChangeDependencies();
@@ -147,7 +148,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
         Expanded(
           child:IconButton(icon:  Icon(Icons.favorite,color:Colors.redAccent,size: 25,),   
                 onPressed:(){
-                _productoBloc.deleteFavorite(item.id);
+                _favoritosBloc.deleteFavorite(item.id);
                 setState(() {});
              }),
           //         child: Column(

@@ -38,38 +38,7 @@ class ProductoBloc{
     _isFavoriteController.close();
   }
 
-
-  //favoritos
-
-  void loadFavorites()async{
-    final productos =await _productoProvider.findProducts(_db.getFavorites());
-    _productoController.sink.add(productos);
-  }
-
-
-  void addFavorite(int id){
-    _cargandoController.sink.add(true);
-    _db.addFavorite(id);
-    _cargandoController.sink.add(false);
-  }
-
-  void deleteFavorite(int id){
-    _cargandoController.sink.add(true);
-    _db.deleteFavorite(id);
-    _cargandoController.sink.add(false);
-    loadFavorites();
-  }
-
   
-  void favorite(int id){
-    bool isFavorite = _db.isFavorite(id); 
-    _isFavoriteController.sink.add(isFavorite);
-  }
-
-
-  bool fav(int id){
-    return _db.isFavorite(id);
-  }
 
   box(){
     return _db.getFavoriteBox();

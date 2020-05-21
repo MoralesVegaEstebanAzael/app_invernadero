@@ -51,6 +51,9 @@ class DataSearch extends SearchDelegate{
   }
 
   @override
+  String get searchFieldLabel => 'Buscar';
+
+  @override
   Widget buildSuggestions(BuildContext context) {
     // sugerencias que aparecen al escribir
     if(query.isEmpty){

@@ -1,4 +1,5 @@
 
+import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/planta_model.dart';
@@ -9,18 +10,13 @@ import 'package:app_invernadero/src/pages/products/tab2.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/app_bar.dart';
-import 'package:app_invernadero/src/widgets/network_image.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:http/http.dart' as http;
-
 import '../../../app_config.dart'; 
 
 class Products extends StatefulWidget {
@@ -31,6 +27,8 @@ class Products extends StatefulWidget {
 class _ProductsState extends State<Products> with SingleTickerProviderStateMixin {
   DBProvider _dbProvider;
   ProductoBloc _productoBloc;
+
+  FavoritosBloc _favoritosBloc;
   Responsive responsive;
   TabController _tabController;
   PageController _pageController;
@@ -41,7 +39,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
    Animation<dynamic> animation;
 
 
-  var _alignment = Alignment.bottomCenter;
+  
   int currentState = 0;
 
   @override
@@ -70,6 +68,9 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
     if (_productoBloc == null) { 
       _productoBloc = Provider.productoBloc(context);
       _productoBloc.cargarProductos();
+
+      _favoritosBloc = Provider.favoritosBloc(context);
+
     }
 
     responsive = Responsive.of(context);
@@ -264,7 +265,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
   
    _description(ProductoModel data){
 
-    _productoBloc.favorite(data.id);
+    //_favoritosBloc.favorite(data.id);
 
     // return StreamBuilder(
     //   stream:  _productoBloc.isFavorite ,
@@ -408,7 +409,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
         Container(
         margin: EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: Colors.black12,
+          color:MyColors.Grey,
           shape: BoxShape.circle,
         
         ),
@@ -424,7 +425,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
          Container(
         margin: EdgeInsets.all(6),
         decoration: BoxDecoration(
-          color: Colors.black12,
+          color: MyColors.Grey,
           shape: BoxShape.circle,
         
         ),
@@ -441,7 +442,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
 
   _buttonFav(int id){
     return  LikeButton(
-        isLiked: _productoBloc.fav(id),
+        isLiked: _favoritosBloc.fav(id),
         size: 30,
         circleColor:
         CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
@@ -466,9 +467,9 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
     print(isLiked);
     print("id set$id");
     if(isLiked){
-      _productoBloc.deleteFavorite(id);
+      _favoritosBloc.deleteFavorite(id);
     }else{
-      _productoBloc.addFavorite(id);
+      _favoritosBloc.addFavorite(id);
     }
     return !isLiked;
   }

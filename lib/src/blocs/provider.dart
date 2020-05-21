@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
@@ -10,7 +11,7 @@ class Provider extends InheritedWidget{
   final _promocionesBloc = PromocionBloc();
   final _productosBloc = ProductoBloc();
   final _shoppingCart = ShoppingCartBloc();
-  
+  final _favoritosBloc = FavoritosBloc();
 
   static Provider _instancia;
 
@@ -42,6 +43,11 @@ class Provider extends InheritedWidget{
   static ShoppingCartBloc shoppingCartBloc(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType<Provider>()._shoppingCart;
   }
+
+  static FavoritosBloc favoritosBloc(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._favoritosBloc;
+  }
+
 
   dispose(){
     _promocionesBloc.dispose();
