@@ -229,24 +229,29 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           _controlButtons(index,item),
           ]
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children:<Widget>[
+        Container(
+          width: responsive.ip(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children:<Widget>[
 
-           IconButton(icon:  Icon(LineIcons.times_circle,color:Colors.redAccent,size: 18,),   
-           onPressed:(){
-            // setState(() {
-                _shoppingCartBloc.deleteItem(item);
-                _shoppingCartBloc.totalItems();
-             //});
+             IconButton(icon:  Icon(LineIcons.times_circle,color:Colors.redAccent,size: 18,),   
+             onPressed:(){
+              // setState(() {
+                  _shoppingCartBloc.deleteItem(item);
+                  _shoppingCartBloc.totalItems();
+               //});
 
-              setState(() {});
-           }),
-          SizedBox(height:responsive.ip(2)),
-            Text("\$ ${item.precioMenudeo} MX",
-              style: TextStyle(fontWeight: FontWeight.bold,fontSize: responsive.ip(1.7),fontStyle:FontStyle.italic))
-          ]
+                setState(() {});
+             }),
+            SizedBox(height:responsive.ip(2)),
+              Text("\$ ${item.subtotal} MX",
+                style: TextStyle(
+                  fontFamily: 'Quicksand',
+                  fontWeight: FontWeight.bold,fontSize: responsive.ip(1.5)))
+            ]
+          ),
         )
       ]
     ),

@@ -9,6 +9,7 @@ class ShoppingCartBloc{
   
   final _db = new DBProvider();
   final _totalController = new BehaviorSubject<double>();
+  final _subtotalController = new BehaviorSubject<double>();
 
   final _countItems = new BehaviorSubject<int>();
 
@@ -17,6 +18,7 @@ class ShoppingCartBloc{
   Stream<List<ShoppingCartModel>> get shoppingCartStream =>_shoppingCartController.stream;
   Stream<bool> get cargando =>_cargandoController.stream;
   
+  Stream<double> get subtotal => _subtotalController.stream;
   Stream<double> get total =>_totalController.stream;
   Stream<int> get count => _countItems.stream;
 
@@ -39,8 +41,19 @@ class ShoppingCartBloc{
     item.cantidad++;
     _cargandoController.sink.add(true);
     await _db.updateItemShoppingCart(item);
+    subtotalItem(item); //new method
     _cargandoController.sink.add(false);
     totalItems();
+  }
+
+  void subtotalItem(ShoppingCartModel item)async{
+    //Replantear en base a si es menudeo o mayoreo
+    double subtotal = item.cantidad * item.precioMenudeo;
+    item.subtotal = subtotal;
+    await _db.updateItemShoppingCart(item);
+
+   // _subtotalController.sink.add(_db.)
+
   }
   
   void totalItems(){
@@ -57,6 +70,8 @@ class ShoppingCartBloc{
       item.cantidad--;
     _cargandoController.sink.add(true);
     await _db.updateItemShoppingCart(item);
+    subtotalItem(item); //new method
+
     _cargandoController.sink.add(false);
     totalItems();
   }

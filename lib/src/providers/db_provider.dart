@@ -51,8 +51,12 @@ class DBProvider{
     if(_item!=null){ 
      // print("ITEM ${_item.nombre} key: ${_item.key}");
       _item.cantidad++;
+      _item.subtotal += 1 * item.precioMenudeo;
+      //replantear respecto a precio menudeo y mayoreo
+      
       await updateItemShoppingCart(_item);
     }else{
+      item.subtotal = item.precioMenudeo*item.cantidad;
       shoppingCartBox.add(item);
     }
     // } on Error catch (e) {

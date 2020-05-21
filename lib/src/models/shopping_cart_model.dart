@@ -20,6 +20,7 @@ class ShoppingCartModel{
   @HiveField(6)
   String imagenUrl;
   dynamic _key;
+  double _subtotal=0;
   ShoppingCartModel({
       this.productoId,
       this.nombre,
@@ -28,7 +29,7 @@ class ShoppingCartModel{
       this.precioMenudeo,
       this.cantidad,
       this.imagenUrl
-  });
+  }){this._subtotal=0;}
 
   set key(value){
     _key = value;
@@ -36,5 +37,13 @@ class ShoppingCartModel{
 
   get key{
     return _key;
+  }
+
+  set subtotal(value){
+    _subtotal = value;
+  }
+
+  get subtotal{
+    return _subtotal;
   }
 }
