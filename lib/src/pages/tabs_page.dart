@@ -74,7 +74,7 @@ class __NavegacionState extends State<_Navegacion> {
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:50,
+        height:_responsive.ip(7),
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),
@@ -90,18 +90,22 @@ class __NavegacionState extends State<_Navegacion> {
              currentIndex:  navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: 20, 
-             
+             iconSize: _responsive.ip(3), 
+
               items: [
                 BottomNavigationBarItem(
                     icon: Icon(LineIcons.home),
-                    title: Text('Inicio'),
+                    title: Text('Inicio',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
+                    ),),
                   //icon: Container(padding: EdgeInsets.all(5), 
                   ),//child: Icon(LineIcons.home),), title: Text("data",style:TextStyle(fontSize: 6))), 
                 BottomNavigationBarItem(
                     icon: Icon(LineIcons.search),
-                    title: Text('Productos',
-                  ),),
+                    title: Text('Productos',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
+                    ),),
+                  ),
                  BottomNavigationBarItem(
                     icon: Container(),
                     title: Container(),),
@@ -109,12 +113,16 @@ class __NavegacionState extends State<_Navegacion> {
 
                 BottomNavigationBarItem(
                   icon: Icon(LineIcons.shopping_cart),
-                    title: Text('Compras'),
+                    title: Text('Compras',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
+                    ),),
                   //icon: Container(padding: EdgeInsets.only(left: 70.0), 
                   ),//child: Icon(LineIcons.shopping_cart)), title: Container()),
                 BottomNavigationBarItem(
                   icon: Icon(LineIcons.user),
-                    title: Text('Yo'),
+                    title: Text('Yo',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
+                    ),),
                   )//icon: Container(padding: EdgeInsets.all(5), child: Icon(LineIcons.user),), title: Container()),
               
               ], 

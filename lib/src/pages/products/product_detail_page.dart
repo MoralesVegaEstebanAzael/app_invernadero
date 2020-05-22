@@ -148,12 +148,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               producto.nombre,
               style: TextStyle(
                 color: Color.fromRGBO(43, 43, 43, 1),
-                fontSize: 25.0,fontFamily: 'Quicksand',fontWeight: FontWeight.w900),
+                fontSize: responsive.ip(3),fontFamily: 'Quicksand',fontWeight: FontWeight.w900),
             ),
           SizedBox(height: responsive.ip(2)),
           Text(
           "Especificaciones: ${producto.contCaja} ${AppConfig.uni_medida} | Existencias: " ,
-            style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey),
+            style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey,
+            fontSize: responsive.ip(2)
+            ),
           ),
           SizedBox(height: responsive.ip(2)),
                       Row(
@@ -163,18 +165,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Column(
               children:<Widget>[
                   Text("\$ ${producto.precioMayoreo}",style: TextStyle(
-                    fontSize:20,fontFamily: 'Quicksand',
+                    fontSize:responsive.ip(3),fontFamily: 'Quicksand',
               fontWeight: FontWeight.w900,color: miTema.accentColor,),),
               Text("\$ ${producto.precioMenudeo}",style: TextStyle(
-                fontSize:20,fontFamily: 'Quicksand',
+                fontSize:responsive.ip(3),fontFamily: 'Quicksand',
               fontWeight: FontWeight.w900,color: miTema.accentColor,),),
               ]
             ),
             Column(
               children:<Widget>[
-                Text("Mayoreo",style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey),),
+                Text("Mayoreo",style: TextStyle(fontFamily:'Quicksand',
+                  fontWeight: FontWeight.w700,color:Colors.grey,fontSize: responsive.ip(2)),),
                 SizedBox(height:responsive.ip(1)),
-                  Text("Menudeo",style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey),),
+                  Text("Menudeo",style: TextStyle(fontFamily:'Quicksand',
+                  fontWeight: FontWeight.w700,color:Colors.grey,fontSize: responsive.ip(2)),),
               ]
             ),
           Column(
@@ -182,7 +186,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Container(
-                padding: EdgeInsets.symmetric(horizontal:20,vertical:8),
+                padding: EdgeInsets.symmetric(horizontal:responsive.ip(2),vertical:responsive.ip(1.5)),
                 decoration: BoxDecoration(
                   color: miTema.accentColor,
                   borderRadius: BorderRadius.circular(30),

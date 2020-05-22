@@ -132,9 +132,10 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       Align(
         alignment: Alignment.bottomCenter,
         child: Container(
+          color: Colors.transparent,
           margin: EdgeInsets.only(bottom:5,left: 4,right: 4),
           padding: EdgeInsets.all(7),
-          height:responsive.ip(11),
+          height:responsive.ip(13),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -174,7 +175,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Container(
-                padding: EdgeInsets.symmetric(horizontal:responsive.ip(2),vertical:8),
+                padding: EdgeInsets.symmetric(horizontal:responsive.ip(2),vertical:responsive.ip(1)),
                 decoration: BoxDecoration(
                   color:miTema.accentColor,
                   borderRadius: BorderRadius.circular(5),
@@ -199,6 +200,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         padding: const EdgeInsets.symmetric(vertical:4,horizontal: 8),
         child: Container(
          decoration: BoxDecoration(
+           
     border: Border(
       bottom: BorderSide(width: 3, color: Color.fromRGBO(228, 228, 228, 1)),
     ),),
@@ -215,22 +217,26 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           image: NetworkImage(item.imagenUrl), 
           placeholder: AssetImage('assets/placeholder.png')),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children:<Widget>[
-          Text(item.nombre,
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,fontSize: responsive.ip(1.8)),),
-          Text("Precio Menudeo: \$ ${item.precioMenudeo}",
-              style: TextStyle(color:Colors.grey),
-              ),
-          _controlButtons(index,item),
-          ]
+        Container(
+          width: responsive.ip(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:<Widget>[
+            Text(item.nombre,
+              style: TextStyle(
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,fontSize: responsive.ip(2)),),
+            Text("Precio Menudeo: \$ ${item.precioMenudeo}",
+                style: TextStyle(color:Colors.grey,fontSize: responsive.ip(1.5)),
+                ),
+            _controlButtons(index,item),
+            ]
+          ),
         ),
         Container(
-          width: responsive.ip(12),
+         
+          width: responsive.ip(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -281,8 +287,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         IconButton(
           icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
           onPressed: (){
-            _shoppingCartBloc.deleteAllItems();
-            setState(() { });
+           
+            setState(() { _shoppingCartBloc.deleteAllItems(); });
           })
       ],
     );
@@ -295,14 +301,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       GestureDetector(
         onTap: ()=>_shoppingCartBloc.decItem(item),
                           child: Container(
-            height: responsive.ip(3),
+            height: responsive.ip(3.5),
             width: responsive.ip(6),
             decoration: BoxDecoration(
               color: miTema.accentColor,//Color.fromRGBO(172, 238, 180, 1),
               borderRadius: BorderRadius.all(Radius.circular(20))
             ),
           
-              child: Icon(Icons.remove,color: Colors.white,)
+              child: Center(child: Icon(Icons.remove,color: Colors.white,))
             ),
       ),
         SizedBox(width:responsive.ip(2)),
@@ -316,7 +322,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         GestureDetector(
           onTap: ()=>_shoppingCartBloc.incItem(item),
                             child: Container(
-            height: responsive.ip(3),
+            height: responsive.ip(3.5),
             width: responsive.ip(6),
             decoration: BoxDecoration(
               color: miTema.accentColor,//Color.fromRGBO(172, 238, 180, 1),

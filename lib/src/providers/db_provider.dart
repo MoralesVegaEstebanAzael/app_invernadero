@@ -88,7 +88,7 @@ class DBProvider{
     await shoppingCartBox.put(item.key, item);
   }
 
-
+  
   Future deleteItemShoppingCart(ShoppingCartModel item)async{
     await shoppingCartBox.delete(item.key);
   }

@@ -407,6 +407,8 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
     //     }),
       actions: <Widget>[
         Container(
+        width: responsive.ip(5),
+        height: responsive.ip(5),
         margin: EdgeInsets.all(6),
         decoration: BoxDecoration(
           color:MyColors.Grey,
@@ -414,7 +416,9 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
         
         ),
         child:  IconButton(
-        icon: Icon(LineIcons.search,color:Color(0xFF545D68),), 
+        icon: Icon(LineIcons.search,color:Color(0xFF545D68),
+          size: responsive.ip(2.5),
+        ), 
         onPressed: (){
          // Navigator.pushNamed(context, 'notifications');
          showSearch(
@@ -423,14 +427,16 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
         ),
 
          Container(
-        margin: EdgeInsets.all(6),
+          width: responsive.ip(5),
+          height: responsive.ip(5),
+          margin: EdgeInsets.all(6),
         decoration: BoxDecoration(
           color: MyColors.Grey,
           shape: BoxShape.circle,
         
         ),
         child:  IconButton(
-        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
+        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
         onPressed: (){
             Navigator.pushNamed(context, 'notifications');
         }),
