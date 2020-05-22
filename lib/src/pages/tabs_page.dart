@@ -74,7 +74,7 @@ class __NavegacionState extends State<_Navegacion> {
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:_responsive.ip(7),
+        height:_responsive.ip(6),
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),
@@ -90,7 +90,7 @@ class __NavegacionState extends State<_Navegacion> {
              currentIndex:  navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: _responsive.ip(3), 
+             iconSize: _responsive.ip(2.5), 
 
               items: [
                 BottomNavigationBarItem(

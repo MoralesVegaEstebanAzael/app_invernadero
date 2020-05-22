@@ -3,6 +3,7 @@ import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/app_bar.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart';
@@ -273,23 +274,49 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       centerTitle: true,
       title: Text("Carrito de compras",
         style:TextStyle(
-          fontFamily: 'Varela',fontSize:responsive.ip(3),color:Color(0xFF545D68)
+          fontFamily: 'Quicksand',fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
         ) ,
       ),
       actions: <Widget>[
        
-        IconButton(
-        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),), 
+       Container(
+          width: responsive.ip(5),
+          height: responsive.ip(5),
+          margin: EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: MyColors.Grey,
+          shape: BoxShape.circle,
+        
+        ),
+        child:  IconButton(
+        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
         onPressed: (){
-          Navigator.pushNamed(context, 'notifications');
+            Navigator.pushNamed(context, 'notifications');
         }),
+        ),
 
-        IconButton(
-          icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
-          onPressed: (){
+        // IconButton(
+        //   icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
+        //   onPressed: (){
            
-            setState(() { _shoppingCartBloc.deleteAllItems(); });
-          })
+        //     setState(() { _shoppingCartBloc.deleteAllItems(); });
+        //   })
+
+        Container(
+          width: responsive.ip(5),
+          height: responsive.ip(5),
+          margin: EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: MyColors.Grey,
+          shape: BoxShape.circle,
+        
+        ),
+        child:  IconButton(
+        icon: Icon(LineIcons.trash,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
+        onPressed: (){
+          setState(() { _shoppingCartBloc.deleteAllItems(); }); Navigator.pushNamed(context, 'notifications');
+        }),
+        ),
       ],
     );
   }
