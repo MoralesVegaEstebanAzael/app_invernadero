@@ -6,6 +6,7 @@ import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -21,23 +22,24 @@ class TabsPages extends StatefulWidget {
 
 class _TabsPagesState extends State<TabsPages> {
   SecureStorage _prefs = SecureStorage();
-
+  
   @override
   void initState() { 
     super.initState();
     _prefs.route= 'home';
   }
 
+ 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => new _NavegacionModel(),
         child: Scaffold(  
         body: _Paginas(),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButton( 
         onPressed: (){},
         backgroundColor: miTema.accentColor,
-        child: Icon(LineIcons.home,size: 30,),
+        child: Icon(LineIcons.home,size: 25,),
         ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: _Navegacion(),
@@ -46,7 +48,19 @@ class _TabsPagesState extends State<TabsPages> {
   }
 }
 
-class _Navegacion extends StatelessWidget {   
+class _Navegacion extends StatefulWidget {   
+  @override
+  __NavegacionState createState() => __NavegacionState();
+}
+
+class __NavegacionState extends State<_Navegacion> {
+  Responsive _responsive;
+
+  @override
+  void didChangeDependencies() {
+    _responsive = Responsive.of(context);
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +74,7 @@ class _Navegacion extends StatelessWidget {
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:55,
+        height:50,
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),
@@ -76,7 +90,7 @@ class _Navegacion extends StatelessWidget {
              currentIndex:  navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
-             iconSize: 24, 
+             iconSize: 20, 
              
               items: [
                 BottomNavigationBarItem(
@@ -86,7 +100,8 @@ class _Navegacion extends StatelessWidget {
                   ),//child: Icon(LineIcons.home),), title: Text("data",style:TextStyle(fontSize: 6))), 
                 BottomNavigationBarItem(
                     icon: Icon(LineIcons.search),
-                    title: Text('Productos'),),
+                    title: Text('Productos',
+                  ),),
                  BottomNavigationBarItem(
                     icon: Container(),
                     title: Container(),),

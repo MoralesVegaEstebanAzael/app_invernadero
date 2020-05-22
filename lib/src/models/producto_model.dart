@@ -2,6 +2,8 @@
 //
 //     final productoModel = productoModelFromJson(jsonString);
 import 'dart:convert';
+
+import 'package:app_invernadero/src/providers/producto_provider.dart';
 ProductoModel productoModelFromJson(String str) => ProductoModel.fromJson(json.decode(str));
 String productoModelToJson(ProductoModel data) => json.encode(data.toJson());
 
@@ -24,7 +26,25 @@ class ProductoModel {
       this.precioMayoreo,
       this.precioMenudeo,
       this.urlImagen,
-  });
+  }
+  ){
+   
+
+    // ProductoProvider.verify(urlImagen).then((onValue){
+    //   if(!onValue){
+    //     print(urlImagen);
+    //     this.urlImagen=null;
+    //     print("sin imagen");
+    //   }else{
+    //     this.urlImagen = urlImagen;
+    //     print(this.urlImagen);
+    //     print("con imagen");
+    //   }
+    // });
+
+   
+  }
+  //isUrlValid(this.urlImagen)?this.urlImagen:this.urlImagen=null;}
 
   factory ProductoModel.fromJson(Map<String, dynamic> json) => ProductoModel(
       id: json["id"],
@@ -37,6 +57,7 @@ class ProductoModel {
       urlImagen: json["url_imagen"],
   );
 
+
   Map<String, dynamic> toJson() => {
       "id": id,
       "solar": solar,
@@ -47,4 +68,15 @@ class ProductoModel {
       "precio_menudeo": precioMenudeo,
       "url_imagen": urlImagen,
   };
+
+  isUrlValid(String url){
+     //print("URL::"+url);
+    //bool b=  await   ProductoProvider.verify(url);
+    //return b;
+    
+  //   ProductoProvider.ve
+  //   ProductoProvider.verify().then((connectionResult) {
+    
+  // });
+  }
 }
