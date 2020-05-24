@@ -1,33 +1,36 @@
+import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ShoppingCartBloc{
   
-  final _shoppingCartController = new BehaviorSubject<List<ShoppingCartModel>>();
-  final _cargandoController = new BehaviorSubject<bool>();
+  //final _shoppingCartController = new BehaviorSubject<List<ShoppingCartModel>>();
+  final _itemsSCcontroller = new BehaviorSubject<List<ItemShoppingCartModel>>();
   
+  final _cargandoController = new BehaviorSubject<bool>();
   final _db = new DBProvider();
   final _totalController = new BehaviorSubject<double>();
   final _subtotalController = new BehaviorSubject<double>();
-
   final _countItems = new BehaviorSubject<int>();
 
 
 
-  Stream<List<ShoppingCartModel>> get shoppingCartStream =>_shoppingCartController.stream;
+  //Stream<List<ShoppingCartModel>> get shoppingCartStream =>_shoppingCartController.stream;
+  Stream<List<ItemShoppingCartModel>> get shoppingCartStream => _itemsSCcontroller.stream;
+
   Stream<bool> get cargando =>_cargandoController.stream;
-  
   Stream<double> get subtotal => _subtotalController.stream;
   Stream<double> get total =>_totalController.stream;
   Stream<int> get count => _countItems.stream;
 
   
   void loadItems()async{
-    final items = await  _db.getShoppingCart();
-    _shoppingCartController.sink.add(items);
+    final items = await _db.getItemsSC();
+    //_shoppingCartController.sink.add(items);
+    _itemsSCcontroller.sink.add(items);
     totalItems();
-    countItems();//cuenta los productos
+    // countItems();
   }
 
   void updateItem(ShoppingCartModel item)async{
@@ -37,27 +40,20 @@ class ShoppingCartBloc{
     totalItems();
   } 
 
-  void incItem(ShoppingCartModel item)async{
-    item.cantidad++;
-    _cargandoController.sink.add(true);
-    await _db.updateItemShoppingCart(item);
-    subtotalItem(item); //new method
-    _cargandoController.sink.add(false);
-    totalItems();
-  }
+ 
 
-  void subtotalItem(ShoppingCartModel item)async{
+  void subtotalItem(ItemShoppingCartModel item)async{
     //Replantear en base a si es menudeo o mayoreo
-    double subtotal = item.cantidad * item.precioMenudeo;
+    double subtotal = item.cantidad * item.producto.precioMenudeo;
     item.subtotal = subtotal;
-    await _db.updateItemShoppingCart(item);
+    await _db.updateItemSC(item);
 
    // _subtotalController.sink.add(_db.)
 
   }
   
   void totalItems(){
-    _totalController.sink.add(_db.totalShoppingCart());
+    _totalController.sink.add(_db.totalSC());
   }
   
   
@@ -65,25 +61,31 @@ class ShoppingCartBloc{
     _countItems.sink.add(_db.countItemsShopCart());
   }
   
-  void decItem(ShoppingCartModel item)async{
-    if(item.cantidad>1)
-      item.cantidad--;
-    _cargandoController.sink.add(true);
-    await _db.updateItemShoppingCart(item);
+  void incItem(ItemShoppingCartModel item)async{
+    print("incrementando");
+    item.cantidad++;
+    await _db.updateItemSC(item);
     subtotalItem(item); //new method
-
-    _cargandoController.sink.add(false);
     totalItems();
   }
 
-  void deleteItem(ShoppingCartModel item)async{
-     await _db.deleteItemShoppingCart(item);
+  void decItem(ItemShoppingCartModel item)async{
+    if(item.cantidad>1)
+      item.cantidad--;
+    _cargandoController.sink.add(true);
+     await _db.updateItemSC(item);
+    subtotalItem(item); //new method
+    totalItems();
+  }
+
+  void deleteItem(ItemShoppingCartModel item)async{
+     await _db.deleteItemSC(item);
     loadItems();
    
   }
 
   void deleteAllItems()async{
-    await _db.deleteAllItems();
+    await _db.deleteItemsSC();
     loadItems();
   }
 
@@ -93,15 +95,15 @@ class ShoppingCartBloc{
   //  _cargandoController.close();
     //_totalController.close();
     //_db.dispose();
-
-   
   }
 
   box(){
-    return _db.getShoppingCartBox();
+   // return _db.getShoppingCartBox();
+    return _db.getItemsSCBox();
   }
   bool isEmpty(){
-    return _db.shoppingCartBoxisEmpty();
+   // return _db.shoppingCartBoxisEmpty();
+    return _db.itemsSCBoxisEmpty();
   }
 
  

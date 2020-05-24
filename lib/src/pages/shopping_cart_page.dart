@@ -1,5 +1,6 @@
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -25,8 +26,8 @@ class ShoppingCartPage extends StatefulWidget {
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Responsive responsive;
   ShoppingCartBloc _shoppingCartBloc;
-  Stream<List<ShoppingCartModel>> _stream;
-  
+  Stream<List<ItemShoppingCartModel>> _stream;
+   Box box ;
   @override
   void initState() { 
     super.initState();
@@ -42,7 +43,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     _shoppingCartBloc = Provider.shoppingCartBloc(context);
     _shoppingCartBloc.loadItems();
     _stream = _shoppingCartBloc.shoppingCartStream;
-
+   
     responsive = Responsive.of(context);
     super.didChangeDependencies();
   }
@@ -60,54 +61,41 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   } 
 
   Widget _listItems(){
-    Box box = _shoppingCartBloc.box();
+    box = _shoppingCartBloc.box();
     return Container(
       width: responsive.widht,
       height: responsive.height,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(left:responsive.ip(2),bottom:responsive.ip(2)),
-            child:
-            StreamBuilder(
-              stream: _shoppingCartBloc.count ,
-              initialData: 0 ,
-              builder: (BuildContext context, AsyncSnapshot snapshot){
-                return Text( 
-                  "Mis productos (${snapshot.data})",
+          // Container(
+          //   margin: EdgeInsets.only(left:responsive.ip(2),bottom:responsive.ip(2)),
+          //   child:
+          //   StreamBuilder(
+          //     stream: _shoppingCartBloc.count ,
+          //     initialData: 0 ,
+          //     builder: (BuildContext context, AsyncSnapshot snapshot){
+          //       return Text( 
+          //         "Mis productos (${snapshot.data})",
+          //         style: TextStyle(
+          //           fontSize: responsive.ip(2),
+          //           color:Colors.grey,
+          //           fontFamily:'Quicksand',
+          //           fontWeight: FontWeight.w900
+          //         ),
+          //       );
+          //     },
+          //   ),
+          //   ),
+            Text( 
+                  "Mis productos (${box.length})",
                   style: TextStyle(
                     fontSize: responsive.ip(2),
                     color:Colors.grey,
                     fontFamily:'Quicksand',
                     fontWeight: FontWeight.w900
                   ),
-                );
-              },
-            ),
-            ),
-            // StreamBuilder(
-            //   stream: _stream ,
-            //   builder: (BuildContext context,AsyncSnapshot<List<ShoppingCartModel>> snapshot){
-            //     if(snapshot.hasData){ 
-            //       return 
-            //           Expanded(
-            //             child:  ListView.builder(
-            //               itemCount:  snapshot.data.length,
-            //               itemBuilder: (context, index) {
-            //                 ShoppingCartModel item = snapshot.data[index];
-            //                 print("ITEM ${item.imagenUrl}");
-            //                 return _itemView(index,item);
-            //                 })
-            //       );
-            //     }else{
-            //       return Center(
-            //         child: CircularProgressIndicator(),
-            //       );
-            //     }            
-            //   },
-            // ),
-
+                ),
             WatchBoxBuilder(
               box: box, 
               builder: (BuildContext context,Box box){
@@ -116,8 +104,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         child:  ListView.builder(
                           itemCount:  box.length,
                           itemBuilder: (context, index) {
-                            ShoppingCartModel item = box.getAt(index);
-                            print("ITEM ${item.imagenUrl}");
+                            // ShoppingCartModel item = box.getAt(index);
+                            ItemShoppingCartModel item = box.getAt(index);
+
                             return _itemView(index,item);
                             })
                   );
@@ -131,72 +120,60 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Widget _order(){
     return //total ui
       Align(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.bottomRight,
         child: Container(
-          color: Colors.transparent,
-          margin: EdgeInsets.only(bottom:5,left: 4,right: 4),
-          padding: EdgeInsets.all(7),
-          height:responsive.ip(13),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children:<Widget>[
-                  Text("Total: \$",
+            color: Colors.white,
+           // margin: EdgeInsets.only(left: 4,right: 4),
+            padding: EdgeInsets.all(7),
+            height:responsive.ip(7),
+           // width: responsive.ip(20),
+           
+              child:
+                Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+        children:<Widget>[
+         Row(
+                children: <Widget>[
+                  
+                  Icon(LineIcons.info_circle,size: responsive.ip(3),color: Colors.grey,),
+                  SizedBox(width:2),
+                  Text("Total: ",
                     style: TextStyle(
-                          fontSize: responsive.ip(2),
-                          color:Colors.grey,
-                          fontFamily:'Quicksand',
-                          fontWeight: FontWeight.w900
-                        ),),
-                  SizedBox(width:responsive.ip(1)),
-                  Container(
-                    width: responsive.ip(10),
-                    child: StreamBuilder( 
-                      stream: _shoppingCartBloc.total ,
-                      initialData: 0 ,
-                      builder: (BuildContext context, AsyncSnapshot snapshot){
-                        return Text( 
-                          "${snapshot.data}",
-                          style: TextStyle(
-                            fontSize: responsive.ip(2),
-                            color:Colors.black,
-                            fontFamily:'Quicksand',
-                            fontWeight: FontWeight.w900
-                          ),
-                        );
-                      },
-                  ),
-                  ),
-                ]
+                    fontFamily: 'Quicksand',
+                    fontWeight: FontWeight.w900,
+                    fontSize: responsive.ip(2)
+                ),),
+                ],
               ),
-              SizedBox(height:responsive.ip(1)),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Container(
-                padding: EdgeInsets.symmetric(horizontal:responsive.ip(2),vertical:responsive.ip(1)),
-                decoration: BoxDecoration(
-                  color:miTema.accentColor,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [BoxShadow(
-                          color:Colors.black26,
-                          blurRadius: 5
-                  )]
-                ),
-                child:
-                Text("Ordenar ",style: TextStyle(color:Colors.white),)
-                  //Icon(LineIcons.shopping_cart,color:miTema.accentColor),//Text("Agregar",style: TextStyle(fontFamily: 'Quiksand',color:Colors.white,letterSpacing: 1,fontSize: 15),),
-                ),
-                onPressed: ()=>print("object")
+
+              Expanded(
+                              child: StreamBuilder( 
+                        stream: _shoppingCartBloc.total ,
+                        initialData: 0 ,
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          return Text( 
+                            "\$ ${snapshot.data} MX",
+                            style: TextStyle(
+                              fontSize: responsive.ip(2),
+                              color:Colors.grey,
+                              fontFamily:'Quicksand',
+                              fontWeight: FontWeight.w900
+                            ),
+                          );
+                        },
+                    ),
               ),
-            ],
-          ), 
-        )
+          _button()
+        ]
+                ),
+               
+              
+           
+          )
     );
   }
-  Widget _itemView(int index,ShoppingCartModel item){
+  Widget _itemView(int index,ItemShoppingCartModel item){
     return Padding(
         padding: const EdgeInsets.symmetric(vertical:4,horizontal: 8),
         child: Container(
@@ -215,7 +192,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         child: FadeInImage(
           width: 90,
           height: double.infinity,
-          image: NetworkImage(item.imagenUrl), 
+          image: NetworkImage(item.producto.urlImagen), 
           placeholder: AssetImage('assets/placeholder.png')),
         ),
         Container(
@@ -224,11 +201,11 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children:<Widget>[
-            Text(item.nombre,
+            Text(item.producto.nombre,
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.bold,fontSize: responsive.ip(2)),),
-            Text("Precio Menudeo: \$ ${item.precioMenudeo}",
+            Text("Precio Menudeo: \$ ${item.producto.precioMenudeo}",
                 style: TextStyle(color:Colors.grey,fontSize: responsive.ip(1.5)),
                 ),
             _controlButtons(index,item),
@@ -236,7 +213,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           ),
         ),
         Container(
-         
           width: responsive.ip(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -245,18 +221,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
              IconButton(icon:  Icon(LineIcons.times_circle,color:Colors.redAccent,size: 18,),   
              onPressed:(){
-              // setState(() {
-                  _shoppingCartBloc.deleteItem(item);
-                  _shoppingCartBloc.totalItems();
-               //});
+              setState(() {
+                 _shoppingCartBloc.deleteItem(item);
+               });
 
                 setState(() {});
              }),
             SizedBox(height:responsive.ip(2)),
-              Text("\$ ${item.subtotal} MX",
-                style: TextStyle(
-                  fontFamily: 'Quicksand',
-                  fontWeight: FontWeight.bold,fontSize: responsive.ip(1.5)))
+            Text("\$ ${item.subtotal} MX",
+              style: TextStyle(
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,fontSize: responsive.ip(1.5)))
             ]
           ),
         )
@@ -274,26 +249,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       centerTitle: true,
       title: Text("Carrito de compras",
         style:TextStyle(
-          fontFamily: 'Quicksand',fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w900,
+          fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
         ) ,
       ),
       actions: <Widget>[
        
-       Container(
-          width: responsive.ip(5),
-          height: responsive.ip(5),
-          margin: EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: MyColors.Grey,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
-        onPressed: (){
-            Navigator.pushNamed(context, 'notifications');
-        }),
-        ),
+       
 
         // IconButton(
         //   icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
@@ -305,8 +268,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         Container(
           width: responsive.ip(5),
           height: responsive.ip(5),
-          margin: EdgeInsets.all(6),
-        decoration: BoxDecoration(
+          margin: EdgeInsets.all(2),
+          decoration: BoxDecoration(
           color: MyColors.Grey,
           shape: BoxShape.circle,
         
@@ -314,14 +277,30 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         child:  IconButton(
         icon: Icon(LineIcons.trash,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
         onPressed: (){
-          setState(() { _shoppingCartBloc.deleteAllItems(); }); Navigator.pushNamed(context, 'notifications');
+          setState(() { _shoppingCartBloc.deleteAllItems(); }); 
+        }),
+        ),
+
+        Container(
+          width: responsive.ip(5),
+          height: responsive.ip(5),
+          margin: EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: MyColors.Grey,
+          shape: BoxShape.circle,
+        
+        ),
+        child:  IconButton(
+        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
+        onPressed: (){
+            Navigator.pushNamed(context, 'notifications');
         }),
         ),
       ],
     );
   }
   //add items or substract items
-  Widget _controlButtons(int index,ShoppingCartModel item){
+  Widget _controlButtons(int index,ItemShoppingCartModel item){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -365,7 +344,33 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
   
 
-
+  _button(){
+    return  CupertinoButton(
+      padding: EdgeInsets.zero,
+      child: Container(
+      padding: EdgeInsets.symmetric(horizontal:responsive.ip(1.5),vertical:responsive.ip(1.3)),
+      decoration: BoxDecoration(
+        color: miTema.accentColor,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [BoxShadow(
+                color:Colors.black26,
+                blurRadius: 5
+        )]
+      ),
+      child: Row(
+        children: <Widget>[
+          Text("SIGUIENTE",
+            style: TextStyle(
+              fontFamily: 'Quiksand',
+              color:Colors.white,letterSpacing: 1,
+              fontSize: responsive.ip(1.5)),),
+          SizedBox(width:5),
+          Icon(LineIcons.arrow_right,color:Colors.white,size: responsive.ip(2),)
+        ],
+      ),
+      ),
+   onPressed: ()=>Navigator.pushNamed(context, 'checkout'));
+  }
   
 
 }

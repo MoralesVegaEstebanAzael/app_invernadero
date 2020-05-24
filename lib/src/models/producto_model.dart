@@ -3,18 +3,28 @@
 //     final productoModel = productoModelFromJson(jsonString);
 import 'dart:convert';
 
-import 'package:app_invernadero/src/providers/producto_provider.dart';
-ProductoModel productoModelFromJson(String str) => ProductoModel.fromJson(json.decode(str));
-String productoModelToJson(ProductoModel data) => json.encode(data.toJson());
+import 'package:hive/hive.dart';
+part 'producto_model.g.dart';
+
+@HiveType(
+  typeId: 3,adapterName: "ProductoAdapter")
 
 class ProductoModel {
+  @HiveField(0)
   int id;
+  @HiveField(1)
   int solar;
+  @HiveField(2)
   int cultivo;
+  @HiveField(3)
   String nombre;
+  @HiveField(4)
   int contCaja;
+  @HiveField(5)
   double precioMayoreo;
+  @HiveField(6)
   double precioMenudeo;
+  @HiveField(7)
   String urlImagen;
 
   ProductoModel({
@@ -27,24 +37,7 @@ class ProductoModel {
       this.precioMenudeo,
       this.urlImagen,
   }
-  ){
-   
-
-    // ProductoProvider.verify(urlImagen).then((onValue){
-    //   if(!onValue){
-    //     print(urlImagen);
-    //     this.urlImagen=null;
-    //     print("sin imagen");
-    //   }else{
-    //     this.urlImagen = urlImagen;
-    //     print(this.urlImagen);
-    //     print("con imagen");
-    //   }
-    // });
-
-   
-  }
-  //isUrlValid(this.urlImagen)?this.urlImagen:this.urlImagen=null;}
+  );
 
   factory ProductoModel.fromJson(Map<String, dynamic> json) => ProductoModel(
       id: json["id"],
@@ -69,14 +62,8 @@ class ProductoModel {
       "url_imagen": urlImagen,
   };
 
-  isUrlValid(String url){
-     //print("URL::"+url);
-    //bool b=  await   ProductoProvider.verify(url);
-    //return b;
-    
-  //   ProductoProvider.ve
-  //   ProductoProvider.verify().then((connectionResult) {
-    
-  // });
-  }
+
+  ProductoModel productoModelFromJson(String str) => ProductoModel.fromJson(json.decode(str));
+  String productoModelToJson(ProductoModel data) => json.encode(data.toJson());
+
 }

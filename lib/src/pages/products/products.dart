@@ -2,6 +2,7 @@
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/planta_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
@@ -369,17 +370,25 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
   }
   
   addShoppingCart(ProductoModel p){
-    ShoppingCartModel shoppingCartModel = 
-    ShoppingCartModel(
-      productoId: p.id,
-      nombre: p.nombre,
-      contCaja:p.contCaja,
-      precioMayoreo:p.precioMayoreo,
-      precioMenudeo:p.precioMenudeo,
-      cantidad:1,
-      imagenUrl:p.urlImagen);
-    _dbProvider.insert(shoppingCartModel);
+    // ShoppingCartModel shoppingCartModel = 
+    // ShoppingCartModel(
+    //   productoId: p.id,
+    //   nombre: p.nombre,
+    //   contCaja:p.contCaja,
+    //   precioMayoreo:p.precioMayoreo,
+    //   precioMenudeo:p.precioMenudeo,
+    //   cantidad:1,
+    //   imagenUrl:p.urlImagen);
+    // _dbProvider.insert(shoppingCartModel);
 
+    
+    ItemShoppingCartModel item = ItemShoppingCartModel(
+      producto: p,
+      cantidad: 1,
+      subtotal: 1*p.precioMenudeo
+    );
+
+    _dbProvider.insertItemSC(item);
     Flushbar(
       message:   "Se ha añadido al carrito.",
       duration:  Duration(seconds:1),              
@@ -409,7 +418,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
         Container(
         width: responsive.ip(5),
         height: responsive.ip(5),
-        margin: EdgeInsets.all(6),
+        margin: EdgeInsets.all(2),
         decoration: BoxDecoration(
           color:MyColors.Grey,
           shape: BoxShape.circle,
@@ -429,7 +438,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
          Container(
           width: responsive.ip(5),
           height: responsive.ip(5),
-          margin: EdgeInsets.all(6),
+          margin: EdgeInsets.all(2),
         decoration: BoxDecoration(
           color: MyColors.Grey,
           shape: BoxShape.circle,

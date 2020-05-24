@@ -29,7 +29,7 @@ class ShoppingCartModel{
       this.precioMenudeo,
       this.cantidad,
       this.imagenUrl
-  }){this._subtotal=0;}
+  });//{this._subtotal=0;}
 
   set key(value){
     _key = value;

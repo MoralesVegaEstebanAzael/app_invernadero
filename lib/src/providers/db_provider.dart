@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:hive/hive.dart';
@@ -6,6 +7,8 @@ import 'package:path_provider/path_provider.dart';
 class DBProvider{
   Box shoppingCartBox;
   
+  Box itemsShoppingBox;
+  Box productoBox;
   Box dataBaseBox;
   
   Box favoriteBox;
@@ -21,10 +24,16 @@ class DBProvider{
   Future initDB()async{
     var path = await getApplicationDocumentsDirectory();
     Hive.init(path.path);
+    //adapter register
     Hive.registerAdapter(ShoppingCartAdapter());
+    Hive.registerAdapter(ItemShoppingCartAdapter());
+    Hive.registerAdapter(ProductoAdapter());
+
     shoppingCartBox= await Hive.openBox("shoppingCart");
     dataBaseBox = await Hive.openBox("db");
 
+    itemsShoppingBox = await Hive.openBox("itemsShopping");
+    // productoBox = await Hive.openBox("productoBox");
 
     favoriteBox = await Hive.openBox("favorite");
     return true;
@@ -45,9 +54,10 @@ class DBProvider{
   }
 
   
+
   insert(ShoppingCartModel item)async{
     //try{
-         ShoppingCartModel _item = contains(item);
+    ShoppingCartModel _item = contains(item);
     if(_item!=null){ 
      // print("ITEM ${_item.nombre} key: ${_item.key}");
       _item.cantidad++;
@@ -156,4 +166,61 @@ class DBProvider{
    
     return favData;
   }
+
+
+        //** CARRITO DE COMPRAS**/
+  insertItemSC(ItemShoppingCartModel item)async{
+    final _item= await itemsShoppingBox.get(item.producto.id);
+    if(_item!=null){
+      _item.cantidad++;
+      _item.subtotal += item.cantidad*item.producto.precioMenudeo;
+      await updateItemSC(_item);
+    }else{
+      await itemsShoppingBox.put(item.producto.id,item );
+    }
+  }
+
+  Future updateItemSC(ItemShoppingCartModel item)async{
+    await itemsShoppingBox.put(item.producto.id, item);
+  }
+
+  Future deleteItemSC(ItemShoppingCartModel item)async{
+    await itemsShoppingBox.delete(item.producto.id);
+  }
+
+  Future deleteItemsSC()async{
+    await itemsShoppingBox.clear();
+  }
+  
+  List<ItemShoppingCartModel> getItemsSC(){
+    Map mapa =  itemsShoppingBox.toMap();
+    List<ItemShoppingCartModel> list;
+    mapa.forEach((k,v){
+     // print("entrnado");
+      //ItemShoppingCartModel item = v;
+      //list.add(item);
+    });   
+    return list;
+  }
+
+  Box getItemsSCBox(){
+    return itemsShoppingBox;
+  }
+
+  bool itemsSCBoxisEmpty(){
+    return itemsShoppingBox.isEmpty;
+  }
+
+
+  double totalSC(){
+    double total = 0;
+    Map map = itemsShoppingBox.toMap();
+    ItemShoppingCartModel item;
+    map.forEach((k,v){
+      item =v;
+      total += item.cantidad*item.producto.precioMenudeo;
+    });
+    return total;
+  }
+
 }

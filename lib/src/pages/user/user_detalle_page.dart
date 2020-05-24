@@ -163,7 +163,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
     }
 
     //setState(() { _guardando = false; });
-    mostrarSnackbar('Datos actializados');
+    mostrarSnackbar('Datos actualizados');
     Navigator.pop(context);
     setState(() {
       userBloc.cargarUsuario();

@@ -24,7 +24,7 @@ class Responsive{
   double hp(double percent){ //altura porcentual
     return this.height*percent/100;
   }
-
+  
   double ip(double percent){//pixelex porcentuales
     return this.inch*percent/100;
   }

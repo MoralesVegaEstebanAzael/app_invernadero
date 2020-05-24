@@ -1,6 +1,7 @@
 
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,19 +57,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       elevation: 0,
       backgroundColor: miTema.accentColor,
       leading: Container(
-      margin: EdgeInsets.all(6),
+          width: responsive.ip(5),
+          height: responsive.ip(5),
+          margin: EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color: Colors.white70,
+          color: MyColors.Grey,
           shape: BoxShape.circle,
+        
         ),
-      child: IconButton(
-      icon: Icon(LineIcons.angle_left, color: Colors.black87),
-      onPressed: () => Navigator.of(context).pop(),
-    ),
-      ), 
+        child:  IconButton(
+        icon: Icon(LineIcons.trash,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
+         onPressed: () => Navigator.of(context).pop(),),
+        ),
     
     );
   }
+
+   
 
   Widget _contenido() {
     return SingleChildScrollView(

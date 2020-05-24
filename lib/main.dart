@@ -17,6 +17,8 @@ import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
 import 'package:app_invernadero/src/pages/user/user_detalle_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
+
+import 'package:app_invernadero/src/pages/checkout_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -81,6 +83,8 @@ class MyApp extends StatelessWidget {
 
 
           'product_detail'        : (BuildContext)=>ProductDetailPage(),
+          
+          'checkout'              : (BuildContext)=>CheckoutPage(),
 
           'notifications'         : (BuildContext)=>NotificationsPage(),
         },
