@@ -7,6 +7,7 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/app_bar.dart';
+import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -244,6 +245,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
 
   Widget _appBar(){
     return AppBar(
+      brightness :Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       centerTitle: true,
@@ -255,47 +257,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         ) ,
       ),
       actions: <Widget>[
-       
-       
-
-        // IconButton(
-        //   icon: Icon(LineIcons.trash,color:Color(0xFF545D68)), 
-        //   onPressed: (){
-           
-        //     setState(() { _shoppingCartBloc.deleteAllItems(); });
-        //   })
-
-        Container(
-          width: responsive.ip(5),
-          height: responsive.ip(5),
-          margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(
-          color: MyColors.Grey,
-          shape: BoxShape.circle,
-        
+        IconAction(
+          icon:LineIcons.trash_o,
+          onPressed:()=>setState(() { _shoppingCartBloc.deleteAllItems(); })
         ),
-        child:  IconButton(
-        icon: Icon(LineIcons.trash,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
-        onPressed: (){
-          setState(() { _shoppingCartBloc.deleteAllItems(); }); 
-        }),
-        ),
-
-        Container(
-          width: responsive.ip(5),
-          height: responsive.ip(5),
-          margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: MyColors.Grey,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
-        onPressed: (){
-            Navigator.pushNamed(context, 'notifications');
-        }),
-        ),
+        IconAction(
+          icon:LineIcons.bell,
+          onPressed:()=> Navigator.pushNamed(context, 'notifications')
+        )
       ],
     );
   }

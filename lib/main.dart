@@ -23,6 +23,7 @@ import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,9 +37,19 @@ void main() async{
 
   DBProvider db = DBProvider();
   await db.initDB();
-  
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+   systemNavigationBarColor: Colors.white, // navigation bar color
+    statusBarColor: Colors.white, // status bar color
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+    systemNavigationBarIconBrightness: Brightness.dark,
+    
+  ));
+
+// SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(MyApp());
 } 
+
 
 class MyApp extends StatelessWidget {
   final prefs = new SecureStorage();

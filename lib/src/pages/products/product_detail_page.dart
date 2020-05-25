@@ -3,8 +3,11 @@ import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../../app_config.dart';
@@ -20,6 +23,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   ProductoModel producto; 
   @override
   void initState() {
+    FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
     super.initState();
   }
 
@@ -29,46 +33,47 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     producto = ModalRoute.of(context).settings.arguments;
     super.didChangeDependencies();
   }
+  @override
+  void dispose() {
+     FlutterStatusbarcolor.setStatusBarColor(Colors.white);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          _appBar(),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                
-               _contenido()
-               
-              ]
-            ),
+    
+    return  Scaffold(
+        body: CustomScrollView(
+    slivers: <Widget>[
+      _appBar(),
+      SliverList(
+              delegate: SliverChildListDelegate(
+                [
+        
+                 _contenido()
+                 
+                ]
+              ),
+      ),
+    ],
+              ),
+      );
+  }
+
+  
+  Widget _appBar(){
+    return SliverAppBar(
+      brightness :Brightness.light,
+      elevation: 0,
+      backgroundColor: miTema.accentColor,
+      leading: Row(
+        children: <Widget>[
+          IconAction(
+            icon:LineIcons.angle_left,
+            onPressed: () => Navigator.of(context).pop()
           ),
         ],
       ),
-    );
-  }
-
-
-  Widget _appBar(){
-    return SliverAppBar(
-      elevation: 0,
-      backgroundColor: miTema.accentColor,
-      leading: Container(
-          width: responsive.ip(5),
-          height: responsive.ip(5),
-          margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: MyColors.Grey,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.trash,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
-         onPressed: () => Navigator.of(context).pop(),),
-        ),
     
     );
   }
@@ -240,26 +245,5 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
 
-  Widget _createAppBar(){
-    return SliverAppBar(
-      elevation: 0.0,
-      backgroundColor: miTema.accentColor,
-      expandedHeight: 200.0,
-      floating: false,
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        centerTitle:true,
-        title: Text(
-          producto.nombre,
-          style: TextStyle(color:Colors.white,fontSize:16.0,),
-          overflow: TextOverflow.ellipsis,
-          ),
-          background: FadeInImage(
-            placeholder: AssetImage('assets/images/jar-loading.gif'), 
-            image: NetworkImage(producto.urlImagen),
-            fit:BoxFit.cover,
-          ),
-      ),
-    );
-  }
+ 
 }

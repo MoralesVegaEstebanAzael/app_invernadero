@@ -1,5 +1,6 @@
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
+import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -34,14 +35,22 @@ class DataSearch extends SearchDelegate{
   @override
   Widget buildLeading(BuildContext context) {
     // icono a la izquierda
-    return IconButton(
-      icon: AnimatedIcon(
-        icon: AnimatedIcons.menu_arrow,
-        progress: transitionAnimation,
-        ), 
-      onPressed: (){
-        close(context, null);
-      });
+    return Row(
+      children: <Widget>[
+        IconAction(
+          icon:LineIcons.angle_left,
+          onPressed:()=>close(context,null)
+        ),
+      ],
+    );
+    // return IconButton(
+    //   icon: AnimatedIcon(
+    //     icon: AnimatedIcons.menu_arrow,
+    //     progress: transitionAnimation,
+    //     ), 
+    //   onPressed: (){
+    //     close(context, null);
+    //   });
   }
 
   @override

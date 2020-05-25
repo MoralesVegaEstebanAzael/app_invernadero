@@ -3,6 +3,7 @@ import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/material.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
@@ -37,33 +38,20 @@ class _FavoritosPageState extends State<FavoritosPage> {
 
   _appBar(){
     return AppBar(
+      brightness: Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       centerTitle: true,
       title: Text("Favoritos",style: 
         TextStyle(color:Colors.black,fontFamily: 'Quicksand'),),
-      leading:  IconButton(
-        icon: Icon(
-          LineIcons.angle_left, color: Colors.black87),
-          onPressed: () => Navigator.of(context).pop(),
-    ),
+      leading:Row(children:<Widget>[
+        IconAction(icon: LineIcons.angle_left, onPressed: () => Navigator.of(context).pop())
+      ]) ,
 
     actions: <Widget>[
-      Container(
-        margin: EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: Colors.black12,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.search,color:Color(0xFF545D68),), 
-        onPressed: (){
-         // Navigator.pushNamed(context, 'notifications');
-        //  showSearch(
-        //    context: context, delegate: DataSearch());
-        }),
-        ),
+      IconAction(
+        icon:Icons.search,
+      )
       ],
     );
   }

@@ -8,6 +8,7 @@ import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class _TabsPagesState extends State<TabsPages> {
   
   @override
   void initState() { 
+    //FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
     super.initState();
     _prefs.route= 'home';
   }
@@ -74,7 +76,7 @@ class __NavegacionState extends State<_Navegacion> {
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
       child: Container(
-        height:_responsive.ip(6),
+        height:_responsive.ip(7),
         decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
             topLeft:Radius.circular(25.0),

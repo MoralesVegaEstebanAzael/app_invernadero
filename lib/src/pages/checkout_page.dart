@@ -289,31 +289,31 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         );
                       },
                   ),
-              CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Container(
-                padding: EdgeInsets.symmetric(horizontal:responsive.ip(1.5),vertical:responsive.ip(1.3)),
-                decoration: BoxDecoration(
-                  color: (_radioValue!=-1)?miTema.accentColor:Colors.grey,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [BoxShadow(
-                          color:Colors.black26,
-                          blurRadius: 5
-                  )]
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Text("CONFIRMAR",
-                      style: TextStyle(
-                        fontFamily: 'Quiksand',
-                        color:Colors.white,letterSpacing: 1,
-                        fontSize: responsive.ip(1.5)),),
-                    SizedBox(width:5),
-                    Icon(LineIcons.check,color:Colors.white,size: responsive.ip(2),)
-                  ],
-                ),
-                ),
-                onPressed: (_radioValue!=-1)? ()=>print("object"):null),
+                CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Container(
+                  padding: EdgeInsets.symmetric(horizontal:responsive.ip(1.5),vertical:responsive.ip(1.3)),
+                  decoration: BoxDecoration(
+                    color: (_radioValue!=-1)?miTema.accentColor:Colors.grey,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [BoxShadow(
+                            color:Colors.black26,
+                            blurRadius: 5
+                    )]
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Text("CONFIRMAR",
+                        style: TextStyle(
+                          fontFamily: 'Quiksand',
+                          color:Colors.white,letterSpacing: 1,
+                          fontSize: responsive.ip(1.5)),),
+                      SizedBox(width:5),
+                      Icon(LineIcons.check,color:Colors.white,size: responsive.ip(2),)
+                    ],
+                  ),
+                  ),
+                  onPressed: (_radioValue!=-1)? ()=>print("object"):null),
             ]
           ),
         )

@@ -13,9 +13,12 @@ import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
 import '../../../app_config.dart'; 
@@ -46,6 +49,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+     
     _dbProvider = DBProvider();
     _tabController = TabController(initialIndex: 0, length: 5, vsync: this);
     _pageController = PageController(initialPage: 0, viewportFraction: 0.8);
@@ -79,6 +83,7 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
   
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: Colors.white,
        appBar:_appBar(),
@@ -396,9 +401,11 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
   
   }
   
+
  
    Widget _appBar(){
     return AppBar(
+      brightness :Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       centerTitle: true,
@@ -406,50 +413,18 @@ class _ProductsState extends State<Products> with SingleTickerProviderStateMixin
         style:TextStyle(
           fontFamily: 'Varela',fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
         ) ,
-      ),
-    //  leading:  IconButton(
-    //     icon: Icon(LineIcons.search,color:Color(0xFF545D68),), 
-    //     onPressed: (){
-    //      // Navigator.pushNamed(context, 'notifications');
-    //      showSearch(
-    //        context: context, delegate: DataSearch());
-    //     }),
+      ), 
       actions: <Widget>[
-        Container(
-        width: responsive.ip(5),
-        height: responsive.ip(5),
-        margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color:MyColors.Grey,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.search,color:Color(0xFF545D68),
-          size: responsive.ip(2.5),
-        ), 
-        onPressed: (){
-         // Navigator.pushNamed(context, 'notifications');
-         showSearch(
-           context: context, delegate: DataSearch());
-        }),
+        IconAction(
+          icon:LineIcons.search,
+          onPressed: ()=>showSearch(
+           context: context, delegate: DataSearch())
         ),
 
-         Container(
-          width: responsive.ip(5),
-          height: responsive.ip(5),
-          margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: MyColors.Grey,
-          shape: BoxShape.circle,
-        
-        ),
-        child:  IconButton(
-        icon: Icon(LineIcons.bell,color:Color(0xFF545D68),size: responsive.ip(2.5),), 
-        onPressed: (){
-            Navigator.pushNamed(context, 'notifications');
-        }),
-        ),
+        IconAction(
+          icon:LineIcons.bell,
+          onPressed:()=> Navigator.pushNamed(context, 'notifications')
+        )
        
       ],
     );
