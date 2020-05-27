@@ -1,6 +1,11 @@
+import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
+import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
+import 'package:app_invernadero/src/pages/products/products.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -14,6 +19,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:line_icons/line_icons.dart';
 
 class HomePage extends StatefulWidget {
@@ -58,6 +65,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) { 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _appBar(),
       body: Column(
         
@@ -226,7 +234,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       leading:  Row(
         children: <Widget>[
           IconAction(
-            icon:LineIcons.sun_o,
+            //icon:LineIcons.sun_o,
+            icon: LineIcons.bell,
             onPressed:()=>print("Clima")
           )
         ],
@@ -238,7 +247,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             Icon(Icons.location_on,color: Colors.grey,size: 20,),  
             Container(
               margin: EdgeInsets.only(left:5),
-              width: _responsive.wp(45),
+              width: _responsive.wp(37),
               child: Text("Mi ubicación Colonia pueblo nuevo",
                 style: TextStyle(
                   color: Colors.grey,
@@ -256,7 +265,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
        actions: <Widget>[
          IconAction(icon:Icons.search,onPressed:()=>showSearch(
-           context: context, delegate: DataSearch()))
+           context: context, delegate: DataSearch())),
+
+        IconAction(icon:LineIcons.shopping_cart,
+          onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
+        )
       ],
     );
   }

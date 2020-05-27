@@ -41,7 +41,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
     final responsive = Responsive.of(context);
     return Scaffold(
-      backgroundColor: Color(0XFFEEEEEE),
+      backgroundColor: Colors.white,//Color(0XFFEEEEEE),
       body: Container( 
         
         height: responsive.height,

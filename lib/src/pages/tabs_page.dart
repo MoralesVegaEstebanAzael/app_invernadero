@@ -7,14 +7,17 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:line_icons/line_icons.dart';
 
 import 'package:provider/provider.dart';
 
-
 class TabsPages extends StatefulWidget {
+
   const TabsPages({Key key}) : super(key: key);
 
   @override
@@ -35,15 +38,16 @@ class _TabsPagesState extends State<TabsPages> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
+      
       create: (_) => new _NavegacionModel(),
         child: Scaffold(  
         body: _Paginas(),
-        floatingActionButton: FloatingActionButton( 
-        onPressed: (){},
-        backgroundColor: miTema.accentColor,
-        child: Icon(LineIcons.home,size: 25,),
-        ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      //   floatingActionButton: FloatingActionButton( 
+      //   onPressed: (){},
+      //   backgroundColor: miTema.accentColor,
+      //   child: Icon(LineIcons.home,size: 25,),
+      //   ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: _Navegacion(),
       ),
     );
@@ -71,7 +75,7 @@ class __NavegacionState extends State<_Navegacion> {
 
     return BottomAppBar(
       shape: CircularNotchedRectangle(),
-      notchMargin:6,
+      notchMargin:10,
       color: Colors.transparent,
       elevation: 9.0,
       clipBehavior: Clip.antiAlias,
@@ -88,7 +92,7 @@ class __NavegacionState extends State<_Navegacion> {
           
           borderRadius: BorderRadius.only(topRight: Radius.circular(25.0), topLeft: Radius.circular(25.0)),
             child: BottomNavigationBar(
-            
+              
              currentIndex:  navegacionModel.pagActual,
              onTap: (i) => navegacionModel.pagActual = i,
              type: BottomNavigationBarType.fixed, 
@@ -96,30 +100,28 @@ class __NavegacionState extends State<_Navegacion> {
 
               items: [
                 BottomNavigationBarItem(
-                    icon: Icon(LineIcons.home),
+                    icon: Icon(Icons.store),
                     title: Text('Inicio',style: TextStyle(
                       fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
                     ),),
                   //icon: Container(padding: EdgeInsets.all(5), 
                   ),//child: Icon(LineIcons.home),), title: Text("data",style:TextStyle(fontSize: 6))), 
+                // BottomNavigationBarItem(
+                //     icon: Icon(LineIcons.search),
+                //     title: Text('Productos',style: TextStyle(
+                //       fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
+                //     ),),
+                //   ),
+                //  BottomNavigationBarItem(
+                //     icon: Container(),
+                //     title: Container(),),
                 BottomNavigationBarItem(
-                    icon: Icon(LineIcons.search),
-                    title: Text('Productos',style: TextStyle(
-                      fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
-                    ),),
-                  ),
-                 BottomNavigationBarItem(
-                    icon: Container(),
-                    title: Container(),),
-                
-
-                BottomNavigationBarItem(
-                  icon: Icon(LineIcons.shopping_cart),
-                    title: Text('Compras',style: TextStyle(
+                  icon: Icon(FontAwesomeIcons.shoppingBasket,size: _responsive.ip(2),),
+                    title: Text('Cesta',style: TextStyle(
                       fontFamily:'Quicksand',fontSize:_responsive.ip(1.5),fontWeight: FontWeight.w900
                     ),),
                   //icon: Container(padding: EdgeInsets.only(left: 70.0), 
-                  ),//child: Icon(LineIcons.shopping_cart)), title: Container()),
+                ),//child: Icon(LineIcons.shopping_cart)), title: Container()),
                 BottomNavigationBarItem(
                   icon: Icon(LineIcons.user),
                     title: Text('Yo',style: TextStyle(
@@ -147,10 +149,10 @@ class _Paginas extends StatelessWidget {
         controller: navegacionModel.pageController,
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
-          HomePage(),          
-          Products(),
+          HomePage(),        
+         // Products(),    
           ShoppingCartPage(),
-          ShoppingCartPage(),
+          //ShoppingCartPage(),
           UserProfilePage(),
         ], 
     );
@@ -159,20 +161,20 @@ class _Paginas extends StatelessWidget {
 
 
 class _NavegacionModel with ChangeNotifier{
+  
+
   int _pagActual = 0;
   PageController _pageController =  new PageController();
-
   //set y get de pagina actual
   int get pagActual => this._pagActual;
-  
   set pagActual(int valor){
-    if(valor!=2){
+    //if(valor!=2){
       this._pagActual = valor;
       _pageController.animateToPage(valor, duration: Duration(milliseconds: 50), curve: Curves.slowMiddle);
       notifyListeners();
-    }
+    //}
   }
-
   PageController get pageController => this._pageController;
 }
+
 

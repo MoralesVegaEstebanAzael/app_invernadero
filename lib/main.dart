@@ -1,5 +1,6 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
 import 'package:app_invernadero/src/pages/login/config_account_page.dart';
@@ -10,8 +11,12 @@ import 'package:app_invernadero/src/pages/login/login_password_page.dart';
 import 'package:app_invernadero/src/pages/login/login_phone_page.dart';
 import 'package:app_invernadero/src/pages/login/pin_code_page.dart';
 import 'package:app_invernadero/src/pages/notifications/notifications_page.dart';
+import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
 import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
+import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
+
+import 'package:app_invernadero/src/pages/bottom_navigation_bar.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
 import 'package:app_invernadero/src/pages/user/user_detalle_page.dart';
@@ -22,6 +27,8 @@ import 'package:app_invernadero/src/pages/checkout_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/widgets/menu_bar.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -76,7 +83,7 @@ class MyApp extends StatelessWidget {
         initialRoute: prefs.route,
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
-          'home'                  : (BuildContext)=>TabsPages(),
+          'home'                  : (BuildContext)=>BottomNavBarApp(),///BottomNavigationMenu(),
           'login_phone'           : (BuildContext)=>LoginPhonePage(),
           'login_password'        : (BuildContext)=>LoginPasswordPage(),
           'pin_code'              : (BuildContext)=>PinCodePage(),
@@ -98,6 +105,14 @@ class MyApp extends StatelessWidget {
           'checkout'              : (BuildContext)=>CheckoutPage(),
 
           'notifications'         : (BuildContext)=>NotificationsPage(),
+
+
+          'store'                 : (BuildContext)=>HomePage(),
+          'shopping_cart'         : (BuildContext)=>ShoppingCartPage(),
+          
+          'pedidos'               : (BuildContext)=>PedidosPage()
+
+
         },
       ),
     );

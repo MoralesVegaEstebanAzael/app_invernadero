@@ -5,21 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
 class DataSearch extends SearchDelegate{
-
   final productProvider = ProductoProvider();
-  final peliculas = [
-    'Spiderman',
-    'Aquaman',
-    'Batman',
-    'Shazam',
-    'Ironman',
-    'Capitan America'
-  ];  
-
-  final peliculasResientes=[
-    'Capitan America',
-    'Spiderman'
-  ];
+  
   @override
   List<Widget> buildActions(BuildContext context) {
     // acciones del appbar(icon para limpiar o cancelar bussqueda)
@@ -66,7 +53,7 @@ class DataSearch extends SearchDelegate{
   Widget buildSuggestions(BuildContext context) {
     // sugerencias que aparecen al escribir
     if(query.isEmpty){
-      return Container();
+      return Container(child: Text("data"),);
     }
 
     return FutureBuilder(

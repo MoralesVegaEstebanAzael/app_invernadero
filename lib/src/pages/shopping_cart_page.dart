@@ -1,7 +1,9 @@
+import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
+import 'package:app_invernadero/src/pages/bottom_navigation_bar.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -28,11 +30,16 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Responsive responsive;
   ShoppingCartBloc _shoppingCartBloc;
   Stream<List<ItemShoppingCartModel>> _stream;
-   Box box ;
+
+  BottomNavBloc _bottomNavBloc;
+
+  Box box ;
   @override
   void initState() { 
+    _bottomNavBloc = BottomNavBloc();
     super.initState();
   }
+
   @override
   void dispose() {
     _shoppingCartBloc.dispose();
@@ -97,6 +104,24 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     fontWeight: FontWeight.w900
                   ),
                 ),
+            Container(
+              height: responsive.ip(2),
+              color: Colors.green,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:<Widget>[
+                  Icon(LineIcons.info_circle,size: responsive.ip(3),color: Colors.grey,),
+                            SizedBox(width:2),
+                            Text("Total: ",
+                              style: TextStyle(
+                              fontFamily: 'Quicksand',
+                              fontWeight: FontWeight.w900,
+                              fontSize: responsive.ip(2)
+                          ),),
+                ]
+              ),
+            ),
+            
             WatchBoxBuilder(
               box: box, 
               builder: (BuildContext context,Box box){
@@ -123,10 +148,10 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       Align(
         alignment: Alignment.bottomRight,
         child: Container(
-            color: Colors.white,
+            color: Colors.red,
            // margin: EdgeInsets.only(left: 4,right: 4),
             padding: EdgeInsets.all(7),
-            height:responsive.ip(7),
+            height:responsive.ip(8),
            // width: responsive.ip(20),
            
               child:
@@ -134,37 +159,79 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
         children:<Widget>[
-         Row(
+            Expanded(
+                child: Column(
                 children: <Widget>[
-                  
-                  Icon(LineIcons.info_circle,size: responsive.ip(3),color: Colors.grey,),
-                  SizedBox(width:2),
-                  Text("Total: ",
-                    style: TextStyle(
-                    fontFamily: 'Quicksand',
-                    fontWeight: FontWeight.w900,
-                    fontSize: responsive.ip(2)
-                ),),
+                  Row(
+                    children: <Widget>[
+                      Row(
+                          children: <Widget>[
+                            
+                            Icon(LineIcons.info_circle,size: responsive.ip(3),color: Colors.grey,),
+                            SizedBox(width:2),
+                            Text("Total: ",
+                              style: TextStyle(
+                              fontFamily: 'Quicksand',
+                              fontWeight: FontWeight.w900,
+                              fontSize: responsive.ip(2)
+                          ),),
+
+                          ],
+                        ),
+
+                         Expanded(
+                                    child: StreamBuilder( 
+                              stream: _shoppingCartBloc.total ,
+                              initialData: 0 ,
+                              builder: (BuildContext context, AsyncSnapshot snapshot){
+                                return Text( 
+                                  "\$ ${snapshot.data} MX",
+                                  style: TextStyle(
+                                    fontSize: responsive.ip(2),
+                                    color:Colors.grey,
+                                    fontFamily:'Quicksand',
+                                    fontWeight: FontWeight.w900
+                                  ),
+                                );
+                              },
+                          ),
+                    ),
+                    ],
+                  ),
+
+
+                  GestureDetector(
+                    onTap: (){
+                        //BottomNavigationMenuState.index = 2;
+                        
+                        //BottomNavigationMenuState.menuState.currentState.tabController.animateTo(2);
+                        print("Seguir comprando");
+                       _bottomNavBloc.pickItem(1);
+                       
+                       
+                        Navigator.pop(context);
+
+
+                    },
+                                      child: Row(
+                      children:<Widget>[
+                         Icon(LineIcons.angle_double_left,size: responsive.ip(3),color: Colors.grey,),
+                              SizedBox(width:2),
+                              Text("Seguir comprando",
+                                style: TextStyle(
+                                color: Colors.grey,
+                                fontFamily: 'Quicksand',
+                                fontWeight: FontWeight.w900,
+                                fontSize: responsive.ip(2)
+                            ),),
+                      ]
+                    ),
+                  )
                 ],
               ),
+            ),
 
-              Expanded(
-                              child: StreamBuilder( 
-                        stream: _shoppingCartBloc.total ,
-                        initialData: 0 ,
-                        builder: (BuildContext context, AsyncSnapshot snapshot){
-                          return Text( 
-                            "\$ ${snapshot.data} MX",
-                            style: TextStyle(
-                              fontSize: responsive.ip(2),
-                              color:Colors.grey,
-                              fontFamily:'Quicksand',
-                              fontWeight: FontWeight.w900
-                            ),
-                          );
-                        },
-                    ),
-              ),
+             
           _button()
         ]
                 ),
@@ -256,15 +323,23 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
         ) ,
       ),
+       leading:Row(
+         children: <Widget>[
+           IconAction(
+              icon:LineIcons.angle_left,
+              onPressed:()=>Navigator.of(context).pop()
+            ),
+         ],
+       ),
       actions: <Widget>[
         IconAction(
           icon:LineIcons.trash_o,
           onPressed:()=>setState(() { _shoppingCartBloc.deleteAllItems(); })
         ),
-        IconAction(
-          icon:LineIcons.bell,
-          onPressed:()=> Navigator.pushNamed(context, 'notifications')
-        )
+        // IconAction(
+        //   icon:LineIcons.bell,
+        //   onPressed:()=> Navigator.pushNamed(context, 'notifications')
+        // )
       ],
     );
   }

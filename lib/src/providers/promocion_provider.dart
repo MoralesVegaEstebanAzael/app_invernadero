@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class PromocionProvider{
       final response = await http.get(
         url, 
         headers: headers,).timeout(
-            Duration(seconds: 1));
+            Duration(seconds: 10));
 
       print("++++++PROMOCIONES+++++" + response.statusCode.toString());
       print(response.body);
@@ -40,13 +41,10 @@ class PromocionProvider{
       if(decodeData==null) return [];
         return promociones;
       } on TimeoutException catch (e) {
-      
-      final scaffold = Scaffold.of(context);
-      scaffold.showSnackBar(
-        SnackBar(
-          content: const Text('Parece que no estas conectado a internet.'),
-        ),
-      );
+       Flushbar(
+      message:   "Parece que no estas conectado a internet.",
+      duration:  Duration(seconds:1),              
+    )..show(context);
       return [];
     } on Error catch (e) {
       print('Error: $e');
