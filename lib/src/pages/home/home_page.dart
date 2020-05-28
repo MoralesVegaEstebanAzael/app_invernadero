@@ -5,6 +5,8 @@ import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/pages/products/products.dart';
+import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
+import 'package:app_invernadero/src/pages/products/products_page_view.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -53,6 +55,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _promocionBloc.cargarPromociones(context);
     }
 
+    //
+    
+
+    //
     _responsive = Responsive.of(context);
     
   }
@@ -67,12 +73,27 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: Column(
-        
-        children: <Widget>[
-          _sliderPage(_promocionBloc),
-         // Expanded(child: Container(color: Colors.red,))
-        ],
+      body: Container(
+        width: _responsive.widht,
+        height: _responsive.height,
+        child: Column(
+            
+            children: <Widget>[
+            _sliderPage(_promocionBloc),
+
+              Container(
+            color: Colors.white,
+            width: _responsive.widht,
+            height: _responsive.ip(10),
+                  ),
+           ProductsHorizontal(),
+          //ProductPageView()
+              // Container(
+              //   width: _responsive.widht,
+              //   height: _responsive.ip(25),
+              //   child: ProductPageView())
+            ],
+          ),
       ),
       
     );
@@ -101,14 +122,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           color:miTema.primaryColor,
           borderRadius:BorderRadius.circular(15),
         ),
-
         margin: EdgeInsets.only(left: 15,right: 15,top: 10),
-       
-      
         child: Column(
         children: <Widget>[
           CarouselSlider.builder(
-            
             itemCount: promocion.length, 
             itemBuilder: (ctx, index) {
               return Stack(
@@ -125,8 +142,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                       width: _responsive.wp(30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                        
+                        children: <Widget>[                        
                           Text("Producto",
                             style: TextStyle(
                               color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,
@@ -135,7 +151,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           ),
                           SizedBox(height:_responsive.ip(1)),
                           Text(promocion[index].descripcion,
-                          
                             textWidthBasis: TextWidthBasis.longestLine,
                             style: TextStyle(
                               color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w300,
@@ -273,4 +288,5 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ],
     );
   }
+  
 }
