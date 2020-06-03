@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/shopping_cart_model.dart';
@@ -10,7 +11,7 @@ class DBProvider{
   Box itemsShoppingBox;
   Box productoBox;
   Box dataBaseBox;
-  
+  Box clientBox;
   Box favoriteBox;
   
   static DBProvider _instance =
@@ -28,6 +29,7 @@ class DBProvider{
     Hive.registerAdapter(ShoppingCartAdapter());
     Hive.registerAdapter(ItemShoppingCartAdapter());
     Hive.registerAdapter(ProductoAdapter());
+    Hive.registerAdapter(ClientAdapter());
 
     shoppingCartBox= await Hive.openBox("shoppingCart");
     dataBaseBox = await Hive.openBox("db");
@@ -36,6 +38,8 @@ class DBProvider{
     // productoBox = await Hive.openBox("productoBox");
 
     favoriteBox = await Hive.openBox("favorite");
+    clientBox = await Hive.openBox("client");
+
     return true;
   }
   
@@ -223,4 +227,13 @@ class DBProvider{
     return total;
   }
 
+
+  //** CLIENTE* */
+  insertClient(ClientModel client)async{
+      await clientBox.put(client.id,client);
+  }
+  
+  ClientModel getClient(String id){
+    return clientBox.get(id);
+  }
 }

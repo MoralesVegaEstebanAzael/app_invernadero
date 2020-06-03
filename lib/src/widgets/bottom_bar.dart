@@ -1,54 +1,33 @@
-import 'package:app_invernadero/src/theme/theme.dart';
-import 'package:flutter/material.dart';
-import 'package:line_icons/line_icons.dart';
+import 'dart:math';
 
-class BottomBar extends StatelessWidget {
+import 'package:app_invernadero/src/widgets/custom_scroll_physics.dart';
+import 'package:flutter/material.dart';
+
+class MyHomePage extends StatelessWidget {
+  final List<int> pages = List.generate(4, (index) => index);
+
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: CircularNotchedRectangle(),
-      notchMargin: 6.0,
-      color: Colors.transparent,
-      elevation: 9.0,
-      clipBehavior: Clip.antiAlias,
-      child: Container(
-        height:50.0,
-        decoration: BoxDecoration(
-          borderRadius:BorderRadius.only(
-            topLeft:Radius.circular(25.0),
-            topRight: Radius.circular(25.0),
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.only(left:5),
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: CustomScrollPhysics(itemDimension: 300),
+            itemCount: pages.length,
+            itemBuilder: (context, index) => Container(
+              height: double.infinity,
+              width: 290,
+              color: randomColor,
+              margin: const EdgeInsets.only(right: 10),
+            ),
           ),
-          color: Colors.white,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Container(
-              height: 50.0,
-              width: MediaQuery.of(context).size.width/2-40.0,
-              child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-               children: <Widget>[
-                 Icon(LineIcons.home,color:miTema.primaryColor),
-                 Icon(LineIcons.user,color:Color(0xFF676E79))
-               ],
-              ),
-              ),
-              
-            Container(
-              height: 50.0,
-              width: MediaQuery.of(context).size.width/2-40.0,
-              child: Row(
-               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-               children: <Widget>[
-                 Icon(LineIcons.search,color:Color(0xFF676E79)),
-                 Icon(LineIcons.shopping_cart,color:Color(0xFF676E79))
-               ],
-              ),
-              )
-          ]
         ),
       ),
     );
   }
+
+  Color get randomColor =>
+      Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0).withOpacity(1.0);
 }

@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 class IconAction extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
-
-  const IconAction({ this.icon, this.onPressed});
+  final Color iconCorlor;
+  final Color color;
+  
+  const IconAction({ 
+    this.icon, this.onPressed,
+    this.iconCorlor=MyColors.BlackAccent,this.color=MyColors.Grey});
 
   @override
   _IconActionState createState() => _IconActionState();
@@ -28,11 +32,11 @@ class _IconActionState extends State<IconAction> {
         height: _responsive.ip(5),
         margin: EdgeInsets.all(2),
         decoration: BoxDecoration(
-          color:MyColors.Grey,
+          color:widget.color,
           shape: BoxShape.circle, 
         ),
         child:  IconButton(
-        icon: Icon(widget.icon,color:Color(0xFF545D68),
+        icon: Icon(widget.icon,color:widget.iconCorlor,
           size: _responsive.ip(2.5),
         ), 
         onPressed: widget.onPressed),

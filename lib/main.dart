@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
 import 'package:app_invernadero/src/pages/login/config_account_page.dart';
+import 'package:app_invernadero/src/pages/login/config_location.dart';
 import 'package:app_invernadero/src/pages/login/config_password_page.dart';
 import 'package:app_invernadero/src/pages/login/create_account_page.dart';
 import 'package:app_invernadero/src/pages/login/login_page.dart';
@@ -80,7 +81,7 @@ class MyApp extends StatelessWidget {
       // ],
         title: 'App Invernadero',
         theme: miTema,
-        initialRoute: prefs.route,
+        initialRoute:prefs.route,
         routes: {
           'intro'                 : (BuildContext)=>IntroScreen(),
           'home'                  : (BuildContext)=>BottomNavBarApp(),///BottomNavigationMenu(),
@@ -89,6 +90,7 @@ class MyApp extends StatelessWidget {
           'pin_code'              : (BuildContext)=>PinCodePage(),
           'config_password'       : (BuildContext)=>ConfigPasswordPage(),
           'config_account'        : (BuildContext)=>ConfigAccountPage(),
+          'config_location'       : (BuildContext)=>ConfigLocation(),
           'user_profile'          : (BuildContext)=>UserProfilePage(),
           'login'                 : (BuildContext)=>LoginPage(),
           'create_account'        : (BuildContext)=>CreateAccountPage(), 

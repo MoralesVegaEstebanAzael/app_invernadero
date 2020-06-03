@@ -63,8 +63,9 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
     // _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
     // _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key,AppConfig.nexmo_secret_key);
 
+   // _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+   // _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
     _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
-    _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
   }
 
   
@@ -73,7 +74,6 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
   @override
   void dispose() {
     super.dispose();
-
     _cancel=true;
   }
 
@@ -85,7 +85,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
     }
   }
 
-
+  
   @override
   Widget build(BuildContext context) {
     
@@ -222,12 +222,11 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
         _cancel=true;    //stop timer   
         if(_user.password=='0')//si no ha configurado su contraseña
           Navigator.pushReplacementNamed(context, 'config_password');
-        else if(_user.name=='0') //si no ha configurado su información
-          Navigator.pushReplacementNamed(context, 'config_account');
+        else if(_user.direccion=='0') //si no ha configurado su información
+          Navigator.pushReplacementNamed(context, 'config_location');
     }else{
       // Scaffold.of(context).showSnackBar(snackBar);
       print("ocurrio un error en la verificacion: " + info['message']);
-
        Flushbar(
         backgroundColor: Colors.black45,
         icon: Icon(

@@ -3,6 +3,7 @@ class User{
   String _registered;
   String _password;
   String _name;
+  String _direccion;
   static User _instance =
       User.internal();
 
@@ -10,13 +11,14 @@ class User{
   
   factory User() => _instance;
 
-  initUser({String phone,String registered,String password,String name}) {
+  initUser({String phone,String registered,String password,String name,String direccion}) {
      _phone = phone;
     _registered = registered;
     _password = password;
     _name = name;
+    _direccion = direccion;
   }
-
+  
  /* User({String phone,String registered,String password,String name}){
     _phone = phone;
     _registered = registered;
@@ -37,6 +39,9 @@ class User{
   set name(String name){
     this._name = name;}
 
+  set direccion(String direccion){
+    this._direccion = direccion;
+  }
   
   String get phone{
     return this._phone;
@@ -52,5 +57,9 @@ class User{
 
   String get name{
     return this._name;
+  }
+
+  String get direccion{
+    return this._direccion;
   }
 }

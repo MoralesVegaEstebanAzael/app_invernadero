@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/userModel.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -25,51 +27,74 @@ class UserProvider{
 
 
   final _storage = SecureStorage();  
+  DBProvider _dbProvider = DBProvider();
 
-  Future<Map<String,dynamic>> buscarUsuario({@required String telefono})async{
-      await _storage.write('telefono', telefono);
-      final url = "${AppConfig.base_url}/api/auth/buscar_usuario";
+  Future<Map<String,dynamic>> buscarUsuario({@required String celular})async{
+      await _storage.write('celular', celular);
+      final url = "${AppConfig.base_url}/api/client/search";
      
-
-      final response = await http.post(url,body: {"telefono":telefono});
-      //final parsed = jsonDecode(response.body);
+      
+      final response = await http.post(url,body: {"celular":celular});
+    
       
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       print(decodedResp);
       
-      if(decodedResp.containsKey('telefono')){ 
-        return {'ok':true, 'psw' : decodedResp['psw'],'name':decodedResp['name']};
+      if(decodedResp.containsKey('celular')){ 
+        return {
+          'ok':true, 
+          'nombre' : decodedResp['nombre'],
+          'password':decodedResp['password'],
+          'direccion':decodedResp['direccion']          
+        };
       }else{
         return {'ok':false, 'mensaje' : decodedResp['error']};
       }
   }
   
 
-  Future<Map<String,dynamic>> login({@required String telefono,@required  String password})async{
+  Future<Map<String,dynamic>> login({@required String celular,@required  String password})async{
       Map<String, String> headers = {"Accept": "application/json"};
-      final url = "${AppConfig.base_url}/api/auth/login";
-      final response = await http.post(url,headers:headers ,body: {"telefono":telefono,"password":password});
+      final url = "${AppConfig.base_url}/api/client/login";
+      final response = await http.post(
+        url,headers:headers ,
+        body: {"celular":celular,"password":password}
+        );
       
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       
       print("API LOGIN");
       print(decodedResp); 
+
+      
+
+
+
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         // TODO: salvar e token preferences
         
         await _storage.write('token',decodedResp['access_token']);
-       
+
+
+        //var decodeData = jsonDecode(response.body)['client'] ;
+        print("DEcode resp");
+       ClientModel client = ClientModel.fromJson(jsonDecode(response.body)['client']);
+        _dbProvider.insertClient(client);
+        
+        _storage.idClient = client.id;
         _storage.sesion = true;
-        return {'ok':true, 'telefono' : decodedResp};
+
+       //  return {'ok':false};
+      return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
       }
   }
 
 
-  Future<Map<String,dynamic>> changePassword({@required String telefono,@required  String password})async{
+  Future<Map<String,dynamic>> changePassword({@required String celular,@required  String password})async{
     
-    final url = "${AppConfig.base_url}/api/auth/change_password";
+    final url = "${AppConfig.base_url}/api/client/update_password";
     final token = await _storage.read('token');
 
 
@@ -80,14 +105,13 @@ class UserProvider{
     final response = await http.post(
       url,
       headers:headers,
-      body: {"telefono":telefono,"password":password});
+      body: {"celular":celular,"password":password});
     
     Map<String,dynamic> decodedResp = jsonDecode(response.body);
     
-    print("API CHANGE PASSWORD");
+    
     print(decodedResp); 
     if(decodedResp.containsKey('result')){ 
-
       return {'ok':true, 'message' : decodedResp['message']};
     }else{
       return {'ok':false, 'message' : decodedResp['message']};
@@ -126,33 +150,10 @@ class UserProvider{
     }
   }
 
- /* Future<Map<String,dynamic>> signup({@required String telefono})async{
-
-      final url = "${AppConfig.base_url}/api/auth/signup";
-
-      Map<String, String> headers = {"Accept": "application/json"};
-
-  
-      final response = await http.post(
-        url,
-        headers:headers,
-        body: {"telefono":telefono});
-      
-      Map<String,dynamic> decodedResp = jsonDecode(response.body);
-      print("API SINGUP");
-      print(decodedResp); 
-      if(decodedResp.containsKey('access_token')){    
-        await _storage.write('token',decodedResp['access_token']);  
-        return {'ok':true, 'telefono' : decodedResp};
-      }else{
-        return {'ok':false, 'mensaje' : decodedResp['message']};
-      }
-  }
-*/
 
   Future<Map<String,dynamic>> logout()async{
     try{
-      final url = "${AppConfig.base_url}/api/auth/logout";
+      final url = "${AppConfig.base_url}/api/client/logout";
       final token = await _storage.read('token');
       final response = await http.get(
         url, 
@@ -169,7 +170,7 @@ class UserProvider{
         // TODO: remove  token 
         await _storage.delete('token');
         _storage.sesion = false;
-        return {'ok':true, 'telefono' : decodedResp};
+        return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
       }

@@ -149,15 +149,15 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
         _isLoading=true;
       });
       
-      Map info = await userProvider.login(telefono: _user.phone,password: bloc.password);
+      Map info = await userProvider.login(celular: _user.phone,password: bloc.password);
       
       setState(() {
         _isLoading=false;
       });   
       
       if(info['ok']){
-        if(_user.name==null){
-          Navigator.pushReplacementNamed(context, 'config_account');
+        if(_user.direccion==null || _user.direccion=='0'){
+          Navigator.pushReplacementNamed(context, 'config_location');
         }else{
           Navigator.pushReplacementNamed(context, 'home');
         }

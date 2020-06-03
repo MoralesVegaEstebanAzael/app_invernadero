@@ -48,8 +48,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
     super.initState();
     _prefs.route = 'login_phone'; //save route
     _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
-    _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
-    
+   // _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
+    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
     _user = User();
    
   }
@@ -160,7 +160,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
       //SOLICITUD A APIREST
       Map info = await userProvider.buscarUsuario(
-         telefono:AppConfig.nexmo_country_code+ bloc.telefono);
+         celular:AppConfig.nexmo_country_code+ bloc.telefono);
 
       setState(() {
         _isLoading=false;
@@ -169,20 +169,23 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
       if(info['ok']){ //RESPUESTA API REST USUARIO ENCONTRADO
         String telefono = AppConfig.nexmo_country_code + bloc.telefono;
         
-         _user.initUser(
-           phone:telefono, 
+        _user.initUser(
+          phone:telefono, 
           registered: '1',
-          password: info['psw'],
-          name:info['name']
-         );
+          password: info['password'],
+          name:info['nombre'],
+          direccion: info['direccion']
+        );
 
         _prefs.user= _user; //save user
 
         
         if(info['psw']=='0')
           Navigator.pushReplacementNamed(context, 'pin_code');
-        else //Registrado con datos completos
-          Navigator.pushReplacementNamed(context, 'login_password');
+       /* else if(info['direccion']=='0')
+          Navigator.pushReplacementNamed(context, 'newRoute');*/
+           //Registrado con datos completos
+        else Navigator.pushReplacementNamed(context, 'login_password');
 
       }else{ //USUARIO NO ENCONTRADO ->registrar
         sendCode(bloc);
@@ -193,9 +196,9 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
   sendCode(LoginBloc bloc)async{
     final telefono = AppConfig.nexmo_country_code + bloc.telefono;
-   
+
     Map info = await _nexmoSmsVerifyProvider.sendCode(
-        telefono:telefono ,brand: AppConfig.nexmo_business_name);
+        celular:telefono);
     
     if(info['ok']){ //mensaje enviado
       print("MENSAJE ENVIADO ");
@@ -205,7 +208,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
           phone:telefono,
           registered: '0',
           password: '0',
-          name: '0'
+          name: '0',
+          direccion: '0'
         );
         //User user =  User(phone:telefono,registered: '0',password: '0',name: '0');
         _prefs.user= _user; //save user

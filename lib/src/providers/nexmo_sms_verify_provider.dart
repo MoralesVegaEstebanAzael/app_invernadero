@@ -21,29 +21,28 @@ class NexmoSmsVerifyProvider{
 
   factory NexmoSmsVerifyProvider() => _instance;
 
-  initNexmo(String apiKey, String apiSecret) {
-    this.apiKey = apiKey;
-    this.apiSecret = apiSecret;
-  }
+  // initNexmo(String apiKey, String apiSecret) {
+  //   this.apiKey = apiKey;
+  //   this.apiSecret = apiSecret;
+  // }
 
 
-  Future<Map<String,dynamic>> sendCode({@required String telefono,@required String brand})async{
+  Future<Map<String,dynamic>> sendCode({@required String celular})async{
       Map<String, String> headers = {"Accept": "application/json"};
-      final url = "${AppConfig.base_url}/api/auth/sendCode";
+      final url = "${AppConfig.base_url}/api/client/send_code";
       final response = await http.post(
         url,
         headers: headers,
         body: {
-          "apiKey":this.apiKey,
-          "apiSecret" :this.apiSecret,
-          "number":telefono,
-          "brand" : brand
+         // "apiKey":this.apiKey,
+          //"apiSecret" :this.apiSecret,
+          "number":celular,
           });
 
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       print(decodedResp);
       if(decodedResp.containsKey('request_id')){ 
-
+        //inicializar Request ID & number
         this.requestId = decodedResp['request_id'];
         this.number = decodedResp['number'];
         return {'ok':true, 'request_id' : decodedResp['request_id']};
@@ -55,13 +54,13 @@ class NexmoSmsVerifyProvider{
 
   Future<Map<String,dynamic>> verify({@required String code})async{
       Map<String, String> headers = {"Accept": "application/json"};
-      final url = "${AppConfig.base_url}/api/auth/verifyCode";
+      final url = "${AppConfig.base_url}/api/client/verify_code";
       final response = await http.post(
         url,
         headers: headers,
         body: {
-          "apiKey":this.apiKey,
-          "apiSecret" :this.apiSecret,
+         // "apiKey":this.apiKey,
+          //"apiSecret" :this.apiSecret,
           "request_id":this.requestId,
           "code" : code,
           "number":this.number,
@@ -79,7 +78,7 @@ class NexmoSmsVerifyProvider{
       }
   }
 
-
+  
   //RESEND CODE
   Future<Map<String,dynamic>> resend({@required String code})async{
       Map<String, String> headers = {"Accept": "application/json"};

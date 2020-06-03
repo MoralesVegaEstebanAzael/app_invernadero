@@ -180,14 +180,14 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
       });
 
       //API
-      Map info = await userProvider.changePassword(telefono: _user.phone , password: bloc.password);
+      Map info = await userProvider.changePassword(celular: _user.phone , password: bloc.password);
       
        setState(() {
         _isLoading=false;
       });
 
       if(info['ok']){
-        Navigator.pushReplacementNamed(context, 'config_account');
+        Navigator.pushReplacementNamed(context, 'config_location');
       }else{
         print("ocurrio un error durante la peticion");
         Scaffold.of(context).showSnackBar(snackBar);

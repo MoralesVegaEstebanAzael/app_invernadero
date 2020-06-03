@@ -82,6 +82,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   
     
     Widget _appBar(){
+      
       return SliverAppBar(
         brightness :Brightness.dark,
         elevation: 0,
@@ -90,7 +91,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           icon:Icon(LineIcons.angle_left),
           onPressed: () => Navigator.of(context).pop()
         ),
-      
+        actions: <Widget>[
+          IconAction(
+            icon:LineIcons.shopping_cart,
+            onPressed: (){},
+            iconCorlor: Colors.white,
+            color: Colors.black12,
+          )
+
+        ],
       );
     }
   

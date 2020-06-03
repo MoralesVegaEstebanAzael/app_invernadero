@@ -76,24 +76,31 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       body: Container(
         width: _responsive.widht,
         height: _responsive.height,
-        child: Column(
-            
-            children: <Widget>[
-            _sliderPage(_promocionBloc),
+        child: SingleChildScrollView(
+                  child: Column(
+              
+              children: <Widget>[
+              _sliderPage(_promocionBloc),
 
-              Container(
-            color: Colors.white,
-            width: _responsive.widht,
-            height: _responsive.ip(10),
-                  ),
-           ProductsHorizontal(),
-          //ProductPageView()
+                Container(
+              color: Colors.white,
+              width: _responsive.widht,
+              height: _responsive.ip(10),
+                    ),
+             ProductsHorizontal(),
               // Container(
-              //   width: _responsive.widht,
-              //   height: _responsive.ip(25),
-              //   child: ProductPageView())
-            ],
-          ),
+              // color: Colors.white,
+              // width: _responsive.widht,
+              // height: _responsive.ip(10),
+              //       ),
+            //ProductPageView()
+                // Container(
+                //   width: _responsive.widht,
+                //   height: _responsive.ip(25),
+                //   child: ProductPageView())
+              ],
+            ),
+        ),
       ),
       
     );

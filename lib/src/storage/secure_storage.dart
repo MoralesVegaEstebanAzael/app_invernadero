@@ -48,7 +48,13 @@ class SecureStorage{
     _prefs.setBool('sesion', value);
   }
 
-  
+  get idClient{
+    return _prefs.getString('id_client')??'';
+  }
+
+  set idClient(String idClient){
+    _prefs.setString('id_client', idClient);
+  }
   get route{
     return _prefs.getString('route')??'intro';
   }
@@ -63,6 +69,7 @@ class SecureStorage{
       user.registered,
       user.password,
       user.name,
+      user.direccion
     ];
     _prefs.setStringList('user', userList);
   }
@@ -76,7 +83,8 @@ class SecureStorage{
         phone:us[0],
         registered:us[1],
         password: us[2],
-        name: us[3]
+        name: us[3],
+        direccion: us[4]
        );
       /*User u = User(
         phone:us[0],
