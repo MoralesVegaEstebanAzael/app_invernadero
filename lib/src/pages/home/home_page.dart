@@ -9,6 +9,7 @@ import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
 import 'package:app_invernadero/src/pages/products/products_page_view.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 
@@ -34,16 +35,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   AnimationController _controller;
   PromocionBloc _promocionBloc;
   Responsive _responsive;
-  
+  Stream<List<PromocionModel>> promocionesStream;
   int _current=0;
+
+  SecureStorage _prefs = SecureStorage();
+
+
   @override
   void initState() {
     //FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     super.initState();
     _controller = AnimationController(vsync: this);
-
-  
-
+    
   }
 
 
@@ -53,6 +56,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     if(_promocionBloc==null){
       _promocionBloc = Provider.promocionesBloc(context);
       _promocionBloc.cargarPromociones(context);
+      promocionesStream = _promocionBloc.promocionStream;
     }
 
     //
@@ -70,6 +74,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -80,6 +85,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   child: Column(
               
               children: <Widget>[
+              
               _sliderPage(_promocionBloc),
 
                 Container(
@@ -108,14 +114,26 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   
   Widget _sliderPage(PromocionBloc bloc) {
     return StreamBuilder(
-      stream: bloc.promocionStream,
+      stream: promocionesStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
-        if(snapshot.hasData){
+        print("slider");
+        print(snapshot.data);
+        if(snapshot.data.isNotEmpty){
+          print("crear item");
           return  _crearItem(snapshot,context); 
-        }else{
-          return Center(
-            child: CircularProgressIndicator(),
+        }else {
+          return Container(
+            width:_responsive.widht,
+            height:_responsive.ip(20),
+            decoration: BoxDecoration(
+          color:MyColors.PlaceholderBackground,
+          borderRadius:BorderRadius.circular(15),
+        ),  
+        margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+       // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
           );
+
+          
         }
       },
     );
@@ -184,10 +202,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             options: CarouselOptions(
             height: _responsive.ip(20),
            // aspectRatio: 16/9,
-            onPageChanged: (index, reason) {
-            setState(() {
-              _current = index;
-            });},
+            // onPageChanged: (index, reason) {
+            // setState(() {
+            //   _current = index;
+            // });},
              viewportFraction: 1.0,
              
               enlargeCenterPage: true,

@@ -187,7 +187,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             SizedBox(height: responsive.ip(2)),
             Text(
-            "Especificaciones: ${producto.contCaja} ${AppConfig.uni_medida} | Existencias: " ,
+            "Especificaciones: ${producto.equiKilos} ${AppConfig.uni_medida} | Existencias: " ,
               style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey,
               fontSize: responsive.ip(1.7)
               ),
@@ -199,10 +199,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               
               Column(
                 children:<Widget>[
-                    Text("\$ ${producto.precioMayoreo}",style: TextStyle(
+                    Text("\$ ${producto.precioMay}",style: TextStyle(
                       fontSize:responsive.ip(3),fontFamily: 'Quicksand',
                 fontWeight: FontWeight.w900,color: miTema.accentColor,),),
-                Text("\$ ${producto.precioMenudeo}",style: TextStyle(
+                Text("\$ ${producto.precioMen}",style: TextStyle(
                   fontSize:responsive.ip(3),fontFamily: 'Quicksand',
                 fontWeight: FontWeight.w900,color: miTema.accentColor,),),
                 ]
@@ -236,7 +236,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                      ItemShoppingCartModel item = ItemShoppingCartModel(
                       producto: producto,
                       cantidad: 1,
-                      subtotal: 1*producto.precioMenudeo
+                      subtotal: 1*producto.precioMen
                     );
   
                     _dbProvider.insertItemSC(item);

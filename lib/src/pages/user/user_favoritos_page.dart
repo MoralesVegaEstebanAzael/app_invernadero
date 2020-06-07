@@ -125,7 +125,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
               style: TextStyle(
                 fontFamily: 'Quicksand',
                 fontWeight: FontWeight.w900,fontSize: responsive.ip(1.8)),),
-            Text("Precio Menudeo: \$ ${item.precioMenudeo}",
+            Text("Precio Menudeo: \$ ${item.precioMen}",
                 style: TextStyle(color:Colors.grey),
                 ),
             // _controlButtons(index,item),

@@ -56,29 +56,27 @@ class UserProvider{
   Future<Map<String,dynamic>> login({@required String celular,@required  String password})async{
       Map<String, String> headers = {"Accept": "application/json"};
       final url = "${AppConfig.base_url}/api/client/login";
+      
       final response = await http.post(
         url,headers:headers ,
-        body: {"celular":celular,"password":password}
+        body: {
+          "grant_type" : "refresh_token" ,
+          "customer_id" : "client-id" ,
+          "client_secret" : "client-secret" ,
+          "refresh_token" : "refresh-token" ,
+          "provider" : AppConfig.provider_api ,
+          "celular":celular,
+          "password":password}
         );
       
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
-      
-      print("API LOGIN");
-      print(decodedResp); 
-
-      
-
-
 
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         // TODO: salvar e token preferences
-        
         await _storage.write('token',decodedResp['access_token']);
-
-
         //var decodeData = jsonDecode(response.body)['client'] ;
-        print("DEcode resp");
-       ClientModel client = ClientModel.fromJson(jsonDecode(response.body)['client']);
+        //print("DEcode resp");
+        ClientModel client = ClientModel.fromJson(jsonDecode(response.body)['client']);
         _dbProvider.insertClient(client);
         
         _storage.idClient = client.id;
@@ -279,7 +277,11 @@ class UserProvider{
     print(respData);
 
     return respData['secure_url'];
-  }
- 
+  } 
+
+
+  
+  
+
   
 }

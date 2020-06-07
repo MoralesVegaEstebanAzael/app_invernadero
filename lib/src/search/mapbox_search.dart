@@ -1,12 +1,15 @@
+import 'package:app_invernadero/src/blocs/feature_bloc.dart';
+import 'package:app_invernadero/src/models/feature_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
-import 'package:app_invernadero/src/providers/producto_provider.dart';
+import 'package:app_invernadero/src/providers/mapbox_provider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:line_icons/line_icons.dart';
 
-class DataSearch extends SearchDelegate{
-  final productProvider = ProductoProvider();
-  
+class PlacesSearch extends SearchDelegate{
+  final mapboxProvider = MapBoxProvider();
+  FeatureBloc _featureBloc = FeatureBloc();
   @override
   List<Widget> buildActions(BuildContext context) {
     // acciones del appbar(icon para limpiar o cancelar bussqueda)
@@ -57,24 +60,27 @@ class DataSearch extends SearchDelegate{
     }
     
     return FutureBuilder(
-      future: productProvider.searchProduct(query),
-      builder: (BuildContext context,AsyncSnapshot<List<ProductoModel>> snapshot){
+      future: mapboxProvider.searchPlace(query),
+      builder: (BuildContext context,AsyncSnapshot<List<Feature>> snapshot){
         if(snapshot.hasData){
-          final productos = snapshot.data;
+          final places = snapshot.data;
             return ListView(
-              children: productos.map((p){
+              children: places.map((p){
                 return ListTile(
-                  leading: FadeInImage(
-                    placeholder:AssetImage('assets/placeholder.png'), 
-                    image: NetworkImage(p.urlImagen),
-                    width: 50.0,
-                    fit:BoxFit.contain
-                    ),
-                    title: Text(p.nombre),
-                    subtitle: Text("\$ ${p.precioMen} MX"),
+                  
+                  
+                    title: Text(p.placeName),
+                    subtitle: Text("${p.placeName}"),
                     onTap: (){
+                      Position position = Position(
+                          latitude: p.geometry.coordinates[1],
+                          longitude: p.geometry.coordinates[0],
+                      );
+                      //_featureBloc.addCoordinate(p.geometry.coordinates);
+                      _featureBloc.addPosition(position);
+                      _featureBloc.addAddres(p.placeName );
                       close(context, null);
-                      Navigator.pushNamed(context, 'product_detail',arguments: p);
+                      //Navigator.pushNamed(context, 'product_detail',arguments: p);
                     },
                 );
               }).toList(),

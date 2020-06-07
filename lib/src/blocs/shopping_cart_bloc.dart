@@ -40,11 +40,10 @@ class ShoppingCartBloc{
     totalItems();
   } 
 
- 
-
+  
   void subtotalItem(ItemShoppingCartModel item)async{
     //Replantear en base a si es menudeo o mayoreo
-    double subtotal = item.cantidad * item.producto.precioMenudeo;
+    double subtotal = item.cantidad * item.producto.precioMen;
     item.subtotal = subtotal;
     await _db.updateItemSC(item);
 

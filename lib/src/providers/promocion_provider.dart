@@ -15,7 +15,7 @@ class PromocionProvider{
 
   Future<List<PromocionModel>> loadPromociones(BuildContext context)async{
     try {
-      final url = "${AppConfig.base_url}/api/auth/promociones"; 
+      final url = "${AppConfig.base_url}/api/client/promociones"; 
       final token = await _storage.read('token');
       Map<String, String> headers = {
         HttpHeaders.authorizationHeader: "Bearer $token",

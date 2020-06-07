@@ -3,6 +3,7 @@ import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/custom_scroll_physics.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +48,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
     //     _productoBloc.cargarProductos();
     //   }
     // });
+    print("desde vertical slider");
     return AspectRatio(
       aspectRatio: 16/8,
       child: _createItems());
@@ -56,7 +58,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
      return StreamBuilder(
        stream:_stream,
        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-         if(snapshot.hasData){
+         if(!snapshot.data.isEmpty){
 
            return Container( 
           margin: EdgeInsets.only(left:20),
@@ -69,10 +71,31 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
         );
 
          }else{
-           return Container(
+          return Container(
+             width: _responsive.widht,
              height: _responsive.ip(20),
-             child: Center(child: CircularProgressIndicator())
-           );
+            
+            margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+            
+            child:Row(
+              children:<Widget>[
+                Expanded(child: Container(
+                          decoration: BoxDecoration(
+                  color: MyColors.PlaceholderBackground,
+                  borderRadius:BorderRadius.circular(15),
+                ),
+                        ),),
+                        SizedBox(width:_responsive.ip(2)),
+                        Expanded(child: Container(
+                          decoration: BoxDecoration(
+                  color: MyColors.PlaceholderBackground,
+                  borderRadius:BorderRadius.circular(15),
+                ),
+                ),)
+              ]
+            )
+            // child: Image(image: AssetImage('assets/placeholder_products.gif'))
+          );
          }
        },
      );
@@ -160,7 +183,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
         ),
 
         Text(
-          "\$${producto.precioMayoreo} Mayoreo",
+          "\$${producto.precioMay} Mayoreo",
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color:Colors.white,
@@ -170,7 +193,7 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
           ),
         ),
         Text(
-          "\$${producto.precioMenudeo} Menudeo",
+          "\$${producto.precioMen} Menudeo",
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color:Colors.white,

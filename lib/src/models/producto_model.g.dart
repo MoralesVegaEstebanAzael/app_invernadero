@@ -18,12 +18,12 @@ class ProductoAdapter extends TypeAdapter<ProductoModel> {
     };
     return ProductoModel(
       id: fields[0] as int,
-      solar: fields[1] as int,
-      cultivo: fields[2] as int,
-      nombre: fields[3] as String,
-      contCaja: fields[4] as int,
-      precioMayoreo: fields[5] as double,
-      precioMenudeo: fields[6] as double,
+      idCultivo: fields[1] as int,
+      nombre: fields[2] as String,
+      equiKilos: fields[3] as int,
+      precioMay: fields[4] as double,
+      precioMen: fields[5] as double,
+      cantExis: fields[6] as int,
       urlImagen: fields[7] as String,
     );
   }
@@ -35,17 +35,17 @@ class ProductoAdapter extends TypeAdapter<ProductoModel> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.solar)
+      ..write(obj.idCultivo)
       ..writeByte(2)
-      ..write(obj.cultivo)
-      ..writeByte(3)
       ..write(obj.nombre)
+      ..writeByte(3)
+      ..write(obj.equiKilos)
       ..writeByte(4)
-      ..write(obj.contCaja)
+      ..write(obj.precioMay)
       ..writeByte(5)
-      ..write(obj.precioMayoreo)
+      ..write(obj.precioMen)
       ..writeByte(6)
-      ..write(obj.precioMenudeo)
+      ..write(obj.cantExis)
       ..writeByte(7)
       ..write(obj.urlImagen);
   }

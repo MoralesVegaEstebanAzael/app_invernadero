@@ -2,6 +2,7 @@ import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/bottom_bar.dart';
@@ -16,10 +17,12 @@ class BottomNavBarApp extends StatefulWidget {
 class _BottomNavBarAppState extends State<BottomNavBarApp> {
   BottomNavBloc _bottomNavBarBloc;
   Responsive _responsive;
+  SecureStorage _prefs = SecureStorage();
   @override
   void initState() {
     super.initState();
     _bottomNavBarBloc = BottomNavBloc();
+    _prefs.route = 'home';
   }
 
   @override

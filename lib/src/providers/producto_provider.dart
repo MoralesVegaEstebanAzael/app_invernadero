@@ -10,7 +10,7 @@ class ProductoProvider{
   final _storage = SecureStorage();  
   
   Future<List<ProductoModel>> cargarProductos()async{
-    final url = "${AppConfig.base_url}/api/auth/productos"; 
+    final url = "${AppConfig.base_url}/api/client/productos"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",

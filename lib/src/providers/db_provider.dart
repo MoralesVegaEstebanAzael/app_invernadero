@@ -177,7 +177,7 @@ class DBProvider{
     final _item= await itemsShoppingBox.get(item.producto.id);
     if(_item!=null){
       _item.cantidad++;
-      _item.subtotal += item.cantidad*item.producto.precioMenudeo;
+      _item.subtotal += item.cantidad*item.producto.precioMen;
       await updateItemSC(_item);
     }else{
       await itemsShoppingBox.put(item.producto.id,item );
@@ -222,18 +222,22 @@ class DBProvider{
     ItemShoppingCartModel item;
     map.forEach((k,v){
       item =v;
-      total += item.cantidad*item.producto.precioMenudeo;
+      total += item.cantidad*item.producto.precioMen;
     });
     return total;
   }
 
-
+  
   //** CLIENTE* */
   insertClient(ClientModel client)async{
-      await clientBox.put(client.id,client);
+    await clientBox.put(client.id,client);
   }
   
   ClientModel getClient(String id){
     return clientBox.get(id);
+  }
+
+  Future updateClient(ClientModel client)async{
+    await clientBox.put(client.id,client);
   }
 }

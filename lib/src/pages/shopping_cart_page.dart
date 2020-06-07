@@ -273,7 +273,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.bold,fontSize: responsive.ip(2)),),
-            Text("Precio Menudeo: \$ ${item.producto.precioMenudeo}",
+            Text("Precio Menudeo: \$ ${item.producto.precioMen}",
                 style: TextStyle(color:Colors.grey,fontSize: responsive.ip(1.5)),
                 ),
             _controlButtons(index,item),
