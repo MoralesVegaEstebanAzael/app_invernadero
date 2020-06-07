@@ -17,7 +17,6 @@ import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
 
-import 'package:app_invernadero/src/pages/bottom_navigation_bar.dart';
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
 import 'package:app_invernadero/src/pages/user/user_detalle_page.dart';

@@ -17,10 +17,16 @@ class ClientBloc{
   
   ClientBloc._internal();
   
-   final StreamController<ClientModel> _clientController = 
+  final StreamController<ClientModel> _clientController = 
   StreamController<ClientModel>.broadcast();
 
   Stream<ClientModel> get clientStream =>_clientController.stream;
+
+  final StreamController<String> _addressController =
+  StreamController<String>.broadcast();
+
+  Stream<String> get addressStream => _addressController.stream;
+
 
   void updateAddres(Position position,String addres){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
@@ -33,6 +39,12 @@ class ClientBloc{
     await _dbProvider.updateClient(client);
   } 
   
+  void addresClient(){
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);
+    //print("Clienteeeeeeeeeeeee: ${client.direccion}");
+    
+    _addressController.sink.add(client.direccion);
+  }
   void getClient(){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
     _clientController.sink.add(client);
@@ -40,6 +52,9 @@ class ClientBloc{
 
   dispose(){
     _clientController.close();
+    //_addressController.close();
   }
+
+
   
 }

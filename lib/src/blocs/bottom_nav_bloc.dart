@@ -6,7 +6,7 @@ import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 
-enum NavBarItem{PEDIDOS,HOME,PROFILE}
+enum NavBarItem{PEDIDOS,NOTIFICACIONES,HOME,FAVORITOS,PROFILE}
 
 class BottomNavBloc{
 
@@ -31,9 +31,15 @@ class BottomNavBloc{
         _navBarController.sink.add(NavBarItem.PEDIDOS);
         break;
       case 1:
-        _navBarController.sink.add(NavBarItem.HOME);
+        _navBarController.sink.add(NavBarItem.NOTIFICACIONES);
         break;
       case 2:
+        _navBarController.sink.add(NavBarItem.HOME);
+        break;
+      case 3:
+        _navBarController.sink.add(NavBarItem.FAVORITOS);
+        break;
+      case 4:
         _navBarController.sink.add(NavBarItem.PROFILE);
         break;
     }

@@ -46,14 +46,7 @@ class _PedidosPageState extends State<PedidosPage> {
           fontSize:_responsive.ip(2.5),color:Color(0xFF545D68)
         ) ,
       ),
-      leading:Row(
-         children: <Widget>[
-           IconAction(
-              icon:LineIcons.bell,
-              onPressed:()=>Navigator.of(context).pop()
-            ),
-         ],
-       ),
+     
       actions: <Widget>[
         IconAction(
           icon:LineIcons.search,

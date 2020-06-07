@@ -58,6 +58,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
   @override
   void dispose() {
     _featureBloc.dispose();
+    //_clientBloc.dispose();
     super.dispose();
   }
   @override
@@ -88,13 +89,13 @@ class _ConfigLocationState extends State<ConfigLocation> {
   _position(){
     //verificar el stream
     return StreamBuilder(
-      stream: _featureBloc.postionStream ,
+      stream: _featureBloc.positionStream ,
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.hasData){//stream DATA
           Position position=snapshot.data;
           
           return _content(position);
-
+          
         }else{ //si no hay datos en el stream ocupar posicion actual
         print("datos de ubicacion");
           return FutureBuilder( //obtener position actual
@@ -306,8 +307,9 @@ class _ConfigLocationState extends State<ConfigLocation> {
 
   
   _onTap(Position position){
-    if(_featureBloc.postionStream!=null){
+    if(_featureBloc.positionStream!=null){
       _clientBloc.updateAddres(position, addres);
+      print("Direccion $addres");
       print("Direccion almacenada");
       Navigator.pushReplacementNamed(context, 'home');
     }

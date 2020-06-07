@@ -1,6 +1,8 @@
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
+import 'package:app_invernadero/src/pages/notifications/notifications_page.dart';
 import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
+import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -52,6 +54,10 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
               return PedidosPage();
             case NavBarItem.PROFILE:
               return UserProfilePage();
+            case NavBarItem.NOTIFICACIONES:
+              return NotificationsPage();
+            case NavBarItem.FAVORITOS:
+              return FavoritosPage();
           }
         },
       ),
@@ -78,6 +84,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
           builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
             return BottomNavigationBar(
                   fixedColor: miTema.accentColor,
+                  unselectedItemColor: Colors.grey,
                   currentIndex: snapshot.data.index,
                   onTap: _bottomNavBarBloc.pickItem,
                   items: [
@@ -85,12 +92,28 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
                       title: Text('Pedidos',style: TextStyle(
                       fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
                     ),),
-                      icon: Icon(LineIcons.mobile_phone),
+                      icon: Icon(LineIcons.mobile_phone,),
                     ),
+
+                    BottomNavigationBarItem(
+                      title: Text('Notificaciones',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                    ),),
+                      icon: Icon(LineIcons.bell,),
+                    ),
+
+
                     BottomNavigationBarItem(
                       title: Container(),
                       icon: Container(),
                     ),
+                     BottomNavigationBarItem(
+                     title: Text('Favoritos',style: TextStyle(
+                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                    ),),
+                      icon: Icon(LineIcons.heart_o),
+                    ),
+
                     BottomNavigationBarItem(
                      title: Text('Yo',style: TextStyle(
                       fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
@@ -109,7 +132,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
        floatingActionButton: FloatingActionButton(
           backgroundColor: miTema.accentColor,
           onPressed: () {
-            _bottomNavBarBloc.pickItem(1);
+            _bottomNavBarBloc.pickItem(2);
           },
           child: Icon(Icons.store),
         ),

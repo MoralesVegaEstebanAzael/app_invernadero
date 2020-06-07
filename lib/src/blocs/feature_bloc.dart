@@ -25,7 +25,7 @@ class FeatureBloc{
   StreamController<String>.broadcast();
 
   Stream<List<double>> get coordinatesStream =>_coordinatesController.stream;
-  Stream<Position> get postionStream => _positionController.stream;
+  Stream<Position> get positionStream => _positionController.stream;
   Stream<String> get addresStream=>_addresController.stream;
 
   dispose(){

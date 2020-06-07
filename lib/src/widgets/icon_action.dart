@@ -24,22 +24,23 @@ class _IconActionState extends State<IconAction> {
     _responsive = Responsive.of(context);
     super.didChangeDependencies();
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: _responsive.ip(5),
-        height: _responsive.ip(5),
-        margin: EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color:widget.color,
-          shape: BoxShape.circle, 
-        ),
-        child:  IconButton(
-        icon: Icon(widget.icon,color:widget.iconCorlor,
-          size: _responsive.ip(2.5),
-        ), 
-        onPressed: widget.onPressed),
+    return GestureDetector(
+      onTap: widget.onPressed,
+      child: Container(
+      width: _responsive.ip(5),
+      height: _responsive.ip(5),
+      margin: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color:widget.color,
+        shape: BoxShape.circle, 
+      ),
+      child: Icon(widget.icon,color:widget.iconCorlor,
+        size: _responsive.ip(2.5),
+      )
+      ),
     );
   }
 }

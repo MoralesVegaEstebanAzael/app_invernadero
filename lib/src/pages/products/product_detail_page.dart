@@ -2,7 +2,6 @@
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
-import 'package:app_invernadero/src/pages/bottom_navigation_bar.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -30,7 +29,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
    BottomNavBloc _bottomNavBarBloc;
 
 
-  GlobalKey<BottomNavigationMenuState> _counterState;
+  
   
     Responsive responsive;
     ProductoModel producto; 
@@ -42,7 +41,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       _dbProvider = DBProvider();
 
       _bottomNavBarBloc = BottomNavBloc();
-       _counterState = GlobalKey();
       super.initState();
     }
   
@@ -286,7 +284,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           ],),
         ),
       );
-    }
+    } 
   
   
    

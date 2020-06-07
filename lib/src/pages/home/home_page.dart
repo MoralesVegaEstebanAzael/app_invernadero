@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/app_bar.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flushbar/flushbar.dart';
@@ -32,13 +32,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  ClientBloc _clientBloc;
+
   AnimationController _controller;
   PromocionBloc _promocionBloc;
   Responsive _responsive;
   Stream<List<PromocionModel>> promocionesStream;
-  int _current=0;
-
-  SecureStorage _prefs = SecureStorage();
+   int _current=0;
 
 
   @override
@@ -57,14 +57,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _promocionBloc = Provider.promocionesBloc(context);
       _promocionBloc.cargarPromociones(context);
       promocionesStream = _promocionBloc.promocionStream;
+
+      _clientBloc = Provider.clientBloc(context);
+      _clientBloc.addresClient();
+      _responsive = Responsive.of(context);
     }
-
-    //
-    
-
-    //
-    _responsive = Responsive.of(context);
-    
   }
   @override
   void dispose() {
@@ -74,7 +71,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
-
+    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -94,16 +91,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               height: _responsive.ip(10),
                     ),
              ProductsHorizontal(),
-              // Container(
-              // color: Colors.white,
-              // width: _responsive.widht,
-              // height: _responsive.ip(10),
-              //       ),
-            //ProductPageView()
-                // Container(
-                //   width: _responsive.widht,
-                //   height: _responsive.ip(25),
-                //   child: ProductPageView())
               ],
             ),
         ),
@@ -118,19 +105,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
         print("slider");
         print(snapshot.data);
-        if(snapshot.data.isNotEmpty){
-          print("crear item");
+        if(snapshot.data!=null&&  snapshot.data.isNotEmpty){
           return  _crearItem(snapshot,context); 
         }else {
           return Container(
             width:_responsive.widht,
             height:_responsive.ip(20),
             decoration: BoxDecoration(
-          color:MyColors.PlaceholderBackground,
-          borderRadius:BorderRadius.circular(15),
-        ),  
-        margin: EdgeInsets.only(left: 15,right: 15,top: 10),
-       // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
+              color:MyColors.PlaceholderBackground,
+              borderRadius:BorderRadius.circular(15),
+            ),  
+            margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+            // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
           );
 
           
@@ -239,30 +225,30 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   
   _button(){
     return CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Container(
-                padding: EdgeInsets.symmetric(horizontal:_responsive.ip(1.5),vertical:_responsive.ip(1.3)),
-                decoration: BoxDecoration(
-                  color: miTema.accentColor,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [BoxShadow(
-                          color:Colors.black26,
-                          blurRadius: 5
-                  )]
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Text("COMPRAR",
-                      style: TextStyle(
-                        fontFamily: 'Quiksand',
-                        color:Colors.white,letterSpacing: 1,
-                        fontSize: _responsive.ip(1.5)),),
-                    SizedBox(width:5),
-                    //Icon(LineIcons.check,color:Colors.white,size: _responsive.ip(2),)
-                  ],
-                ),
-                ),
-                onPressed:  ()=>print("Comprar"));
+      padding: EdgeInsets.zero,
+      child: Container(
+      padding: EdgeInsets.symmetric(horizontal:_responsive.ip(1.5),vertical:_responsive.ip(1.3)),
+      decoration: BoxDecoration(
+        color: miTema.accentColor,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [BoxShadow(
+                color:Colors.black26,
+                blurRadius: 5
+        )]
+      ),
+      child: Row(
+        children: <Widget>[
+          Text("COMPRAR",
+            style: TextStyle(
+              fontFamily: 'Quiksand',
+              color:Colors.white,letterSpacing: 1,
+              fontSize: _responsive.ip(1.5)),),
+          SizedBox(width:5),
+          //Icon(LineIcons.check,color:Colors.white,size: _responsive.ip(2),)
+        ],
+      ),
+      ),
+      onPressed:  ()=>print("Comprar"));
   }
 
   _appBar() {
@@ -270,43 +256,50 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       brightness :Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
-      centerTitle: true,
-      leading:  Row(
-        children: <Widget>[
-          IconAction(
-            //icon:LineIcons.sun_o,
-            icon: LineIcons.bell,
-            onPressed:()=>print("Clima")
-          )
-        ],
-      ),
-      
-      title: Container(
-        child: Row(
-          children:<Widget>[
-            Icon(Icons.location_on,color: Colors.grey,size: 20,),  
-            Container(
-              margin: EdgeInsets.only(left:5),
-              width: _responsive.wp(37),
-              child: Text("Mi ubicación Colonia pueblo nuevo",
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontFamily:'Quicksand',
-                  fontSize:_responsive.ip(1.5),
-                  fontWeight:FontWeight.w700
-                ),
+      title: GestureDetector(
+        onTap: ()=>print("cambiar ubicacion"),
+              child: Container(
+          
+          child: Row(
+            children:<Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.location_on,color: Colors.grey,size: _responsive.ip(2),),
               ),
-            ),
-
-            Icon(Icons.arrow_right,color: Colors.grey,)
-          ]
+              StreamBuilder(
+                stream: _clientBloc.addressStream,
+                builder: (BuildContext context, AsyncSnapshot snapshot){
+                  _clientBloc.addresClient();
+                  if(snapshot.hasData){
+                   return Container(
+                     width: _responsive.widht*.55,
+                     child: Text("${snapshot.data}",
+                      overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontFamily:'Quicksand',
+                          fontSize:_responsive.ip(1.5),
+                          fontWeight:FontWeight.w700
+                        ),
+                      ),
+                   );
+                  }
+                  return Container(); 
+                },
+              ),
+              
+            ]
+          ),
         ),
       ),
 
        actions: <Widget>[
-         IconAction(icon:Icons.search,onPressed:()=>showSearch(
+         IconAction(icon:LineIcons.search,onPressed:()=>showSearch(
            context: context, delegate: DataSearch())),
-
+        // IconButton(icon: Icon(LineIcons.search,color: Colors.grey,), onPressed: null),
+        // IconButton(icon: Icon(LineIcons.shopping_cart,color: Colors.grey,), onPressed: null),
+      
+          // Icon(LineIcons.shopping_cart,color:Colors.grey)
         IconAction(icon:LineIcons.shopping_cart,
           onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
         )

@@ -55,14 +55,13 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
   }
 
   Widget _createItems(){
-     return StreamBuilder(
-       stream:_stream,
+    return StreamBuilder(
+      stream:_stream,
        builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-         if(!snapshot.data.isEmpty){
-
+         if(snapshot.data!=null && snapshot.data.isNotEmpty){
            return Container( 
-          margin: EdgeInsets.only(left:20),
-          child: ListView.builder(
+            margin: EdgeInsets.only(left:20),
+            child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: CustomScrollPhysics(itemDimension: 300),
             itemCount: snapshot.data.length,
@@ -72,8 +71,8 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
 
          }else{
           return Container(
-             width: _responsive.widht,
-             height: _responsive.ip(20),
+            width: _responsive.widht,
+            height: _responsive.ip(20),
             
             margin: EdgeInsets.only(left: 15,right: 15,top: 10),
             
@@ -112,15 +111,6 @@ class _ProductsHorizontalState extends State<ProductsHorizontal> {
         child: Stack(
          alignment: Alignment.center,
         children : <Widget>[
-          // Positioned(
-          //   top: 0,
-          //   child: 
-          //   Container(
-          //     width: _responsive.ip(20),
-          //     height: _responsive.ip(15),
-          //     color: Colors.white,
-          //   )
-          // ),
           Positioned(
             top: _responsive.ip(2),
             left: _responsive.ip(1),
