@@ -18,8 +18,7 @@ class AppConfig{
 
  
   //HIVE CONFIG
-  static const int hive_type_3= 3;
-  static const String hive_adapter_3 ="ProductoAdapter";
+  
 
   static const int hive_type_4= 4;
   static const String hive_adapter_4 ="ClientAdapter";
@@ -27,6 +26,13 @@ class AppConfig{
   static const int hive_type_5 = 5;
   static const String hive_adapter_5 ="PromocionAdapter";
 
+
+  static const int hive_type_6= 6;
+  static const String hive_adapter_6 ="ProductoAdapter";
+
+  static const int hive_type_7= 7;
+  static const String hive_adapter_7 ="FavoriteAdapter";
+  
   static const String mapbox_api_token='pk.eyJ1IjoiYXphZWxtb3JhbGVzcyIsImEiOiJjazhqNmdwZ3UwMGN3M2VxYnNkNWp2cW85In0.QrGCrwp63Tf0kU2ceIjIww';
                                         
 }

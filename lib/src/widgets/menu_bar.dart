@@ -34,7 +34,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
   }
   @override
   void dispose() {
-    _bottomNavBarBloc.close();
+    //_bottomNavBarBloc.close();
     super.dispose();
   }
 

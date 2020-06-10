@@ -4,10 +4,20 @@ import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ProductoBloc{
+  
+   static final ProductoBloc _singleton = ProductoBloc._internal();
+
+  factory ProductoBloc() {
+    return _singleton;
+  }
+  
+  ProductoBloc._internal();
+
   //providers
+
   final _db = new DBProvider();
   final _productoProvider = new ProductoProvider();
-
+  
   //productos
   final _productoController = new BehaviorSubject<List<ProductoModel>>();
   final _cargandoController = new BehaviorSubject<bool>();

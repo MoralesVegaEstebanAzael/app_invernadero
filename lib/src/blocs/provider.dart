@@ -17,7 +17,7 @@ class Provider extends InheritedWidget{
   final _featureBloc = FeatureBloc();
   final _bottomNavBloc = BottomNavBloc();
   final _clientBloc = ClientBloc();
-
+  
   static Provider _instancia;
 
   factory Provider({Key key,Widget child}){

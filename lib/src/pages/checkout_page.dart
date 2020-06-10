@@ -1,7 +1,7 @@
+import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
-import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -23,6 +23,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Responsive responsive;
   Box box;
   ShoppingCartBloc _shoppingCartBloc;
+  ClientBloc _clientBloc;
+  
   int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
 
@@ -37,7 +39,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
     _shoppingCartBloc = Provider.shoppingCartBloc(context);
     _shoppingCartBloc.loadItems();
     box = _shoppingCartBloc.box();
+
    // _stream = _shoppingCartBloc.shoppingCartStream;
+
+    _clientBloc = Provider.clientBloc(context);
+    _clientBloc.dirClient();
     super.didChangeDependencies();
   }
 
@@ -53,6 +59,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   AppBar _appBar() {
     return AppBar(
       centerTitle: true,
+      brightness: Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       title: Text("Carrito de compras",
@@ -75,6 +82,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ), 
     );
   }
+
+
 
   Widget _listItems(){
     return Container(
@@ -219,7 +228,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.end,
         children:<Widget>[
-          Text("Dirección calle vicente Guerrero"),
+          StreamBuilder(
+            stream: _clientBloc.dirStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasData){
+                return Text(snapshot.data);
+              }
+              return Container();
+            },
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children:<Widget>[
@@ -229,14 +246,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
               ),
               SizedBox(width: responsive.ip(1),),
-              Container(
-                
-                decoration: BoxDecoration(
-                color: miTema.accentColor,
-                shape: BoxShape.circle,
-                ),
-                child: Icon(LineIcons.check,color: Colors.white,)),
-             
+              Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    new Icon(
+                        Icons.brightness_1,
+                        size: responsive.ip(2), color: miTema.accentColor),
+                    new Icon(
+                      LineIcons.check,
+                      size: responsive.ip(1),
+                      color: Colors.white,
+                    ),
+                  ],)
             ]
           ),
           Container(
@@ -313,12 +334,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ],
                   ),
                   ),
-                  onPressed: (_radioValue!=-1)? ()=>print("object"):null),
+                  onPressed: (_radioValue!=-1)? ()=>_confirmar():null),
             ]
           ),
         )
     );
   }
+
+  
+  void _confirmar(){
+    print("confirmar");
+    _clientBloc.informactionClient()
+    ?
+    print("Se envia el pedido")
+    :
+    print("actualiza tus datos");
+  }
+
+
+
 
 
   void _handleRadioValueChange(int value) {

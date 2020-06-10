@@ -1,11 +1,22 @@
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
-import 'package:app_invernadero/src/models/shopping_cart_model.dart';
+import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ShoppingCartBloc{
+
+
   
-  //final _shoppingCartController = new BehaviorSubject<List<ShoppingCartModel>>();
+  static final ShoppingCartBloc _singleton = ShoppingCartBloc._internal();
+
+  factory ShoppingCartBloc() {
+    return _singleton;
+  }
+  
+  ShoppingCartBloc._internal();
+
+
+
   final _itemsSCcontroller = new BehaviorSubject<List<ItemShoppingCartModel>>();
   
   final _cargandoController = new BehaviorSubject<bool>();
@@ -14,7 +25,7 @@ class ShoppingCartBloc{
   final _subtotalController = new BehaviorSubject<double>();
   final _countItems = new BehaviorSubject<int>();
 
-
+  
 
   //Stream<List<ShoppingCartModel>> get shoppingCartStream =>_shoppingCartController.stream;
   Stream<List<ItemShoppingCartModel>> get shoppingCartStream => _itemsSCcontroller.stream;
@@ -22,6 +33,8 @@ class ShoppingCartBloc{
   Stream<bool> get cargando =>_cargandoController.stream;
   Stream<double> get subtotal => _subtotalController.stream;
   Stream<double> get total =>_totalController.stream;
+  
+  
   Stream<int> get count => _countItems.stream;
 
   
@@ -30,15 +43,20 @@ class ShoppingCartBloc{
     //_shoppingCartController.sink.add(items);
     _itemsSCcontroller.sink.add(items);
     totalItems();
-    // countItems();
+    
+    countItems();
   }
 
-  void updateItem(ShoppingCartModel item)async{
-    _cargandoController.sink.add(true);
-    await _db.updateItemShoppingCart(item);
-    _cargandoController.sink.add(false);
-    totalItems();
-  } 
+  void insertItem(ItemShoppingCartModel item){
+    _db.insertItemSC(item);
+    countItems();
+  }
+  // void updateItem(ShoppingCartModel item)async{
+  //   _cargandoController.sink.add(true);
+  //   await _db.updateItemShoppingCart(item);
+  //   _cargandoController.sink.add(false);
+  //   totalItems();
+  // } 
 
   
   void subtotalItem(ItemShoppingCartModel item)async{
@@ -51,14 +69,14 @@ class ShoppingCartBloc{
 
   }
   
-  void totalItems(){
+  void totalItems(){ //precio total de items
     _totalController.sink.add(_db.totalSC());
   }
   
   
-  void countItems(){
-    _countItems.sink.add(_db.countItemsShopCart());
-  }
+  void countItems(){//total de items guardados
+     _countItems.sink.add(_db.countItemsSC());
+    }
   
   void incItem(ItemShoppingCartModel item)async{
     print("incrementando");
@@ -105,5 +123,7 @@ class ShoppingCartBloc{
     return _db.itemsSCBoxisEmpty();
   }
 
+
+  
  
 }

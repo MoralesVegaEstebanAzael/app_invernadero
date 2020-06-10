@@ -183,7 +183,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
                       fontSize:_responsive.ip(1.7),
                       color:Colors.green
                     ),),
-
+                        
                     Expanded(
                                           child: Row(
             children: <Widget>[
@@ -309,8 +309,6 @@ class _ConfigLocationState extends State<ConfigLocation> {
   _onTap(Position position){
     if(_featureBloc.positionStream!=null){
       _clientBloc.updateAddres(position, addres);
-      print("Direccion $addres");
-      print("Direccion almacenada");
       Navigator.pushReplacementNamed(context, 'home');
     }
   }

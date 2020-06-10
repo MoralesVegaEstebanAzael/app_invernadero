@@ -70,7 +70,8 @@ class UserProvider{
         );
       
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
-
+      print("CLIENTEEEEEEEEE");
+      print(response.body);
       if(decodedResp.containsKey('access_token')){ //access_token,token_type,expires_at
         // TODO: salvar e token preferences
         await _storage.write('token',decodedResp['access_token']);
@@ -89,7 +90,7 @@ class UserProvider{
       }
   }
 
-
+  
   Future<Map<String,dynamic>> changePassword({@required String celular,@required  String password})async{
     
     final url = "${AppConfig.base_url}/api/client/update_password";
@@ -153,17 +154,21 @@ class UserProvider{
     try{
       final url = "${AppConfig.base_url}/api/client/logout";
       final token = await _storage.read('token');
+        Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+
       final response = await http.get(
         url, 
-        headers: {HttpHeaders.authorizationHeader: "Bearer $token"},);
+        headers: headers,);
       
       Map<String,dynamic> decodedResp = jsonDecode(response.body);
       
-      print("CODE response: $response.statusCode");
+      print("CODE LOGOUT response: $response.statusCode");
       print("***RESPUESTA****");
       print(decodedResp); 
       
-
+      
       if(decodedResp.containsKey('message')){ 
         // TODO: remove  token 
         await _storage.delete('token');
@@ -181,7 +186,7 @@ class UserProvider{
  
   Future<UserModel> cargarUsuario()async{
       final telefono = _storage.user.phone;
-      final url = "${AppConfig.base_url}/api/auth/buscarUser";
+      final url = "${AppConfig.base_url}/api/client/buscarUser";
       final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -199,7 +204,7 @@ class UserProvider{
   }
 
   Future<bool> updateDatosUser(UserModel user) async{
-    final url = "${AppConfig.base_url}/api/auth/update_user/${user.id}"; 
+    final url = "${AppConfig.base_url}/api/client/update_user/${user.id}"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -220,7 +225,7 @@ class UserProvider{
   }
 
    Future<String> subirImagen(File imagen, UserModel user) async{
-    final url = "${AppConfig.base_url}/api/auth/file/avatar/${user.id}"; 
+    final url = "${AppConfig.base_url}/api/client/file/avatar/${user.id}"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",

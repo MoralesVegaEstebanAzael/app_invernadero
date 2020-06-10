@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:rxdart/rxdart.dart';
 
 
 class ClientBloc{
@@ -21,12 +22,15 @@ class ClientBloc{
   StreamController<ClientModel>.broadcast();
 
   Stream<ClientModel> get clientStream =>_clientController.stream;
+  
+  
+  
 
-  final StreamController<String> _addressController =
-  StreamController<String>.broadcast();
+  final _direcController = new BehaviorSubject<String>();
+  final _infController = new BehaviorSubject<bool>();
 
-  Stream<String> get addressStream => _addressController.stream;
-
+  Stream<String> get dirStream => _direcController.stream;
+  Stream<bool> get infStream => _infController.stream;
 
   void updateAddres(Position position,String addres){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
@@ -35,16 +39,13 @@ class ClientBloc{
     client.direccion = addres;
     updateClient(client);
   }
+
+  
   void updateClient(ClientModel client)async{
     await _dbProvider.updateClient(client);
   } 
   
-  void addresClient(){
-    ClientModel client =  _dbProvider.getClient(_storage.idClient);
-    //print("Clienteeeeeeeeeeeee: ${client.direccion}");
-    
-    _addressController.sink.add(client.direccion);
-  }
+
   void getClient(){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
     _clientController.sink.add(client);
@@ -52,9 +53,22 @@ class ClientBloc{
 
   dispose(){
     _clientController.close();
-    //_addressController.close();
+    _direcController.close();
+    _infController.close();
   }
 
 
-  
+
+  void dirClient(){
+    ClientModel client = _dbProvider.getClient(_storage.idClient);
+    _direcController.sink.add(client.direccion);
+  }
+
+  void infClient(){
+    _infController.sink.add(_storage.informacion);
+  }
+
+  bool informactionClient(){
+    return  _storage.informacion;  
+  }
 }

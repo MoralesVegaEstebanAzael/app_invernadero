@@ -8,7 +8,7 @@ part 'producto_model.g.dart';
 
 
 @HiveType(
-  typeId: 3,adapterName: "ProductoAdapter")
+  typeId: 6,adapterName: "ProductoAdapter")
 
 class ProductoModel {
   @HiveField(0)

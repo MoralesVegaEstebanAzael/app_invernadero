@@ -67,9 +67,7 @@ class PlacesSearch extends SearchDelegate{
             return ListView(
               children: places.map((p){
                 return ListTile(
-                  
-                  
-                    title: Text(p.placeName),
+                  title: Text(p.placeName),
                     subtitle: Text("${p.placeName}"),
                     onTap: (){
                       Position position = Position(
@@ -78,7 +76,7 @@ class PlacesSearch extends SearchDelegate{
                       );
                       //_featureBloc.addCoordinate(p.geometry.coordinates);
                       _featureBloc.addPosition(position);
-                      _featureBloc.addAddres(p.placeName );
+                      
                       close(context, null);
                       //Navigator.pushNamed(context, 'product_detail',arguments: p);
                     },

@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/models/favorite_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
@@ -33,8 +34,9 @@ class FavoritosBloc{
     _favoritesController.sink.add(productos);
   } 
 
-  void addFavorite(int id){
-    _db.addFavorite(id);
+  void addFavorite(ProductoModel producto){
+    FavoriteModel favorite =  FavoriteModel(producto:producto);
+    _db.addFavorite(favorite);
   }
 
   void deleteFavorite(int id){

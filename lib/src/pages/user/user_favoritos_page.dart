@@ -1,10 +1,13 @@
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/favorite_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -17,14 +20,15 @@ class FavoritosPage extends StatefulWidget {
 class _FavoritosPageState extends State<FavoritosPage> {
   Responsive responsive;
   FavoritosBloc _favoritosBloc;
-  Stream<List<ProductoModel>> _stream;
 
+  Box _favoriteBox;
+  
   @override
   void didChangeDependencies() {
     _favoritosBloc = Provider.favoritosBloc(context);
-    _favoritosBloc.loadFavorites();
-    _stream = _favoritosBloc.favoritosStream;
+   
     
+    _favoriteBox = _favoritosBloc.box();
     responsive = Responsive.of(context);
     super.didChangeDependencies();
   }
@@ -44,10 +48,10 @@ class _FavoritosPageState extends State<FavoritosPage> {
       centerTitle: true,
       title: Text("Favoritos",style: 
         TextStyle(color:Colors.black,fontFamily: 'Quicksand'),),
-      leading:Row(children:<Widget>[
-        IconAction(icon: LineIcons.angle_left, onPressed: () => Navigator.of(context).pop())
-      ]) ,
-
+      // leading:Row(children:<Widget>[
+      //   IconAction(icon: LineIcons.angle_left, onPressed: () => Navigator.of(context).pop())
+      // ]) ,
+  
     actions: <Widget>[
       IconAction(
         icon:Icons.search,
@@ -64,27 +68,49 @@ class _FavoritosPageState extends State<FavoritosPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[ 
-          StreamBuilder(
-            stream: _stream ,
-            builder: (BuildContext context,AsyncSnapshot<List<ProductoModel>> snapshot){
-              if(snapshot.hasData){ 
-                return 
+          // StreamBuilder(
+          //   stream: _stream ,
+          //   builder: (BuildContext context,AsyncSnapshot<List<ProductoModel>> snapshot){
+          //     if(snapshot.hasData){ 
+          //       return 
+          //           Expanded(
+          //             child:  ListView.builder(
+          //               itemCount:  snapshot.data.length,
+          //               itemBuilder: (context, index) {
+          //                 ProductoModel item = snapshot.data[index];
+
+          //                 return _itemView(index,item);
+          //                 })
+          //       );
+          //     }else{
+          //       return Center(
+          //         child: CircularProgressIndicator(),
+          //       );
+          //     }            
+          //   },
+          // ),
+
+          WatchBoxBuilder(
+            box: _favoriteBox, 
+            builder:(BuildContext context,Box box){
+
+            if(box.length>0){
+             return 
                     Expanded(
                       child:  ListView.builder(
-                        itemCount:  snapshot.data.length,
+                        itemCount:  box.length,
                         itemBuilder: (context, index) {
-                          ProductoModel item = snapshot.data[index];
+                          FavoriteModel fav = box.getAt(index);
 
-                          return _itemView(index,item);
+                          return _itemView(index,fav.producto);
                           })
                 );
-              }else{
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }            
-            },
-          ),
+            }else{
+              return Container();
+            }
+    }
+            
+          )
 
            
         ],

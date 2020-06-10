@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ProductoProvider{
   final _storage = SecureStorage();  
-  
+  final _dbProvider = DBProvider();
   Future<List<ProductoModel>> cargarProductos()async{
     final url = "${AppConfig.base_url}/api/client/productos"; 
     final token = await _storage.read('token');
@@ -24,17 +25,33 @@ class ProductoProvider{
     if(response.body.contains('message')){
       return [];
     } 
-    var decodeData = jsonDecode(response.body)['productos'] as List;
-    
 
+    final Map<dynamic,dynamic> decodeData = json.decode(response.body)['productos'];
+    final List<ProductoModel> productos = List();
+
+
+    Map prodMap = Map<int, ProductoModel>();
+
+
+    decodeData.forEach((id,producto){
+      ProductoModel productoTemp = ProductoModel.fromJson(producto);
+      productos.add(productoTemp);
+         
+      prodMap.putIfAbsent(int.parse(id), ()=>productoTemp);
+
+    });
     
-    List<ProductoModel> productos = 
-    decodeData.map((productoJson) => ProductoModel.fromJson(productoJson)).toList();
- 
+    print("tamaño");
+    print(    _dbProvider.productBox.length);
+     _dbProvider.insertProducts(prodMap);
+   // print(_dbProvider.productBox.length);
     if(decodeData==null) return [];
     return productos;
+    
+    //return [];
   }
 
+  
   Future<List<ProductoModel>> searchProduct(String query)async{
     final url = "${AppConfig.base_url}/api/auth/search_products"; 
     final token = await _storage.read('token');

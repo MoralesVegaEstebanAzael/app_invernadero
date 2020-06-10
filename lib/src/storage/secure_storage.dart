@@ -43,9 +43,16 @@ class SecureStorage{
     return _prefs.getBool('sesion')?? false;
   }
   
-
+  get informacion{
+    return _prefs.getBool('informacion')??false;
+  }
+  
   set sesion(bool value){
     _prefs.setBool('sesion', value);
+  }
+
+  set informacion(bool value){
+    _prefs.setBool('informacion', value);
   }
 
   get idClient{

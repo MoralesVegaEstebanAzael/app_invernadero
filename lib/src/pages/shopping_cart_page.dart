@@ -2,7 +2,6 @@ import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
-import 'package:app_invernadero/src/models/shopping_cart_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -74,25 +73,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          // Container(
-          //   margin: EdgeInsets.only(left:responsive.ip(2),bottom:responsive.ip(2)),
-          //   child:
-          //   StreamBuilder(
-          //     stream: _shoppingCartBloc.count ,
-          //     initialData: 0 ,
-          //     builder: (BuildContext context, AsyncSnapshot snapshot){
-          //       return Text( 
-          //         "Mis productos (${snapshot.data})",
-          //         style: TextStyle(
-          //           fontSize: responsive.ip(2),
-          //           color:Colors.grey,
-          //           fontFamily:'Quicksand',
-          //           fontWeight: FontWeight.w900
-          //         ),
-          //       );
-          //     },
-          //   ),
-          //   ),
             Text( 
                   "Mis productos (${box.length})",
                   style: TextStyle(
@@ -102,24 +82,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     fontWeight: FontWeight.w900
                   ),
                 ),
-            Container(
-              height: responsive.ip(2),
-              color: Colors.green,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:<Widget>[
-                  Icon(LineIcons.info_circle,size: responsive.ip(3),color: Colors.grey,),
-                            SizedBox(width:2),
-                            Text("Total: ",
-                              style: TextStyle(
-                              fontFamily: 'Quicksand',
-                              fontWeight: FontWeight.w900,
-                              fontSize: responsive.ip(2)
-                          ),),
-                ]
-              ),
-            ),
-            
             WatchBoxBuilder(
               box: box, 
               builder: (BuildContext context,Box box){
@@ -128,9 +90,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         child:  ListView.builder(
                           itemCount:  box.length,
                           itemBuilder: (context, index) {
-                            // ShoppingCartModel item = box.getAt(index);
                             ItemShoppingCartModel item = box.getAt(index);
-
                             return _itemView(index,item);
                             })
                   );
@@ -146,17 +106,12 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       Align(
         alignment: Alignment.bottomRight,
         child: Container(
-            color: Colors.red,
-           // margin: EdgeInsets.only(left: 4,right: 4),
-            padding: EdgeInsets.all(7),
-            height:responsive.ip(8),
-           // width: responsive.ip(20),
-           
-              child:
-                Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          padding: EdgeInsets.all(7),
+          height:responsive.ip(8),           
+          child:
+          Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-        children:<Widget>[
+            children:<Widget>[
             Expanded(
                 child: Column(
                 children: <Widget>[
@@ -196,47 +151,35 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     ),
                     ],
                   ),
-
-
                   GestureDetector(
                     onTap: (){
-                        //BottomNavigationMenuState.index = 2;
-                        
-                        //BottomNavigationMenuState.menuState.currentState.tabController.animateTo(2);
-                        print("Seguir comprando");
-                       _bottomNavBloc.pickItem(1);
-                       
-                       
-                        Navigator.pop(context);
-
-
+                      print("Seguir comprando");
+                      _bottomNavBloc.pickItem(2);
+                      Navigator.pop(context);
                     },
-                                      child: Row(
+                    child: Row(
                       children:<Widget>[
-                         Icon(LineIcons.angle_double_left,size: responsive.ip(3),color: Colors.grey,),
-                              SizedBox(width:2),
-                              Text("Seguir comprando",
-                                style: TextStyle(
-                                color: Colors.grey,
-                                fontFamily: 'Quicksand',
-                                fontWeight: FontWeight.w900,
-                                fontSize: responsive.ip(2)
+                        //  Icon(LineIcons.angle_double_left,size: responsive.ip(3),color: Colors.grey,),
+                        //       SizedBox(width:2),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Text("Seguir comprando",
+                                  style: TextStyle(
+                                  color: Colors.grey,
+                                  fontFamily: 'Quicksand',
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: responsive.ip(2)
                             ),),
+                              ),
                       ]
                     ),
                   )
                 ],
               ),
             ),
-
-             
           _button()
-        ]
-                ),
-               
-              
-           
-          )
+        ]),
+       )
     );
   }
   Widget _itemView(int index,ItemShoppingCartModel item){
@@ -323,16 +266,20 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       ),
        leading:Row(
          children: <Widget>[
-           IconAction(
+            IconAction(
               icon:LineIcons.angle_left,
-              onPressed:()=>Navigator.of(context).pop()
+              onPressed:()=>Navigator.of(context).pop(),
+
+              color: Colors.black12,
             ),
          ],
        ),
       actions: <Widget>[
         IconAction(
           icon:LineIcons.trash_o,
-          onPressed:()=>setState(() { _shoppingCartBloc.deleteAllItems(); })
+          onPressed:()=>setState(() { _shoppingCartBloc.deleteAllItems(); 
+          }),
+          color: MyColors.Grey
         ),
         // IconAction(
         //   icon:LineIcons.bell,

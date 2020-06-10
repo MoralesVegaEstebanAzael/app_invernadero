@@ -3,11 +3,13 @@ import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/pages/products/products.dart';
 import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
 import 'package:app_invernadero/src/pages/products/products_page_view.dart';
+import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -33,6 +35,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   ClientBloc _clientBloc;
+  ShoppingCartBloc _shoppingCartBloc;
 
   AnimationController _controller;
   PromocionBloc _promocionBloc;
@@ -59,8 +62,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       promocionesStream = _promocionBloc.promocionStream;
 
       _clientBloc = Provider.clientBloc(context);
-      _clientBloc.addresClient();
+      _clientBloc.dirClient();
       _responsive = Responsive.of(context);
+
+
+      _shoppingCartBloc = Provider.shoppingCartBloc(context);
+      _shoppingCartBloc.countItems();
     }
   }
   @override
@@ -71,7 +78,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
-    
+    _shoppingCartBloc.countItems();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -90,7 +97,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               width: _responsive.widht,
               height: _responsive.ip(10),
                     ),
-             ProductsHorizontal(),
+               ProductsHorizontal(),
               ],
             ),
         ),
@@ -267,9 +274,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 child: Icon(Icons.location_on,color: Colors.grey,size: _responsive.ip(2),),
               ),
               StreamBuilder(
-                stream: _clientBloc.addressStream,
+                stream: _clientBloc.dirStream,
                 builder: (BuildContext context, AsyncSnapshot snapshot){
-                  _clientBloc.addresClient();
+                    
                   if(snapshot.hasData){
                    return Container(
                      width: _responsive.widht*.55,
@@ -300,11 +307,79 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         // IconButton(icon: Icon(LineIcons.shopping_cart,color: Colors.grey,), onPressed: null),
       
           // Icon(LineIcons.shopping_cart,color:Colors.grey)
-        IconAction(icon:LineIcons.shopping_cart,
-          onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
-        )
+        // IconAction(icon:LineIcons.shopping_cart,
+        //   onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
+        // )
+
+        _cartItems()
       ],
+    );
+  }
+
+
+  _cartItems(){
+    //_shoppingCartBloc.countItems();
+    return  new Container( 
+      child: new GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+              new MaterialPageRoute(
+                  builder:(BuildContext context) =>
+                  new ShoppingCartPage()
+              )
+          );
+        },
+
+        child: new Stack(
+
+          children: <Widget>[
+            new IconButton(icon: new Icon(LineIcons.shopping_cart,
+              color: MyColors.BlackAccent,),
+                onPressed: null,
+            ),
+
+            StreamBuilder(
+              stream: _shoppingCartBloc.count,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+               
+                if(snapshot.hasData){
+                  return new Positioned(
+                  
+                  right: _responsive.ip(0.6),
+                  top: _responsive.ip(1),
+                
+                child: new Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    new Icon(
+                        Icons.brightness_1,
+                        size: _responsive.ip(2), color: miTema.accentColor),
+                    new Text(
+                      snapshot.data.toString(),
+                      style: new TextStyle(
+                          color: Colors.white,
+                          fontSize: _responsive.ip(1),
+                          fontWeight: FontWeight.w500
+                      ),
+                    ),
+
+
+                  ],
+                ));
+                }
+                return Container();
+              },
+            ),
+
+
+
+            
+
+          ],
+        ),
+      )
     );
   }
   
 }
+

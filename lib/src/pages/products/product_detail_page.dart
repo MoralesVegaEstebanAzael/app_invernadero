@@ -1,5 +1,7 @@
 
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
+import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
@@ -12,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:provider/provider.dart';
+
 
 
 import '../../../app_config.dart';
@@ -24,13 +26,8 @@ class ProductDetailPage extends StatefulWidget {
 }
 
 class _ProductDetailPageState extends State<ProductDetailPage> {
-  //static final myTabbedPageKey = new GlobalKey<_BottomNavigationMenuState>();
-  
-   BottomNavBloc _bottomNavBarBloc;
-
-
-  
-  
+    ShoppingCartBloc _shoppingCartBloc;
+    BottomNavBloc _bottomNavBarBloc;
     Responsive responsive;
     ProductoModel producto; 
     DBProvider _dbProvider;
@@ -39,24 +36,25 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     void initState() {
       FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
       _dbProvider = DBProvider();
-
       _bottomNavBarBloc = BottomNavBloc();
       super.initState();
     }
-  
+
     @override
     void didChangeDependencies() {
       responsive = Responsive.of(context);
       producto = ModalRoute.of(context).settings.arguments;
+
+      _shoppingCartBloc = Provider.shoppingCartBloc(context);
       super.didChangeDependencies();
     }
     @override
     void dispose() {
-     
       FlutterStatusbarcolor.setStatusBarColor(Colors.white);
       super.dispose();
     }
-  
+
+
     @override
     Widget build(BuildContext context) {
       
@@ -65,13 +63,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       slivers: <Widget>[
         _appBar(),
         SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-          
+                delegate: SliverChildListDelegate([
                    _contenido()
-                   
-                  ]
-                ),
+                ]),
         ),
       ],
                 ),
@@ -154,7 +148,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
       );
     }
-  
+    
     _encabezado() {
       return Container(
        // margin: EdgeInsets.symmetric(horizontal:15),
@@ -193,8 +187,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             SizedBox(height: responsive.ip(2)),
                         Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children:<Widget>[
-              
+            children:<Widget>[  
               Column(
                 children:<Widget>[
                     Text("\$ ${producto.precioMay}",style: TextStyle(
@@ -228,7 +221,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             blurRadius: 5
                     )]
                   ),
-                  child: Text("COMPRAR",style: TextStyle(fontFamily: 'Quiksand',color:Colors.white,letterSpacing: 1,fontSize: 15),),
+                  child: Text("AGREGAR",style: TextStyle(fontFamily: 'Quiksand',color:Colors.white,letterSpacing: 1,fontSize: 15),),
                   ),
                   onPressed: (){
                      ItemShoppingCartModel item = ItemShoppingCartModel(
@@ -236,19 +229,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       cantidad: 1,
                       subtotal: 1*producto.precioMen
                     );
-  
-                    _dbProvider.insertItemSC(item);
-                    
+
+                    //_dbProvider.insertItemSC(item);
+                    _shoppingCartBloc.insertItem(item);
                     //BottomNavigationMenuState menu = BottomNavigationMenuState();
 
                     //BottomNavigationMenuState.menuState.currentState.tabController.animateTo(2);
                     //menu.initState();
                     //menu.tabController.animateTo(2);
-
                       
-                    Navigator.pop(context);
+                   // Navigator.pop(context);
                     
-                    Navigator.pushNamed(context, 'shopping_cart');
+                    //Navigator.pushNamed(context, 'shopping_cart');
                   }),
                         ],
                       )

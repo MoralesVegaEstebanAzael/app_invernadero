@@ -73,8 +73,6 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   Widget build(BuildContext context) {
     bloc = Provider.of(context);
     final responsive = Responsive.of(context);
-
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: GestureDetector(

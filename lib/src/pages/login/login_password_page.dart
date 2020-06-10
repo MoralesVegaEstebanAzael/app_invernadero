@@ -1,4 +1,5 @@
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
+import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
@@ -25,12 +26,22 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   bool _isLoading=false;
   User _user;
   
+  ProductoBloc _productoBloc;
 
   @override
   void initState() {
     super.initState();
     _prefs.route = 'login_password';
     _user = _prefs.user;
+  }
+
+  @override
+  void didChangeDependencies() {
+    if(_productoBloc==null){
+      _productoBloc = Provider.productoBloc(context);
+      _productoBloc.cargarProductos();
+    }
+    super.didChangeDependencies();
   }
 
   @override
