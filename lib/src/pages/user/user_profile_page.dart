@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/userModel.dart';
@@ -11,6 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
+
+import '../../models/client_model.dart';
+import '../../models/client_model.dart';
+import '../../models/client_model.dart';
 
 
 class UserProfilePage extends StatefulWidget {
@@ -26,6 +31,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   bool _isLoading=false;
   IconData _switch = LineIcons.toggle_on;
   Future<List<dynamic>> options;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -36,8 +42,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
   @override
   Widget build(BuildContext context) {
-    LoginBloc userBloc = Provider.of(context);
-    userBloc.cargarUsuario();
+    //LoginBloc userBloc = Provider.of(context);
+    //userBloc.cargarUsuario();
+
+    ClientBloc clienteBloc = Provider.clientBloc(context);
+    clienteBloc.getClient(); 
 
     final responsive = Responsive.of(context);
     return Scaffold(
@@ -57,7 +66,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 aspectRatio: 16/5,
                 child: LayoutBuilder(
                   builder:(_,contraints){
-                    return _header(contraints, context, userBloc);
+                    return _header(contraints, context, clienteBloc);
                   }
                 )
             ),
@@ -83,16 +92,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
           SizedBox(height: responsive.ip(2),),  
           Expanded(
             child: Container(
-                color: Color(0XFFEEEEEE),
+                color: Colors.white, //Color(0XFFEEEEEE),
                 child: Column(
-                  children:<Widget>[
-                    
-
-                       SvgPicture.asset('assets/images/logo_app.svg',
-                     
+                  children:<Widget>[ 
+                      SvgPicture.asset('assets/images/logo_app.svg',                     
                         height: 50,
                       ),
-
                       Text(
                       "Invernadero Sebastián  Atoyaquillo",
                       style: TextStyle(color: Colors.grey)
@@ -101,10 +106,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                 ),  
             )
           )
-
         ],),
-              ),),
-
+       ),), 
         Positioned.fill(
          child: _isLoading? Container(  
           color:Colors.black45,
@@ -114,13 +117,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
         ):Container()),
           ]
         )
-      ),
-     
-      
+      ), 
     ); 
   }
 
-  Widget _header(BoxConstraints contraints, BuildContext context, LoginBloc userBloc )  {     
+  Widget _header(BoxConstraints contraints, BuildContext context, ClientBloc clientBloc )  {     
     return Container( 
       margin: EdgeInsets.only(top:15),
       decoration: BoxDecoration(
@@ -128,12 +129,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
         borderRadius: BorderRadius.circular(5.0)
       ),
       child: StreamBuilder(
-        stream: userBloc.userStream, 
-        builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot){
+        stream: clientBloc.userStream,
+        builder: (BuildContext context, AsyncSnapshot<ClientModel> snapshot){
            if (snapshot.hasData) {
-            final user = snapshot.data;            
-            return _datosUser(contraints, user);
-          }else {
+            final user = snapshot.data; 
+            return  _datosUser(contraints, user);
+          }else { 
             return Center(child: CircularProgressIndicator());
           }
         },
@@ -141,22 +142,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget _datosUser(BoxConstraints contraints, UserModel user){
+  Widget _datosUser(BoxConstraints contraints, ClientModel user){
     return  Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         /* SvgPicture.asset('assets/icon/user.svg',                  
           height: contraints.maxHeight*.6,
-         ), */        
+         ),  */  
         _mostrarFoto(user, contraints),
 
         Column(
            mainAxisAlignment: MainAxisAlignment.center,
            children: <Widget>[ 
-            Text( (user.name == null || user.name == "") ?  'Nombre de usuario' : user.name, overflow: TextOverflow.ellipsis ,style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 18, )),
+            Text( (user.nombre == null || user.nombre == "") ?  'Nombre de usuario' : "${user.nombre + user.ap}" , overflow: TextOverflow.ellipsis ,style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 18, )),
              Divider(), 
-            Text( (user.email == null || user.email == "") ? 'email@noemail' : user.email, overflow: TextOverflow.ellipsis ,style: TextStyle(color:Colors.white)),
- 
+            Text( (user.rfc == null || user.rfc == "") ?  'RFC del usuario' : "${user.rfc}"  , overflow: TextOverflow.ellipsis ,style: TextStyle(color:Colors.white)), 
            ],
         ),  
         
@@ -174,8 +174,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }  
 
- _mostrarFoto(UserModel user, BoxConstraints contraints){
-   if(user.urlAvatar == null || user.urlAvatar == ""){      
+ _mostrarFoto(ClientModel user, BoxConstraints contraints){
+   if(user.urlImagen == null || user.urlImagen == ""){      
       return  SvgPicture.asset('assets/icon/user.svg',                  
           height: contraints.maxHeight*.6);
     }else {   
@@ -186,7 +186,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               height: contraints.maxHeight*.6,
               width: contraints.maxHeight*.6,
               child: FadeInImage(
-              image: NetworkImage(user.urlAvatar),
+              image: NetworkImage(user.urlImagen),
               placeholder: AssetImage('assets/jar-loading.gif'), 
               fit: BoxFit.fill,
              ),
