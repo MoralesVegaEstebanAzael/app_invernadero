@@ -57,7 +57,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
   
   @override
   void dispose() {
-    _featureBloc.dispose();
+    //_featureBloc.dispose();
     //_clientBloc.dispose();
     super.dispose();
   }

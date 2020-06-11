@@ -39,7 +39,7 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
   void didChangeDependencies() {
     if(_productoBloc==null){
       _productoBloc = Provider.productoBloc(context);
-      _productoBloc.cargarProductos();
+
     }
     super.didChangeDependencies();
   }
@@ -167,9 +167,13 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
       });   
       
       if(info['ok']){
+        print("Almacenando productos en local");
+        _productoBloc.cargarProductos();
+        
         if(_user.direccion==null || _user.direccion=='0'){
           Navigator.pushReplacementNamed(context, 'config_location');
         }else{
+          
           Navigator.pushReplacementNamed(context, 'home');
         }
       }else{

@@ -49,6 +49,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
+      brightness: Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0, 
       iconTheme: IconThemeData(

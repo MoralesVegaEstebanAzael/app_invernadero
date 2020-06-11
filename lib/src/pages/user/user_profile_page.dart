@@ -9,6 +9,7 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/icon_string_util.dart';
 import 'package:app_invernadero/src/utils/responsive.dart'; 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
@@ -253,6 +254,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     if(_isLoading)return;
     setState(() {
         _isLoading=true;
+        //_statusBar();
     });
 
     Map info = await userProvider.logout();
@@ -278,6 +280,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
         default:
         Navigator.pushNamed(context, route);
     }
+  }
+
+  _statusBar(){
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: Colors.black, // navigation bar color
+      statusBarColor: Colors.black, // status bar color
+      // statusBarIconBrightness: Brightness.dark,
+      // statusBarBrightness: Brightness.light,
+      systemNavigationBarIconBrightness: Brightness.dark,
+      
+    ));
   }
 }
 
