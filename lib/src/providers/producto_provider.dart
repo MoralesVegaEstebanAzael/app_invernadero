@@ -29,7 +29,7 @@ class ProductoProvider{
     final Map<dynamic,dynamic> decodeData = json.decode(response.body)['productos'];
     final List<ProductoModel> productos = List();
 
-
+  
     Map prodMap = Map<int, ProductoModel>();
 
 
@@ -53,7 +53,7 @@ class ProductoProvider{
 
   
   Future<List<ProductoModel>> searchProduct(String query)async{
-    final url = "${AppConfig.base_url}/api/auth/search_products"; 
+    final url = "${AppConfig.base_url}/api/client/search_products"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -63,7 +63,7 @@ class ProductoProvider{
       url, 
       headers: headers,
       body: {"data":query});
-
+    
     print("Response: ${response.body}" );
 
     if(response.statusCode==200){

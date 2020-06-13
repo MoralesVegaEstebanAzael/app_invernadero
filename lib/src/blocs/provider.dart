@@ -8,7 +8,7 @@ import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart'; 
 import 'package:flutter/material.dart'; 
 
-class Provider extends InheritedWidget{
+class Provider extends InheritedWidget with ChangeNotifier{
   final loginBloc = LoginBloc();
   final _promocionesBloc = PromocionBloc();
   final _productosBloc = ProductoBloc();
@@ -44,7 +44,7 @@ class Provider extends InheritedWidget{
   static ProductoBloc productoBloc(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType<Provider>()._productosBloc;
   }
- 
+  
   static ShoppingCartBloc shoppingCartBloc(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType<Provider>()._shoppingCart;
   }
@@ -68,6 +68,7 @@ class Provider extends InheritedWidget{
 
   dispose(){
     _promocionesBloc.dispose();
+    _productosBloc.dispose();
   }
 
 }

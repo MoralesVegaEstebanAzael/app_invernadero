@@ -1,5 +1,6 @@
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -29,7 +30,9 @@ class _PedidosPageState extends State<PedidosPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: Container(),
+      body: PlaceHolder( 
+        img: 'assets/images/empty_states/empty_order.svg',
+        title: 'No haz realizado pedidos',)//Container(),
     );
   }
 

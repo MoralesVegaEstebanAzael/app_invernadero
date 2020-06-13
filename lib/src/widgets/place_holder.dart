@@ -18,7 +18,7 @@ class PlaceHolder extends StatelessWidget {
     final responsive = Responsive.of(context);
     return  Center(
       child: AspectRatio( 
-          aspectRatio: 16/16,
+          aspectRatio: 16/18,
           child: LayoutBuilder(
             builder:(_,contraints){
               return Container(
@@ -31,13 +31,15 @@ class PlaceHolder extends StatelessWidget {
                         width: contraints.maxWidth,
                       ),
                   ),
+                  SizedBox(height:responsive.ip(2)),
                   Text(
                     _title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
+                      fontFamily: 'Quicksand',
                       letterSpacing: 1,
                         fontSize: responsive.ip(1.5),
-                        fontWeight: FontWeight.normal,
+                        fontWeight: FontWeight.w900,
                         color:Color(0xffbbbbbb)),
               ),
             ],

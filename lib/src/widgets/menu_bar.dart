@@ -7,7 +7,6 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -16,10 +15,19 @@ class BottomNavBarApp extends StatefulWidget {
   createState() => _BottomNavBarAppState();
 }
 
-class _BottomNavBarAppState extends State<BottomNavBarApp> {
+class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAliveClientMixin{
   BottomNavBloc _bottomNavBarBloc;
   Responsive _responsive;
   SecureStorage _prefs = SecureStorage();
+  
+  final _homePage = HomePage();
+  final _pedidosPage = PedidosPage();
+  final _userProfilePage = UserProfilePage();
+  final _notificationsPage = NotificationsPage();
+  final _favoritesPage = FavoritosPage();
+
+  
+
   @override
   void initState() {
     super.initState();
@@ -49,30 +57,30 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
         
           switch (snapshot.data) {
             case NavBarItem.HOME:
-              return HomePage();
+              return _homePage;
             case NavBarItem.PEDIDOS:
-              return PedidosPage();
+              return _pedidosPage;
             case NavBarItem.PROFILE:
-              return UserProfilePage();
+              return _userProfilePage;
             case NavBarItem.NOTIFICACIONES:
-              return NotificationsPage();
+              return _notificationsPage;
             case NavBarItem.FAVORITOS:
-              return FavoritosPage();
+              return _favoritesPage;
           }
         },
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-      notchMargin:10,
-      color: Colors.transparent,
-      elevation: 10.0,
-      clipBehavior: Clip.antiAlias,
-              child: Container(
-                 height:_responsive.ip(7),
-        decoration: BoxDecoration(
+        notchMargin:10,
+        color: Colors.transparent,
+        elevation: 10.0,
+        clipBehavior: Clip.antiAlias,
+        child: Container(
+          height:_responsive.ip(7),
+          decoration: BoxDecoration(
           borderRadius:BorderRadius.only(
-            topLeft:Radius.circular(25.0),
-            topRight: Radius.circular(25.0),
+          topLeft:Radius.circular(25.0),
+          topRight: Radius.circular(25.0),
           ),
           color: Colors.white,
         ),
@@ -139,6 +147,10 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> {
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 
  
 }

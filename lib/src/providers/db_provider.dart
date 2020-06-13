@@ -265,7 +265,7 @@ class DBProvider{
   Future updateClient(ClientModel client)async{
     await clientBox.put(client.id,client);
   }
-
+  
   insertProducts(Map<int, ProductoModel> entries)async{
     await productBox.putAll(entries);
   }
@@ -276,5 +276,8 @@ class DBProvider{
   Future deleteProductBox()async{
     await productBox.clear();
   }
-  
+
+  void search(String query){
+    //productBox.values.toList().indexWhere(); 
+  }
 }

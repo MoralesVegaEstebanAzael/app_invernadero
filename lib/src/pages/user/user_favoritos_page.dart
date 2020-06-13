@@ -5,6 +5,7 @@ import 'package:app_invernadero/src/models/favorite_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -36,26 +37,40 @@ class _FavoritosPageState extends State<FavoritosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: _listItems(),
+      body:(_favoriteBox.isNotEmpty)
+        ?  _listItems()
+        :
+        PlaceHolder( 
+          img: 'assets/images/empty_states/empty_fav.svg',
+          title: 'No hay productos en \ntu lista de favoritos',
+        )
     );
   }
 
-  _appBar(){
+   _appBar(){
     return AppBar(
-      brightness: Brightness.light,
+      brightness :Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
       centerTitle: true,
-      title: Text("Favoritos",style: 
-        TextStyle(color:Colors.black,fontFamily: 'Quicksand'),),
-      // leading:Row(children:<Widget>[
-      //   IconAction(icon: LineIcons.angle_left, onPressed: () => Navigator.of(context).pop())
-      // ]) ,
-  
-    actions: <Widget>[
-      IconAction(
-        icon:Icons.search,
-      )
+      title: Text("Mis Favoritos",
+        style:TextStyle(
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w900,
+          fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
+        ) ,
+      ),
+     
+      actions: <Widget>[
+        IconAction(
+          icon:LineIcons.search,
+          onPressed:null
+        ),
+        IconAction(
+          icon:LineIcons.trash,
+          onPressed:()=> _deleteAllFav()
+
+        )
       ],
     );
   }
@@ -68,51 +83,24 @@ class _FavoritosPageState extends State<FavoritosPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[ 
-          // StreamBuilder(
-          //   stream: _stream ,
-          //   builder: (BuildContext context,AsyncSnapshot<List<ProductoModel>> snapshot){
-          //     if(snapshot.hasData){ 
-          //       return 
-          //           Expanded(
-          //             child:  ListView.builder(
-          //               itemCount:  snapshot.data.length,
-          //               itemBuilder: (context, index) {
-          //                 ProductoModel item = snapshot.data[index];
-
-          //                 return _itemView(index,item);
-          //                 })
-          //       );
-          //     }else{
-          //       return Center(
-          //         child: CircularProgressIndicator(),
-          //       );
-          //     }            
-          //   },
-          // ),
-
-          WatchBoxBuilder(
-            box: _favoriteBox, 
-            builder:(BuildContext context,Box box){
-
-            if(box.length>0){
-             return 
-                    Expanded(
+          ValueListenableBuilder(
+            valueListenable: _favoriteBox.listenable(), 
+            builder:(BuildContext context,value,_){
+              if(value.length>0){
+                return 
+                  Expanded(
                       child:  ListView.builder(
-                        itemCount:  box.length,
+                        itemCount:  value.length,
                         itemBuilder: (context, index) {
-                          FavoriteModel fav = box.getAt(index);
-
+                          FavoriteModel fav = value.getAt(index);
                           return _itemView(index,fav.producto);
                           })
                 );
-            }else{
-              return Container();
+              }else{
+                return Container();
+              }
             }
-    }
-            
-          )
-
-           
+          ),  
         ],
       ),
     ); 
@@ -154,7 +142,6 @@ class _FavoritosPageState extends State<FavoritosPage> {
             Text("Precio Menudeo: \$ ${item.precioMen}",
                 style: TextStyle(color:Colors.grey),
                 ),
-            // _controlButtons(index,item),
             ]
           ),
         ),
@@ -165,25 +152,6 @@ class _FavoritosPageState extends State<FavoritosPage> {
                 _favoritosBloc.deleteFavorite(item.id);
                 setState(() {});
              }),
-          //         child: Column(
-          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //   crossAxisAlignment: CrossAxisAlignment.end,
-          //   children:<Widget>[
-              
-          //     IconButton(icon:  Icon(Icons.favorite,color:Colors.redAccent,size: 25,),   
-          //       onPressed:(){
-          //     // setState(() {
-          //         // _shoppingCartBloc.deleteItem(item);
-          //         // _shoppingCartBloc.totalItems();
-          //      //});
-
-          //       setState(() {});
-          //    }),
-          //  // SizedBox(height:responsive.ip(2)),
-          //     // Text("\$ ${item.precioMenudeo} MX",
-          //     //   style: TextStyle(fontWeight: FontWeight.bold,fontSize: responsive.ip(1.7),fontStyle:FontStyle.italic))
-          //   ]
-          // ),
         )
       ]
     ),
@@ -191,6 +159,11 @@ class _FavoritosPageState extends State<FavoritosPage> {
       );
   }
 
+  _deleteAllFav(){
+    setState(() {
+      _favoritosBloc.deleteAllFav();
+    });
+  }
   
   
 }

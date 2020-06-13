@@ -44,6 +44,10 @@ class FavoritosBloc{
     loadFavorites();
   }
 
+  void deleteAllFav(){
+    _db.deleteAllFavorite();
+    loadFavorites();
+  }
   
   void favorite(int id){
     bool isFavorite = _db.isFavorite(id); 

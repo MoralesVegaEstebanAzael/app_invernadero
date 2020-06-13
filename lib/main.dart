@@ -25,6 +25,7 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 
 import 'package:app_invernadero/src/pages/checkout_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/services/local_services.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/widgets/menu_bar.dart';
@@ -34,6 +35,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:app_invernadero/src/blocs/provider.dart' as customProvider;
 
 void main() async{
   //var path = await getApplicationDocumentsDirectory();
@@ -65,56 +68,55 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) { 
     
-    return Provider(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,  
-      //   localizationsDelegates: [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      // ],
-      // supportedLocales: [
-      //   const Locale('en'), // English
-      //   const Locale.fromSubtags(languageCode: 'zh'), // Chinese *See Advanced Locales below*
-      //   const Locale('es')
-      // ],
-        title: 'App Invernadero',
-        theme: miTema,
-        initialRoute:prefs.route,
-        routes: {
-          'intro'                 : (BuildContext)=>IntroScreen(),
-          'home'                  : (BuildContext)=>BottomNavBarApp(),///BottomNavigationMenu(),
-          'login_phone'           : (BuildContext)=>LoginPhonePage(),
-          'login_password'        : (BuildContext)=>LoginPasswordPage(),
-          'pin_code'              : (BuildContext)=>PinCodePage(),
-          'config_password'       : (BuildContext)=>ConfigPasswordPage(),
-          'config_account'        : (BuildContext)=>ConfigAccountPage(),
-          'config_location'       : (BuildContext)=>ConfigLocation(),
-          'user_profile'          : (BuildContext)=>UserProfilePage(),
-          'login'                 : (BuildContext)=>LoginPage(),
-          'create_account'        : (BuildContext)=>CreateAccountPage(), 
-          'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
-
-          'favoritos'             : (BuildContext)=>FavoritosPage(),
-          'faq'                   : (BuildContext)=>AyudaPage(), 
-          'about'                 : (BuildContext)=>AcercaDePage(), 
-          'user_detalle'          : (BuildContext)=>UserDetallePage(),
-
-
-          'product_detail'        : (BuildContext)=>ProductDetailPage(),
+    return customProvider.Provider(
+          child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_)=> new LocalService()),
           
-          'checkout'              : (BuildContext)=>CheckoutPage(),
+        ],
+        
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,  
 
-          'notifications'         : (BuildContext)=>NotificationsPage(),
+            title: 'App Invernadero',
+            theme: miTema,
+            initialRoute:prefs.route,
+            routes: {
+              'intro'                 : (BuildContext)=>IntroScreen(),
+              'home'                  : (BuildContext)=>BottomNavBarApp(),///BottomNavigationMenu(),
+              'login_phone'           : (BuildContext)=>LoginPhonePage(),
+              'login_password'        : (BuildContext)=>LoginPasswordPage(),
+              'pin_code'              : (BuildContext)=>PinCodePage(),
+              'config_password'       : (BuildContext)=>ConfigPasswordPage(),
+              'config_account'        : (BuildContext)=>ConfigAccountPage(),
+              'config_location'       : (BuildContext)=>ConfigLocation(),
+              'user_profile'          : (BuildContext)=>UserProfilePage(),
+              'login'                 : (BuildContext)=>LoginPage(),
+              'create_account'        : (BuildContext)=>CreateAccountPage(), 
+              'code_verification_3'   : (BuildContext)=>CodeVerificationPage3(),
+
+              'favoritos'             : (BuildContext)=>FavoritosPage(),
+              'faq'                   : (BuildContext)=>AyudaPage(), 
+              'about'                 : (BuildContext)=>AcercaDePage(), 
+              'user_detalle'          : (BuildContext)=>UserDetallePage(),
 
 
-          'store'                 : (BuildContext)=>HomePage(),
-          'shopping_cart'         : (BuildContext)=>ShoppingCartPage(),
-          
-          'pedidos'               : (BuildContext)=>PedidosPage()
+              'product_detail'        : (BuildContext)=>ProductDetailPage(),
+              
+              'checkout'              : (BuildContext)=>CheckoutPage(),
+
+              'notifications'         : (BuildContext)=>NotificationsPage(),
 
 
-        },
+              'store'                 : (BuildContext)=>HomePage(),
+              'shopping_cart'         : (BuildContext)=>ShoppingCartPage(),
+              
+              'pedidos'               : (BuildContext)=>PedidosPage()
+
+
+            },
+          ),
+       
       ),
     );
   }

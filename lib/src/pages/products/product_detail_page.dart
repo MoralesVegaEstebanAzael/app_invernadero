@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
+import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -57,24 +58,21 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     @override
     Widget build(BuildContext context) {
-      
+      _shoppingCartBloc.countItems();
       return  Scaffold(
-          body: CustomScrollView(
-      slivers: <Widget>[
+        body: CustomScrollView(
+        slivers: <Widget>[
         _appBar(),
         SliverList(
-                delegate: SliverChildListDelegate([
-                   _contenido()
-                ]),
+          delegate: SliverChildListDelegate([
+            _contenido()
+          ]),
         ),
-      ],
-                ),
-        );
+      ],),);
     }
   
     
     Widget _appBar(){
-      
       return SliverAppBar(
         brightness :Brightness.dark,
         elevation: 0,
@@ -84,18 +82,67 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           onPressed: () => Navigator.of(context).pop()
         ),
         actions: <Widget>[
-          IconAction(
-            icon:LineIcons.shopping_cart,
-            onPressed: (){},
-            iconCorlor: Colors.white,
-            color: Colors.black12,
-          )
-
+          _cartItems()
         ],
       );
     }
   
-     
+  _cartItems(){
+    return  Container( 
+       width: responsive.ip(5),
+      height: responsive.ip(5),
+      margin: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color:Colors.black12,
+        shape: BoxShape.circle, 
+      ),
+      child:  GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+               MaterialPageRoute(
+                  builder:(BuildContext context) =>
+                   ShoppingCartPage()
+              )
+          );
+        },
+        child: Stack(
+          children: <Widget>[
+           IconButton(icon: Icon(LineIcons.shopping_cart,
+              color: Colors.white,),
+                onPressed: null,
+            ),
+            StreamBuilder(
+              stream: _shoppingCartBloc.count,
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.hasData){
+                  return Positioned(
+                    right: responsive.ip(0.6),
+                    top: responsive.ip(1),
+                
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                   Icon(
+                        Icons.brightness_1,
+                        size: responsive.ip(2), color: Colors.white),
+                    new Text(
+                      snapshot.data.toString(),
+                      style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: responsive.ip(1),
+                          fontWeight: FontWeight.w500
+                      ),
+                    ),
+                  ],
+                ));
+                }
+                return Container();
+              },
+            ),],
+        ),
+      )
+    );
+  }
   
     Widget _contenido() {
       return SingleChildScrollView(
@@ -119,7 +166,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       return AspectRatio(
         aspectRatio: 16/12,
             child: Container(
-              //color:Colors.yellow,
               color:miTema.accentColor,
               child: Stack(children: <Widget>[
           Positioned(
@@ -133,12 +179,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                         width: responsive.ip(25),
                         image: NetworkImage(producto.urlImagen) , 
                         placeholder: AssetImage('assets/placeholder.png'),)
-                    // CachedNetworkImage(
-                    //     placeholder: (context, url) => CircularProgressIndicator(),
-                    //     imageUrl: producto.urlImagen,
-                    //   )
-                    //   :
-                    //   Image(image: AssetImage('assets/placeholder.png'),height: responsive.ip(20)),
                     ),
                 ),
               ),
@@ -229,18 +269,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       cantidad: 1,
                       subtotal: 1*producto.precioMen
                     );
-
-                    //_dbProvider.insertItemSC(item);
                     _shoppingCartBloc.insertItem(item);
-                    //BottomNavigationMenuState menu = BottomNavigationMenuState();
-
-                    //BottomNavigationMenuState.menuState.currentState.tabController.animateTo(2);
-                    //menu.initState();
-                    //menu.tabController.animateTo(2);
-                      
-                   // Navigator.pop(context);
                     
-                    //Navigator.pushNamed(context, 'shopping_cart');
+                      setState(() {
+                        
+                      });
                   }),
                         ],
                       )
@@ -271,8 +304,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               Text('Descripción', style: TextStyle(fontFamily:'Quicksand',fontSize: 18.0, fontWeight: FontWeight.w600)),
               ],
             ),
-            
-          
           ],),
         ),
       );

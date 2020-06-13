@@ -1,7 +1,9 @@
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
 
 class DataSearch extends SearchDelegate{
@@ -53,7 +55,12 @@ class DataSearch extends SearchDelegate{
   Widget buildSuggestions(BuildContext context) {
     // sugerencias que aparecen al escribir
     if(query.isEmpty){
-      return Container(child: Text("data"),);
+      return Center(
+        child: Container( 
+          child: PlaceHolder(img: 'assets/images/empty_states/empty_find.svg', title: "Buscar productos")
+          
+        ),
+      );
     }
     
     return FutureBuilder(
@@ -81,12 +88,20 @@ class DataSearch extends SearchDelegate{
             );
         }else{
           return Center(
-            child: CircularProgressIndicator(),
-          );
+        child: Container(
+          // child: SvgPicture.asset(
+          //     'assets/images/empty_states/empty_data.svg',
+          //     height: 60,
+          //     width: 60,
+          //   ),
+          child: PlaceHolder(img: 'assets/images/empty_states/empty_data.svg', title: "no hay resultados")
+        ),
+      ) ;
         }
       }
       );
 
   }
 
+  
 }

@@ -1,52 +1,47 @@
+import 'dart:async';
+
 import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
-import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
-import 'package:app_invernadero/src/pages/products/products.dart';
 import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
-import 'package:app_invernadero/src/pages/products/products_page_view.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
-import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
-import 'package:app_invernadero/src/storage/secure_storage.dart';
+import 'package:app_invernadero/src/services/local_services.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_awesome_icons/line_awesome_icons.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart' as prov;
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,AutomaticKeepAliveClientMixin {
   ClientBloc _clientBloc;
   ShoppingCartBloc _shoppingCartBloc;
+  ProductoBloc _productoBloc;
 
   AnimationController _controller;
   PromocionBloc _promocionBloc;
   Responsive _responsive;
   Stream<List<PromocionModel>> promocionesStream;
-   int _current=0;
+  int _current=0;
 
-
+  FavoritosBloc _favoritosBloc;
   @override
   void initState() {
-    //FlutterStatusbarcolor.setStatusBarColor(Colors.white);
     super.initState();
     _controller = AnimationController(vsync: this);
     
@@ -64,45 +59,58 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _clientBloc = Provider.clientBloc(context);
       _clientBloc.dirClient();
       _responsive = Responsive.of(context);
-
+      _productoBloc = Provider.productoBloc(context);
 
       _shoppingCartBloc = Provider.shoppingCartBloc(context);
       _shoppingCartBloc.countItems();
+
+      _favoritosBloc = Provider.favoritosBloc(context);
     }
   }
+
+
+
   @override
   void dispose() {
     _controller.dispose(); 
+    _productoBloc.dispose();
     super.dispose();  
   }
 
   @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) { 
     _shoppingCartBloc.countItems();
+
+    final productosList = prov.Provider.of<LocalService>(context).productos;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
       body: Container(
         width: _responsive.widht,
         height: _responsive.height,
-        child: SingleChildScrollView(
-                  child: Column(
-              
-              children: <Widget>[
-              
-              _sliderPage(_promocionBloc),
-
+        child: RefreshIndicator(
+          onRefresh: _pullData,
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(  
+                children: <Widget>[
+                _sliderPage(_promocionBloc),
                 Container(
-              color: Colors.white,
-              width: _responsive.widht,
-              height: _responsive.ip(10),
-                    ),
-               ProductsHorizontal(),
-              ],
-            ),
+                  color: Colors.white,
+                  width: _responsive.widht,
+                  height: _responsive.ip(10),
+                ),
+                ProductosScrollView(
+                  lista:productosList,favoritosBloc:_favoritosBloc,responsive:_responsive),
+                ],
+              ),
+          ),
         ),
-      ),
-      
+      ),     
     );
   }
   
@@ -380,6 +388,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       )
     );
   }
-  
+
+
+  Future<Null> _pullData()async{
+    final duration = Duration(seconds: 2);
+    new Timer(duration,(){
+      _productoBloc.cargarProductos();
+      _promocionBloc.cargarPromociones(context);
+    });
+
+    return Future.delayed(duration);
+  }
+
+ 
 }
 

@@ -48,29 +48,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
   Widget build(BuildContext context) {  
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-      brightness: Brightness.light,
-      backgroundColor: Colors.white,
-      elevation: 0.0, 
-      iconTheme: IconThemeData(
-        color:Color(0xFF545D68) //change your color here
-      ),
-      title: Text("Actualizar datos personales",
-        style:TextStyle(
-          fontFamily: 'Varela',fontSize:responsive.ip(2.3),color:Color(0xFF545D68)
-        ) ,
-       ),
-        /*actions: <Widget>[
-          IconButton(
-            icon: Icon(LineIcons.picture_o, color:Color(0xFF545D68), size: 28,), 
-            onPressed: _selectFoto,
-          ),
-          IconButton(
-            icon: Icon(LineIcons.camera, color:Color(0xFF545D68), size: 30,), 
-            onPressed: _tomarFoto,
-            ),
-        ],*/
-      ),
+      appBar: _appBar(),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(20.0),
@@ -102,6 +80,32 @@ class _UserDetallePageState extends State<UserDetallePage> {
     );
   }
 
+  _appBar(){
+    return AppBar(
+      brightness: Brightness.light,
+      backgroundColor: Colors.white,
+      elevation: 0.0, 
+      iconTheme: IconThemeData(
+        color:Color(0xFF545D68) //change your color here
+      ),
+      title: Text("Actualizar datos personales",
+        style:TextStyle(
+          fontFamily: 'Varela',fontSize:responsive.ip(2.3),color:Color(0xFF545D68)
+        ) ,
+       ),
+      leading: Container(
+        margin: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.black12,
+            shape: BoxShape.circle,
+          ),
+        child: IconButton(
+          icon: Icon(LineIcons.angle_left, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        ), 
+      );
+  }
   Widget _crearNombre(ClientBloc clientBloc){
     return StreamBuilder(
       stream: clientBloc.nombreStream , 
