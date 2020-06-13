@@ -30,7 +30,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,AutomaticKeepAliveClientMixin {
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
+  AutomaticKeepAliveClientMixin<HomePage> {
   ClientBloc _clientBloc;
   ShoppingCartBloc _shoppingCartBloc;
   ProductoBloc _productoBloc;
@@ -87,8 +88,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
+    print("Reeongresando...");
     _shoppingCartBloc.countItems();
-   // final productosList = prov.Provider.of<LocalService>(context).productos;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -101,14 +103,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(  
                 children: <Widget>[
-                _sliderPage(_promocionBloc),
+                _sliderPage(),
                 Container(
                   color: Colors.white,
                   width: _responsive.widht,
                   height: _responsive.ip(10),
                 ),
                 ProductosScrollView(
-                  productsBox:_productsBox,favoritosBloc:_favoritosBloc,responsive:_responsive),
+                  productsBox:_productsBox,
+                  favoritosBloc:_favoritosBloc,
+                  responsive:_responsive),
                 ],
               ),
           ),
@@ -118,7 +122,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   }
   
   
-  Widget _sliderPage(PromocionBloc bloc) {
+  Widget _sliderPage() {
     return StreamBuilder(
       stream: promocionesStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){

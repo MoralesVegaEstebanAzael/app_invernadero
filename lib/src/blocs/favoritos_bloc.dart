@@ -37,6 +37,7 @@ class FavoritosBloc{
   void addFavorite(ProductoModel producto){
     FavoriteModel favorite =  FavoriteModel(producto:producto);
     _db.addFavorite(favorite);
+    loadFavorites();
   }
 
   void deleteFavorite(int id){

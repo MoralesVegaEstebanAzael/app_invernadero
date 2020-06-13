@@ -15,7 +15,7 @@ class BottomNavBloc{
   factory BottomNavBloc() {
     return _singleton;
   }
-
+  
   BottomNavBloc._internal();
 
   final StreamController<NavBarItem> _navBarController =
@@ -53,6 +53,7 @@ class BottomNavBloc{
   index(){
     return indice;
   }
+
   close() {
     _navBarController?.close();
   }

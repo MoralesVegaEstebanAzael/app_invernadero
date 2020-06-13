@@ -157,8 +157,7 @@ class DBProvider{
   }
 
   void deleteFavorite(int id){
-    print("delete");
-     favoriteBox.delete(id);
+    favoriteBox.delete(id);
   }
 
   Box getFavoriteBox(){

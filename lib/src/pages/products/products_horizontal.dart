@@ -10,7 +10,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:like_button/like_button.dart';
 
-class ProductosScrollView extends StatelessWidget {
+class ProductosScrollView extends StatelessWidget  {
 
   final Box productsBox;
   final FavoritosBloc favoritosBloc;
@@ -38,7 +38,6 @@ class ProductosScrollView extends StatelessWidget {
           builder: (BuildContext context,value,_){
           return 
           ListView.builder(
-            addAutomaticKeepAlives: true,
               scrollDirection: Axis.horizontal,
                   physics: CustomScrollPhysics(itemDimension: 300),
             itemCount: value.length,

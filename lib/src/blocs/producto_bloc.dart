@@ -8,7 +8,7 @@ class ProductoBloc{
   factory ProductoBloc() {
     return _singleton;
   }
-  
+    
   ProductoBloc._internal();
   //providers
   final _db = new DBProvider();

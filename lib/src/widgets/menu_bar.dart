@@ -66,12 +66,30 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     
     return Scaffold(
       backgroundColor: Colors.white,
-      body: IndexedStack(
-        children: pageList,
-        index: _bottomNavBarBloc.index(),   
-      ),
+      // body: IndexedStack(
+      //   children: pageList,
+      //   index: _bottomNavBarBloc.index(),   
+      // ),
 
-
+      body: StreamBuilder<NavBarItem>(
+          stream: _bottomNavBarBloc.itemStream,
+          initialData: _bottomNavBarBloc.defaultItem,
+          builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
+          
+            switch (snapshot.data) {
+              case NavBarItem.HOME:
+                return _homePage;
+              case NavBarItem.PEDIDOS:
+                return _pedidosPage;
+              case NavBarItem.PROFILE:
+                return _userProfilePage;
+              case NavBarItem.NOTIFICACIONES:
+                return _notificationsPage;
+              case NavBarItem.FAVORITOS:
+                return _favoritesPage;
+            }
+          },
+        ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin:10,
@@ -98,7 +116,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
                   fixedColor: miTema.accentColor,
                   unselectedItemColor: Colors.grey,
                   currentIndex: snapshot.data.index,
-                  onTap: _onTap,
+                  onTap: _bottomNavBarBloc.pickItem,//_onTap,
                   items: [
                     BottomNavigationBarItem(
                       title: Text('Pedidos',style: TextStyle(
@@ -144,11 +162,11 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
        floatingActionButton: FloatingActionButton(
           backgroundColor: miTema.accentColor,
           onPressed: () {
-            indice=2;
+            //indice=2;
             _bottomNavBarBloc.pickItem(2);
-            setState(() {
+            // setState(() {
               
-            });
+            // });
           },
           child: Icon(Icons.store),
         ),
