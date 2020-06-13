@@ -51,6 +51,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
    
     responsive = Responsive.of(context);
     super.didChangeDependencies();
+
+    
   }
   
   @override
@@ -82,18 +84,18 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                     fontWeight: FontWeight.w900
                   ),
                 ),
-            WatchBoxBuilder(
-              box: box, 
-              builder: (BuildContext context,Box box){
+            ValueListenableBuilder(
+              valueListenable: box.listenable(),
+               builder: (BuildContext context,value,_){
                 return 
-                      Expanded(
-                        child:  ListView.builder(
-                          itemCount:  box.length,
-                          itemBuilder: (context, index) {
-                            ItemShoppingCartModel item = box.getAt(index);
-                            return _itemView(index,item);
-                            })
-                  );
+                Expanded(
+                  child:  ListView.builder(
+                    itemCount:  value.length,
+                    itemBuilder: (context, index) {
+                      ItemShoppingCartModel item = value.getAt(index);
+                      return _itemView(index,item);
+                      })
+            );
               }),
             _order()
         ],

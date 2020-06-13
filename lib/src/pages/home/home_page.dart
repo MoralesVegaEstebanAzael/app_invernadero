@@ -6,6 +6,7 @@ import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
@@ -20,6 +21,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart' as prov;
 
@@ -39,6 +41,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Stream<List<PromocionModel>> promocionesStream;
   int _current=0;
 
+  Box _productsBox;
   FavoritosBloc _favoritosBloc;
   @override
   void initState() {
@@ -65,6 +68,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _shoppingCartBloc.countItems();
 
       _favoritosBloc = Provider.favoritosBloc(context);
+
+
+      _productsBox = _productoBloc.box();
     }
   }
 
@@ -77,15 +83,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.dispose();  
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+ 
 
   @override
   Widget build(BuildContext context) { 
     _shoppingCartBloc.countItems();
-
-    final productosList = prov.Provider.of<LocalService>(context).productos;
+   // final productosList = prov.Provider.of<LocalService>(context).productos;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -105,7 +108,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   height: _responsive.ip(10),
                 ),
                 ProductosScrollView(
-                  lista:productosList,favoritosBloc:_favoritosBloc,responsive:_responsive),
+                  productsBox:_productsBox,favoritosBloc:_favoritosBloc,responsive:_responsive),
                 ],
               ),
           ),
@@ -113,6 +116,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),     
     );
   }
+  
   
   Widget _sliderPage(PromocionBloc bloc) {
     return StreamBuilder(
@@ -400,6 +404,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Future.delayed(duration);
   }
 
+   @override
+  bool get wantKeepAlive => true;
  
 }
 

@@ -28,16 +28,17 @@ class ProductoBloc{
     
     }
 
-       final productos =await _productoProvider.cargarProductos();
+    final productos =await _productoProvider.cargarProductos();
     _productoController.sink.add(productos);
-   
+
+    
   }
 
   dispose(){
-    _productoController?.close();
+   // _productoController?.close();
   }
 
   box(){ //productos box
-    return _db.getFavoriteBox();
+    return _db.productosBox();
   }
 }

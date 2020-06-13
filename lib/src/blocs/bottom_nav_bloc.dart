@@ -21,11 +21,16 @@ class BottomNavBloc{
   final StreamController<NavBarItem> _navBarController =
       StreamController<NavBarItem>.broadcast();
 
+  
+  int indice=2;
+
   NavBarItem defaultItem = NavBarItem.HOME;
 
   Stream<NavBarItem> get itemStream => _navBarController.stream;
 
+
   void pickItem(int i) {
+    indice = i;
     switch (i) {
       case 0:
         _navBarController.sink.add(NavBarItem.PEDIDOS);
@@ -45,6 +50,9 @@ class BottomNavBloc{
     }
   }
 
+  index(){
+    return indice;
+  }
   close() {
     _navBarController?.close();
   }

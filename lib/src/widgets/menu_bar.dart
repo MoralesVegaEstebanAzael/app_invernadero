@@ -26,13 +26,22 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
   final _notificationsPage = NotificationsPage();
   final _favoritesPage = FavoritosPage();
 
-  
+  List<Widget> pageList = List<Widget>();
+
+
 
   @override
   void initState() {
     super.initState();
     _bottomNavBarBloc = BottomNavBloc();
     _prefs.route = 'home';
+
+    
+    pageList.add(_pedidosPage);
+    pageList.add(_notificationsPage);
+    pageList.add(_homePage);
+    pageList.add(_favoritesPage);
+    pageList.add(_userProfilePage);
   }
 
   @override
@@ -46,29 +55,23 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     super.dispose();
   }
 
+ 
+  int indice;
+ 
   @override
   Widget build(BuildContext context) {
+
+   
+    
+    
     return Scaffold(
       backgroundColor: Colors.white,
-      body: StreamBuilder<NavBarItem>(
-        stream: _bottomNavBarBloc.itemStream,
-        initialData: _bottomNavBarBloc.defaultItem,
-        builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
-        
-          switch (snapshot.data) {
-            case NavBarItem.HOME:
-              return _homePage;
-            case NavBarItem.PEDIDOS:
-              return _pedidosPage;
-            case NavBarItem.PROFILE:
-              return _userProfilePage;
-            case NavBarItem.NOTIFICACIONES:
-              return _notificationsPage;
-            case NavBarItem.FAVORITOS:
-              return _favoritesPage;
-          }
-        },
+      body: IndexedStack(
+        children: pageList,
+        index: _bottomNavBarBloc.index(),   
       ),
+
+
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
         notchMargin:10,
@@ -90,11 +93,12 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
           stream: _bottomNavBarBloc.itemStream,
           initialData: _bottomNavBarBloc.defaultItem,
           builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
+            
             return BottomNavigationBar(
                   fixedColor: miTema.accentColor,
                   unselectedItemColor: Colors.grey,
                   currentIndex: snapshot.data.index,
-                  onTap: _bottomNavBarBloc.pickItem,
+                  onTap: _onTap,
                   items: [
                     BottomNavigationBarItem(
                       title: Text('Pedidos',style: TextStyle(
@@ -140,7 +144,11 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
        floatingActionButton: FloatingActionButton(
           backgroundColor: miTema.accentColor,
           onPressed: () {
+            indice=2;
             _bottomNavBarBloc.pickItem(2);
+            setState(() {
+              
+            });
           },
           child: Icon(Icons.store),
         ),
@@ -152,5 +160,35 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
- 
+  _onTap(int i){
+
+    _bottomNavBarBloc.pickItem(i);
+    setState(() {
+      
+    });
+  }
 }
+
+
+/**
+ * StreamBuilder<NavBarItem>(
+          stream: _bottomNavBarBloc.itemStream,
+          initialData: _bottomNavBarBloc.defaultItem,
+          builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
+          
+            switch (snapshot.data) {
+              case NavBarItem.HOME:
+                return _homePage;
+              case NavBarItem.PEDIDOS:
+                return _pedidosPage;
+              case NavBarItem.PROFILE:
+                return _userProfilePage;
+              case NavBarItem.NOTIFICACIONES:
+                return _notificationsPage;
+              case NavBarItem.FAVORITOS:
+                return _favoritesPage;
+            }
+          },
+        ),
+ * 
+ */
