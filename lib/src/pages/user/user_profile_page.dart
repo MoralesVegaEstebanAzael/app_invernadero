@@ -27,6 +27,8 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   UserProvider userProvider = UserProvider();
   SecureStorage storage = new SecureStorage();
+  ClientBloc clienteBloc;
+  Responsive responsive;
    
   bool _blockCheck=true;
   bool _isLoading=false;
@@ -38,18 +40,20 @@ class _UserProfilePageState extends State<UserProfilePage> {
     // TODO: implement initState
     super.initState();
     options =  menuProvider.loadData();
-
-  
   }
-  @override
-  Widget build(BuildContext context) {
-    //LoginBloc userBloc = Provider.of(context);
-    //userBloc.cargarUsuario();
 
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
     ClientBloc clienteBloc = Provider.clientBloc(context);
     clienteBloc.getClient(); 
 
-    final responsive = Responsive.of(context);
+    responsive = Responsive.of(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {      
     return Scaffold(
       backgroundColor: Colors.white,//Color(0XFFEEEEEE),
       body: Container( 
@@ -93,17 +97,20 @@ class _UserProfilePageState extends State<UserProfilePage> {
           SizedBox(height: responsive.ip(2),),  
           Expanded(
             child: Container(
+              padding: EdgeInsets.all(0.0),
                 color: Colors.white, //Color(0XFFEEEEEE),
-                child: Column(
-                  children:<Widget>[ 
-                      SvgPicture.asset('assets/images/logo_app.svg',                     
-                        height: 50,
-                      ),
-                      Text(
-                      "Invernadero Sebastián  Atoyaquillo",
-                      style: TextStyle(color: Colors.grey)
-                      ),
-                  ]
+                child: SingleChildScrollView(
+                    child: Column(
+                    children:<Widget>[ 
+                        SvgPicture.asset('assets/images/logo_app.svg',                     
+                          height: 40,
+                        ),
+                        Text(
+                        "Invernadero Sebastián  Atoyaquillo",
+                        style: TextStyle(color: Colors.grey)
+                        ),
+                    ]
+                  ),
                 ),  
             )
           )
@@ -155,7 +162,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         Column(
            mainAxisAlignment: MainAxisAlignment.center,
            children: <Widget>[ 
-            Text( (user.nombre == null || user.nombre == "") ?  'Nombre de usuario' : "${user.nombre + user.ap}" , overflow: TextOverflow.ellipsis ,style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 18, )),
+            Text( (user.nombre == null || user.nombre == "") ?  'Nombre de usuario' : "${user.nombre +" " + user.ap }" , overflow: TextOverflow.ellipsis ,style: TextStyle(fontWeight: FontWeight.w500  , color:Colors.white,fontSize: 18, )),
              Divider(), 
             Text( (user.rfc == null || user.rfc == "") ?  'RFC del usuario' : "${user.rfc}"  , overflow: TextOverflow.ellipsis ,style: TextStyle(color:Colors.white)), 
            ],

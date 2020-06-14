@@ -36,7 +36,7 @@ class LoginBloc with Validators{
 
   void editarUser(UserModel user) async{
     _cargandoController.sink.add(true);
-    await _userProvider.updateDatosUser(user);
+    //await _userProvider.updateDatosUser(user);
     _cargandoController.sink.add(false);
   }
   
