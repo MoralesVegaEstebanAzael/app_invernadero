@@ -43,6 +43,8 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     pageList.add(_favoritesPage);
     pageList.add(_userProfilePage);
   }
+  
+  
 
   @override
   void didChangeDependencies() {

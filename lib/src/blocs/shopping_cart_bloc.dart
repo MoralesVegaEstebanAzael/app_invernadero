@@ -20,7 +20,7 @@ class ShoppingCartBloc{
   final _itemsSCcontroller = new BehaviorSubject<List<ItemShoppingCartModel>>();
   
   final _cargandoController = new BehaviorSubject<bool>();
-  final _db = new DBProvider();
+  final db = new DBProvider();
   final _totalController = new BehaviorSubject<double>();
   final _subtotalController = new BehaviorSubject<double>();
   final _countItems = new BehaviorSubject<int>();
@@ -39,7 +39,7 @@ class ShoppingCartBloc{
 
   
   void loadItems()async{
-    final items = await _db.getItemsSC();
+    final items = await db.getItemsSC();
     //_shoppingCartController.sink.add(items);
     _itemsSCcontroller.sink.add(items);
     totalItems();
@@ -48,12 +48,12 @@ class ShoppingCartBloc{
   }
 
   void insertItem(ItemShoppingCartModel item){
-    _db.insertItemSC(item);
+    db.insertItemSC(item);
     countItems();
   }
   // void updateItem(ShoppingCartModel item)async{
   //   _cargandoController.sink.add(true);
-  //   await _db.updateItemShoppingCart(item);
+  //   await db.updateItemShoppingCart(item);
   //   _cargandoController.sink.add(false);
   //   totalItems();
   // } 
@@ -63,25 +63,25 @@ class ShoppingCartBloc{
     //Replantear en base a si es menudeo o mayoreo
     double subtotal = item.cantidad * item.producto.precioMen;
     item.subtotal = subtotal;
-    await _db.updateItemSC(item);
+    await db.updateItemSC(item);
 
-   // _subtotalController.sink.add(_db.)
+   // _subtotalController.sink.add(db.)
 
   }
   
   void totalItems(){ //precio total de items
-    _totalController.sink.add(_db.totalSC());
+    _totalController.sink.add(db.totalSC());
   }
   
   
   void countItems(){//total de items guardados
-     _countItems.sink.add(_db.countItemsSC());
+     _countItems.sink.add(db.countItemsSC());
     }
   
   void incItem(ItemShoppingCartModel item)async{
     print("incrementando");
     item.cantidad++;
-    await _db.updateItemSC(item);
+    await db.updateItemSC(item);
     subtotalItem(item); //new method
     totalItems();
   }
@@ -90,19 +90,19 @@ class ShoppingCartBloc{
     if(item.cantidad>1)
       item.cantidad--;
     _cargandoController.sink.add(true);
-     await _db.updateItemSC(item);
+     await db.updateItemSC(item);
     subtotalItem(item); //new method
     totalItems();
   }
 
   void deleteItem(ItemShoppingCartModel item)async{
-     await _db.deleteItemSC(item);
+     await db.deleteItemSC(item);
     loadItems();
    
   }
 
   void deleteAllItems()async{
-    await _db.deleteItemsSC();
+    await db.deleteItemsSC();
     loadItems();
   }
 
@@ -111,16 +111,16 @@ class ShoppingCartBloc{
     //_shoppingCartController.close();
   //  _cargandoController.close();
     //_totalController.close();
-    //_db.dispose();
+    //db.dispose();
   }
 
   box(){
-   // return _db.getShoppingCartBox();
-    return _db.getItemsSCBox();
+   // return db.getShoppingCartBox();
+    return db.getItemsSCBox();
   }
   bool isEmpty(){
-   // return _db.shoppingCartBoxisEmpty();
-    return _db.itemsSCBoxisEmpty();
+   // return db.shoppingCartBoxisEmpty();
+    return db.itemsSCBoxisEmpty();
   }
 
 

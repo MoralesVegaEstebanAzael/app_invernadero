@@ -57,6 +57,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   
   @override
   Widget build(BuildContext context) {
+    _shoppingCartBloc.db.filterSC();
     return Scaffold(
       appBar: _appBar(),
       body: _shoppingCartBloc.isEmpty()? 
@@ -278,11 +279,16 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
        ),
       actions: <Widget>[
         IconAction(
+          icon:LineIcons.search,
+          onPressed: (){},
+        ),
+        IconAction(
           icon:LineIcons.trash_o,
           onPressed:()=>setState(() { _shoppingCartBloc.deleteAllItems(); 
           }),
           color: MyColors.Grey
         ),
+        
         // IconAction(
         //   icon:LineIcons.bell,
         //   onPressed:()=> Navigator.pushNamed(context, 'notifications')

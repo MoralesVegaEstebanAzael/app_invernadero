@@ -251,6 +251,26 @@ class DBProvider{
     return total;
   }
 
+  //lista de productos del carrito de compras
+  Future<List<ItemShoppingCartModel>> shoppingCartItems()async{
+    Map map =  itemsShoppingBox.toMap();
+    List<ItemShoppingCartModel> lista =  map.values.toList().cast();
+    return lista;
+  }
+
+  filterSC(){
+    print("FILTERRRRRRR");
+    Map map = itemsShoppingBox.toMap();
+    List<ItemShoppingCartModel> lista =  map.values.toList().cast();
+    String query = 'a';
+    List<ItemShoppingCartModel> nuevos=
+      lista.where(
+        (f) => f.producto.nombre.toUpperCase().contains(query.toUpperCase()) || 
+        f.producto.precioMay.toString().toUpperCase().contains('1')
+      ).toList(); //apples
+
+    print("nuevo ${nuevos.length}");
+  }
   
   //** CLIENTE* */
   insertClient(ClientModel client)async{
