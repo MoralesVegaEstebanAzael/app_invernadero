@@ -31,7 +31,7 @@ class Validators{
 
  final validarNombre=StreamTransformer<String,String>.fromHandlers(
     handleData: (nombre,sink){
-      (nombre.length>3)?sink.add(nombre):sink.addError("Ingrese mas de 3 caracteres");
+      (nombre.length>1)?sink.add(nombre):sink.addError("Ingrese este campo");
     }
   );
 

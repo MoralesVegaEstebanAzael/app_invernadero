@@ -25,10 +25,7 @@ class ClientBloc with Validators{
   StreamController<ClientModel>.broadcast();
 
   
-  Stream<ClientModel> get clientStream =>_clientController.stream;
-  
-  
-  
+  Stream<ClientModel> get clientStream =>_clientController.stream; 
 
   final _direcController = new BehaviorSubject<String>();
   final _infController = new BehaviorSubject<bool>();
@@ -48,13 +45,18 @@ class ClientBloc with Validators{
   final _rfcController = BehaviorSubject<String>();
 
   //recuperar los datos del stream
-  Stream<String> get nombreStream => _nombreController.stream.transform(validarNombre);
+  Stream<String> get nombreStream => _nombreController.stream.transform(validarNombre) ;
   Stream<String> get apellidoPStream => _apellidoPController.stream.transform(validarNombre);
   Stream<String> get apellidoMStream => _apellidoMController.stream.transform(validarNombre);
   Stream<String> get rfcStream => _rfcController.stream.transform(validarRFC);
   
-  Stream<bool> get formValidStream => 
-    CombineLatestStream.combine2(nombreStream, rfcStream, (t, p) => true);
+  Stream<bool> get formValidStream =>  
+    CombineLatestStream.combine4(nombreStream, apellidoPStream, apellidoMStream, rfcStream, (n,p,m,r) => true);
+
+  String get nombre =>_nombreController.value;
+  String get apellidoP =>_apellidoPController.value;
+  String get apellidoM =>_apellidoMController.value;
+  String get rfc =>_rfcController.value;
 
   //insertat valores al stream
   Function(String) get changeNombre => _nombreController.sink.add;
@@ -100,7 +102,7 @@ class ClientBloc with Validators{
     client.ap = ap;
     client.am = am;
     client.rfc = rfc; 
-     updateClient(client);
+    await _dbProvider.updateClient(client);
     _cargandoController.sink.add(false);
   }
 
@@ -112,20 +114,24 @@ class ClientBloc with Validators{
     return fotoUrl;
   }
 
-  dispose() {
-    _clientController.close();
-    _direcController.close();
-    _infController.close();
-     //_addressController.close();
-    _userControler.close();
-    _cargandoController.close();
-    _nombreController.close();
-    _apellidoPController.close();
-    _apellidoMController.close();
-    _rfcController.close();
+  void updateInfoCliente(ClientModel cliente) async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updateDatosUser(cliente);
+    _cargandoController.sink.add(false);
   }
 
+  void updatePhoto(String url_imagen) async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updatePhoto(url_imagen: url_imagen);
+    _cargandoController.sink.add(false);
+  }
 
+  void initialData(ClientModel client){
+    _nombreController.sink.add(client.nombre);
+    _apellidoPController.sink.add(client.ap);
+    _apellidoMController.sink.add(client.am);
+    _rfcController.sink.add(client.rfc);
+  }
 
   void dirClient(){
     ClientModel client = _dbProvider.getClient(_storage.idClient);
@@ -138,6 +144,18 @@ class ClientBloc with Validators{
 
   bool informactionClient(){
     return  _storage.informacion;  
+  }
+
+   dispose() {
+    _clientController.close();
+    _direcController.close();
+    _infController.close(); 
+    _userControler.close();
+    _cargandoController.close();
+    _nombreController.close();
+    _apellidoPController.close();
+    _apellidoMController.close();
+    _rfcController.close();
   }
 }
     

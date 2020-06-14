@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_invernadero/src/models/client_model.dart';
+import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/userModel.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
@@ -203,20 +204,22 @@ class UserProvider{
       
   }
 
-  Future<bool> updateDatosUser(UserModel user) async{
-    final url = "${AppConfig.base_url}/api/client/update_user/${user.id}"; 
+  Future<bool> updateDatosUser(ClientModel user) async{
+    final url = "${AppConfig.base_url}/api/client/add_info"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",}; 
     
-    final response = await http.put(
+    final response = await http.post(
       url, 
       headers: headers,
       body: {
-        "name":user.name, 
-        "email":user.email==null?'no_email':user.email, 
-        "url_avatar":user.urlAvatar,
+        "celular":user.celular,
+        "nombre":user.nombre, 
+        "ap":user.ap, 
+        "am":user.am,
+        "rfc":user.rfc,
       });
 
     final decodeData = json.decode(response.body);
@@ -224,32 +227,25 @@ class UserProvider{
     return true;
   }
 
-   Future<String> subirImagen(File imagen, UserModel user) async{
-    final url = "${AppConfig.base_url}/api/client/file/avatar/${user.id}"; 
+   Future<bool> updatePhoto({@required String url_imagen}) async{
+    final celular = _storage.user.phone;
+    final url = "${AppConfig.base_url}/api/client/update_photo"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",}; 
-
-    String  foto  =  imagen.path.split('/').last;
     
-    final resp = await http.post(
-      url,
-      headers:headers,
+    final response = await http.post(
+      url, 
+      headers: headers,
       body: {
-        "bookcover":imagen,  
+        "celular":celular,
+        "url_imagen":url_imagen,  
       });
 
-    if (resp.statusCode != 200 && resp.statusCode != 201) {
-        print('Algo salio mal');
-        print(resp.body);
-        return null;
-    }  
-
-    final respData = json.decode(resp.body);
-    print(respData);
-
-    return respData['message'];  
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
   }
 
    Future<String> subirImagenCloudinary(File imagen) async{
@@ -283,6 +279,59 @@ class UserProvider{
 
     return respData['secure_url'];
   } 
+
+   Future<List<NotificacionModel>> cargarNotificaciones()async{
+    final url = "${AppConfig.base_url}/api/client/notifications"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(url, headers: headers,);
+
+    print("NOTIFICACIONES RESPUESTA----------------");
+    print(response.body);
+    
+    if(response.body.contains('message')){
+      return [];
+    } 
+
+    final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
+    final List<NotificacionModel> productos = List();
+
+
+    Map notiMap = Map<String, NotificacionModel>();
+
+
+    decodeData.forEach((id,notification){
+       
+      NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
+      print(notiTemp); 
+      productos.add(notiTemp);
+         
+      notiMap.putIfAbsent(id, ()=>notiTemp); 
+
+    }); 
+
+    _dbProvider.insertNotification(notiMap); 
+     
+    if(decodeData==null) return [];
+    return productos; 
+  }
+
+   Future<bool> markAsReadNotifications() async{ 
+    final url = "${AppConfig.base_url}/api/client/notifications_mark_read"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers);
+
+    return true;
+  }
 
 
   

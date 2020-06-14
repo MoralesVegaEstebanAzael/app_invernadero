@@ -3,7 +3,7 @@ import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/client_model.dart'; 
 import 'package:app_invernadero/src/theme/theme.dart'; 
-import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/utils/responsive.dart'; 
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,7 +26,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
 
   ClientBloc clientBloc;
   Responsive responsive;
-
+ 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
@@ -34,13 +34,14 @@ class _UserDetallePageState extends State<UserDetallePage> {
     
     clientBloc = Provider.clientBloc(context);
 
-    responsive = Responsive.of(context);
+    responsive = Responsive.of(context); 
 
     final ClientModel userData = ModalRoute.of(context).settings.arguments;
     if (userData != null) {
       user = userData;
     }
 
+    clientBloc.initialData(user);
 
   }
 
@@ -59,21 +60,11 @@ class _UserDetallePageState extends State<UserDetallePage> {
         style:TextStyle(
           fontFamily: 'Varela',fontSize:responsive.ip(2.3),color:Color(0xFF545D68)
         ) ,
-       ),
-        /*actions: <Widget>[
-          IconButton(
-            icon: Icon(LineIcons.picture_o, color:Color(0xFF545D68), size: 28,), 
-            onPressed: _selectFoto,
-          ),
-          IconButton(
-            icon: Icon(LineIcons.camera, color:Color(0xFF545D68), size: 30,), 
-            onPressed: _tomarFoto,
-            ),
-        ],*/
+       ), 
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(30.0),
           child: Form(
             key: formKey,
             child: Column(
@@ -88,12 +79,57 @@ class _UserDetallePageState extends State<UserDetallePage> {
                
                   ],
                 ),
-                _crearNombre(clientBloc),
-                _crearApellidoP(clientBloc),
-                _crearApellidoM(clientBloc),
-                _crearRFC(clientBloc),
+                SizedBox(height:responsive.ip(1)),
+                StreamBuilder(
+                  stream: clientBloc.nombreStream ,  
+                  initialData: user.nombre,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    return  
+                    _inputText(user.nombre, 'Nombre *', snapshot.error, clientBloc.changeNombre);
+                  },
+                ),
+
+                SizedBox(height:responsive.ip(1)),
+                StreamBuilder(
+                  stream: clientBloc.apellidoPStream , 
+                  initialData: user.ap,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    return  
+                    _inputText(user.ap,'Apellido paterno *', snapshot.error, clientBloc.changeApellidoP);
+                  },
+                ),
+
+                SizedBox(height:responsive.ip(1)),
+                StreamBuilder(
+                  stream: clientBloc.apellidoMStream , 
+                  initialData: user.am,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    return  
+                    _inputText(user.am, 'Apellido materno *', snapshot.error, clientBloc.chanfeApellidoM);
+                  },
+                ),
+
+                SizedBox(height:responsive.ip(1)),   
+                StreamBuilder(
+                  stream: clientBloc.rfcStream ,  
+                  initialData: user.rfc,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    return  
+                     _inputText(user.rfc, "RFC *", snapshot.error, clientBloc.changeRFC);
+                  },
+                ), 
+
                 SizedBox(height:responsive.ip(6)),
-                _crearBoton(),
+                StreamBuilder(
+                  stream: clientBloc.formValidStream, 
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    return  RoundedButton(
+                      label: 'Guardar', 
+                      onPressed:  snapshot.hasData ? () => _submit() : null,
+                      //_submit,        
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -102,106 +138,9 @@ class _UserDetallePageState extends State<UserDetallePage> {
     );
   }
 
-  Widget _crearNombre(ClientBloc clientBloc){
-    return StreamBuilder(
-      stream: clientBloc.nombreStream , 
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        return TextFormField(
-          textAlign: TextAlign.end,
-          initialValue: user.nombre,
-          textCapitalization: TextCapitalization.sentences,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-              focusedBorder:  UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd))),
-              enabledBorder: UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd)),),
-              hintStyle: TextStyle(color:Colors.grey), 
-              labelStyle: _style,
-              labelText: 'Nombre *', 
-              errorText: snapshot.error
-          ),
-          onSaved: (value) => user.nombre = value, 
-          onChanged: clientBloc.changeNombre,
-          validator: (value){
-            if(value.length < 3){
-              return 'Ingrese su nombre';
-            }else { return null;}
-          },
-        ); 
-      },
-    );
-  }
-
-  Widget _crearApellidoP(ClientBloc clientBloc){ 
-    return StreamBuilder(
-      stream: clientBloc.apellidoPStream, 
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-         return TextFormField(
-          textAlign: TextAlign.end,
-          initialValue: user.ap,
-          textCapitalization: TextCapitalization.sentences,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-              focusedBorder:  UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd))),
-              enabledBorder: UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd)),),
-              hintStyle: TextStyle(color:Colors.grey), 
-              labelText: 'Apellido paterno *', 
-              labelStyle: _style,
-              errorText: snapshot.error
-          ),
-          onSaved: (value) => user.ap = value,
-          onChanged: clientBloc.changeApellidoP,
-          validator: (value){
-            if(value.length < 3){
-              return 'Ingrese su apellido paterno';
-            }else { return null;}
-          },
-        );  
-      },
-    );
-  }
-
-  Widget _crearApellidoM(ClientBloc clientBloc){
-    return StreamBuilder(
-      stream: clientBloc.apellidoMStream, 
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        return TextFormField(
-          textAlign: TextAlign.end,
-          initialValue: user.am,
-          textCapitalization: TextCapitalization.sentences,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-              focusedBorder:  UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd))),
-              enabledBorder: UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd)),),
-              hintStyle: TextStyle(color:Colors.grey), 
-              labelText: 'Apellido materno *', 
-              labelStyle: _style,
-              errorText: snapshot.error
-          ),
-          onSaved: (value) => user.am = value,
-          onChanged: clientBloc.chanfeApellidoM,
-          validator: (value){
-            if(value.length < 3){
-              return 'Ingrese su apellido materno';
-            }else { return null;}
-          },
-        );   
-      },
-    );
-  }
-
-  Widget _crearRFC(ClientBloc clientBloc){
-    return StreamBuilder(
-      stream: clientBloc.rfcStream , 
-      builder: (BuildContext context, AsyncSnapshot snapshot){
-        return TextFormField(
-          textAlign: TextAlign.end,
-          initialValue: user.rfc,
+  Widget _inputText(String rfc,String label, String errorText,Function(String) func){  
+    return TextFormField(  
+          initialValue: rfc,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
@@ -210,21 +149,12 @@ class _UserDetallePageState extends State<UserDetallePage> {
               enabledBorder: UnderlineInputBorder(      
                               borderSide: BorderSide(color:Color(0xffdddddd)),),
               hintStyle: TextStyle(color:Colors.grey),
-              labelText: 'RFC *',
-              labelStyle: _style,
-              //counterText: snapshot.data,
-              errorText: snapshot.error
-          ),
-          onSaved: (value) => user.rfc = value,
-          onChanged: clientBloc.changeRFC,
-          validator: (value){
-            if(value.length < 13){
-              return 'Ingrese su RFC';
-            }else { return null;}
-          },
+              labelText: label,
+              labelStyle: _style, 
+              errorText: errorText
+          ), 
+          onChanged: func, 
         );
-      },
-    );
   } 
 
   Widget _mostrarFoto(){     
@@ -297,7 +227,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
       user.urlImagen = null; //limpieza para redibujar la nueva foto
     } 
     setState(() {
-      _guardarImagen();
+      _guardarImagen();      
     });
   }
 
@@ -307,6 +237,9 @@ class _UserDetallePageState extends State<UserDetallePage> {
       clientBloc.updateImagen(user.urlImagen);
       print("++++++++++++++++++++++++++++");
       print(user.urlImagen);
+      print("------------------------");
+      //clientBloc.updatePhoto(user.urlImagen); 
+      print("------------------------");
     }
   }
 
@@ -318,46 +251,22 @@ class _UserDetallePageState extends State<UserDetallePage> {
     );
     scaffoldKey.currentState.showSnackBar(snackbar);
 
-  }
-
-  Widget _crearBoton(){
-    //formValidStream
-    return Center(      
-      child: RoundedButton(
-        label: 'Guardar', 
-        onPressed: (_guardando) ? null : _submit,        
-      ),
-    ); 
-  }
+  } 
 
   void _submit() async{
-    if (!formKey.currentState.validate()) return;
+   if (!formKey.currentState.validate()) return;
     formKey.currentState.save(); //guardar la informacon de todos los textfield
 
-
-     setState(() { _guardando = true; });
-
+       //TODO: ACTUALIZAR LOS DATOS DEL USUARIO
+      print('actualizar usuario'); 
+      clientBloc.updateDatos(clientBloc.nombre, clientBloc.apellidoP, clientBloc.apellidoM, clientBloc.rfc);
+      print("+++++++++++++++++++++++++++++++++");
+      //userProvider.updateDatosUser(user);
+      clientBloc.updateInfoCliente(user);      
+      print("+++++++++++++++++++++++++++++++++"); 
     
 
-    if (user.id == null) {
-      print('crear producto');
-    }else{
-      print('actualizar usuario'); 
-      print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-      print(user.nombre);
-      print(user.ap);
-      print(user.am);
-      print(user.urlImagen);
-      print(user.id);
-      print(user.lat);
-      clientBloc.updateDatos(user.nombre, user.ap, user.am, user.rfc);
-
-      //TODO: ACTUALIZAR LOS DATOS DEL USUARIO
-      //userBloc.editarUser(user);
-      //userProvider.updateDatosUser(user);
-    }
-
-    setState(() { _guardando = false; });
+    //setState(() { _guardando = false; });
     mostrarSnackbar('Datos actualizados');
     Navigator.pop(context);
    /* setState(() {

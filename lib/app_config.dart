@@ -32,6 +32,9 @@ class AppConfig{
 
   static const int hive_type_7= 7;
   static const String hive_adapter_7 ="FavoriteAdapter";
+
+  static const int hive_type_8 = 8;
+  static const String hive_adapter_8 = "NotificationsAdapter";
   
   static const String mapbox_api_token='pk.eyJ1IjoiYXphZWxtb3JhbGVzcyIsImEiOiJjazhqNmdwZ3UwMGN3M2VxYnNkNWp2cW85In0.QrGCrwp63Tf0kU2ceIjIww';
                                         

@@ -2,6 +2,7 @@ import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/favorite_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
+import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -14,6 +15,7 @@ class DBProvider{
   Box clientBox;
   Box favoriteBox;
   Box productBox;
+  Box notificationBox;
 
   static DBProvider _instance =
       DBProvider.internal();
@@ -33,6 +35,7 @@ class DBProvider{
     Hive.registerAdapter(ClientAdapter());
     Hive.registerAdapter(FavoriteAdapter());
     //Hive.registerAdapter(ProductoAdapter());
+    Hive.registerAdapter(NotificationsAdapter());
 
 
     //shoppingCartBox= await Hive.openBox("shoppingCart");
@@ -45,6 +48,7 @@ class DBProvider{
     clientBox = await Hive.openBox("client");
 
     productBox = await Hive.openBox("producto");
+    notificationBox = await Hive.openBox("notification");
     return true;
   }
   
@@ -263,6 +267,7 @@ class DBProvider{
   }
   
   Future updateClient(ClientModel client)async{
+    print("Datos actualizados");
     await clientBox.put(client.id,client);
   }
 
@@ -275,6 +280,23 @@ class DBProvider{
   }
   Future deleteProductBox()async{
     await productBox.clear();
+  }
+
+  //Notificaciones
+  insertNotification(Map<String, NotificacionModel> entries) async{
+    await notificationBox.putAll(entries);
+  }
+
+  Box notificationsBox(){
+    return notificationBox;
+  }
+
+  Future deleteNotificationsBox() async{
+    await notificationBox.clear();
+  }
+
+   void deleteNotification(int id){ 
+     notificationBox.delete(id); 
   }
   
 }
