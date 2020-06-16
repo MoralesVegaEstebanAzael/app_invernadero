@@ -3,8 +3,8 @@ import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/client_model.dart'; 
 import 'package:app_invernadero/src/theme/theme.dart'; 
-import 'package:app_invernadero/src/utils/responsive.dart'; 
-import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/rounded_button.dart';  
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';  
@@ -49,19 +49,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
   Widget build(BuildContext context) {  
     return Scaffold(
       key: scaffoldKey,
-      appBar: AppBar(
-      brightness: Brightness.light,
-      backgroundColor: Colors.white,
-      elevation: 0.0, 
-      iconTheme: IconThemeData(
-        color:Color(0xFF545D68) //change your color here
-      ),
-      title: Text("Actualizar datos personales",
-        style:TextStyle(
-          fontFamily: 'Varela',fontSize:responsive.ip(2.3),color:Color(0xFF545D68)
-        ) ,
-       ), 
-      ),
+      appBar: _appBar(),  
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(30.0),
@@ -164,7 +152,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
         ), 
       );
   }
- 
+  
   Widget _inputText(String rfc,String label, String errorText,Function(String) func){  
     return TextFormField(  
           initialValue: rfc,

@@ -23,14 +23,19 @@ class NotificacionesBloc{
   Stream<bool> get cargando => _cargandoController.stream;
 
   void cargarNotificaciones() async{
-    //final notificaciones = await _userProvider.cargarNotificaciones();
-     await _dbProvider.notificationBox;
-    //_notificacionesController.sink.add(notificaciones);
+    final notificaciones = await _userProvider.cargarNotificaciones(); 
+    _notificacionesController.sink.add(notificaciones);
   }
 
   void markAsReadNotifications() async {
     _cargandoController.sink.add(true);
     await _userProvider.markAsReadNotifications();
+    _cargandoController.sink.add(false);
+  }
+
+   void updateLeidas(NotificacionModel noti)async{
+    _cargandoController.sink.add(true); 
+    await _dbProvider.markAsReadNotifications(noti);
     _cargandoController.sink.add(false);
   }
 

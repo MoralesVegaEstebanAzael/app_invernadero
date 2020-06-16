@@ -320,5 +320,10 @@ class DBProvider{
    void deleteNotification(int id){ 
      notificationBox.delete(id); 
   }
+
+  Future markAsReadNotifications(NotificacionModel notificacion)async{  
+    await notificationBox.put(notificacion.id, notificacion) ;
+  }
+ 
   
 }
