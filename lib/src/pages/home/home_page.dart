@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
-    print("Reeongresando...");
+    prov.Provider.of<LocalService>(context);
     _shoppingCartBloc.countItems();
 
     return Scaffold(
