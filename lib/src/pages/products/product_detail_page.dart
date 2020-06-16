@@ -10,6 +10,7 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,7 +80,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         backgroundColor: miTema.accentColor,
         leading: IconButton(
           icon:Icon(LineIcons.angle_left),
-          onPressed: () => Navigator.of(context).pop()
+          onPressed: () {
+            
+            Navigator.of(context).pop();
+          } 
         ),
         actions: <Widget>[
           _cartItems()
@@ -98,12 +102,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
       child:  GestureDetector(
         onTap: () {
-          Navigator.of(context).push(
-               MaterialPageRoute(
-                  builder:(BuildContext context) =>
-                   ShoppingCartPage()
-              )
-          );
+          //Navigator.pop(context);
+          bool flagFrom=true;
+          Navigator.pushNamed(context, 'shopping_cart',arguments:flagFrom );
         },
         child: Stack(
           children: <Widget>[
@@ -274,6 +275,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       setState(() {
                         
                       });
+                    
+                      Flushbar(
+                        message:  "Se ha agregado al carrito de compras",
+                        duration:  Duration(seconds: 2),              
+                      )..show(context);
                   }),
                         ],
                       )

@@ -94,7 +94,7 @@ class DataSearch extends SearchDelegate{
           //     height: 60,
           //     width: 60,
           //   ),
-          child: PlaceHolder(img: 'assets/images/empty_states/empty_data.svg', title: "no hay resultados")
+          child: PlaceHolder(img: 'assets/images/empty_states/empty_search.svg', title: "no hay resultados")
         ),
       ) ;
         }

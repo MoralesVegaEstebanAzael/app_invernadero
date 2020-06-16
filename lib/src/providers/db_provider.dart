@@ -221,6 +221,7 @@ class DBProvider{
   }
 
   Future deleteItemsSC()async{
+    //print(object)
     await itemsShoppingBox.clear();
   }
   
@@ -243,6 +244,9 @@ class DBProvider{
     return itemsShoppingBox.isEmpty;
   }
 
+  deleteAllItemsSC()async{
+   await itemsShoppingBox.clear();
+  }
 
   double totalSC(){
     double total = 0;
@@ -256,24 +260,23 @@ class DBProvider{
   }
 
   //lista de productos del carrito de compras
-  Future<List<ItemShoppingCartModel>> shoppingCartItems()async{
+  Future<List<ItemShoppingCartModel>> shoppingCartList()async{
     Map map =  itemsShoppingBox.toMap();
     List<ItemShoppingCartModel> lista =  map.values.toList().cast();
     return lista;
   }
 
-  filterSC(){
-    print("FILTERRRRRRR");
-    Map map = itemsShoppingBox.toMap();
-    List<ItemShoppingCartModel> lista =  map.values.toList().cast();
-    String query = 'a';
-    List<ItemShoppingCartModel> nuevos=
+  Future<List<ItemShoppingCartModel>> filterSC(List<ItemShoppingCartModel> lista,String query)async{
+    // print("FILTERRRRRRR");
+    // Map map = itemsShoppingBox.toMap();
+    // List<ItemShoppingCartModel> lista =  map.values.toList().cast();
+    // String query = 'a';
+    List<ItemShoppingCartModel> newList=
       lista.where(
-        (f) => f.producto.nombre.toUpperCase().contains(query.toUpperCase()) || 
-        f.producto.precioMay.toString().toUpperCase().contains('1')
+        (f) => f.producto.nombre.toUpperCase().contains(query.toUpperCase())
       ).toList(); //apples
 
-    print("nuevo ${nuevos.length}");
+    return newList;
   }
   
   //** CLIENTE* */
@@ -300,11 +303,10 @@ class DBProvider{
   Future deleteProductBox()async{
     await productBox.clear();
   }
-
+  
   void search(String query){
     //productBox.values.toList().indexWhere(); 
   }
-  //Notificaciones
   insertNotification(Map<String, NotificacionModel> entries) async{
     await notificationBox.putAll(entries);
   }
@@ -320,5 +322,5 @@ class DBProvider{
    void deleteNotification(int id){ 
      notificationBox.delete(id); 
   }
-  
+
 }

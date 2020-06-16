@@ -35,8 +35,10 @@ class _ConfigLocationState extends State<ConfigLocation> {
   Responsive _responsive;
   MapController  map;
   String addres="";
-   LatLng latLng; 
+  LatLng latLng; 
   
+  bool flagFrom;
+
   @override
   void initState() { 
     super.initState();
@@ -52,6 +54,9 @@ class _ConfigLocationState extends State<ConfigLocation> {
       _featureBloc = Provider.featureBloc(context);
       _clientBloc = Provider.clientBloc(context);
     }
+    flagFrom =  ModalRoute.of(context).settings.arguments;
+    if(flagFrom==null)
+      flagFrom=false;
     _responsive = Responsive.of(context);
   }
   
@@ -93,9 +98,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
       builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.hasData){//stream DATA
           Position position=snapshot.data;
-          
           return _content(position);
-          
         }else{ //si no hay datos en el stream ocupar posicion actual
         print("datos de ubicacion");
           return FutureBuilder( //obtener position actual
@@ -133,7 +136,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
           Expanded(
              child: Padding(
               padding: const EdgeInsets.only(left:20),
-              child: Text(addres,
+              child: Text("Buscar",
                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily:'Quicksand',
@@ -198,7 +201,10 @@ class _ConfigLocationState extends State<ConfigLocation> {
                             List<Placemark> p = snapshot.data;
                             Placemark place = p[0];
                             addres = "${place.subLocality} ${place.locality} ${place.country}";
-                                          return  Text(addres,
+                            
+
+                           
+                                       return  Text(addres,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: _responsive.ip(1.3),
@@ -249,7 +255,11 @@ class _ConfigLocationState extends State<ConfigLocation> {
     );
   }
 
-  
+  _update(){
+     setState(() {
+                              
+                            });
+  }
   _createFlutterMap(Position position) {
       
     var mapa =   FlutterMap(
@@ -309,7 +319,11 @@ class _ConfigLocationState extends State<ConfigLocation> {
   _onTap(Position position){
     if(_featureBloc.positionStream!=null){
       _clientBloc.updateAddres(position, addres);
-      Navigator.pushReplacementNamed(context, 'home');
+
+      if(flagFrom)
+        Navigator.pop(context);
+      else
+        Navigator.pushReplacementNamed(context, 'home');
     }
   }
   
