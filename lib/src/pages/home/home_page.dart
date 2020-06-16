@@ -104,11 +104,44 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: Column(  
                 children: <Widget>[
                 _sliderPage(),
-                Container(
-                  color: Colors.white,
-                  width: _responsive.widht,
-                  height: _responsive.ip(10),
+                GestureDetector(
+                  onTap: ()=>showSearch(
+                            context: context, delegate: DataSearch()),
+                                  child: Container(
+                    // color: Colors.red,
+                    width: _responsive.widht,
+                    height: _responsive.ip(10),
+                    child: Center(
+                      child: Container(
+                        height: _responsive.ip(5),
+                        width: _responsive.wp(90),
+                        decoration: BoxDecoration(
+                          color: MyColors.Grey,
+                          borderRadius:BorderRadius.circular(15)
+                        ),
+                        child:Row(children: <Widget>[
+                           IconButton(
+                            icon:Icon(LineIcons.search,color:Colors.grey), 
+                            onPressed:()=>showSearch(
+                            context: context, delegate: DataSearch()),),
+                          
+                          Expanded(child: Container(
+                            child: Text(
+                              "Buscar",
+                              style: TextStyle(
+                                color:Colors.grey,
+                                fontFamily: 'Quicksand',
+                                fontWeight: FontWeight.w900
+                                ),
+                                ),
+                          )),
+                         Expanded(child: Container()),
+                        ],)
+                      ),
+                    ),
+                  ),
                 ),
+
                 ProductosScrollView(
                   productsBox:_productsBox,
                   favoritosBloc:_favoritosBloc,
@@ -280,11 +313,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       backgroundColor: Colors.white,
       elevation: 0.0,
       title: GestureDetector(
-        onTap: ()=>print("cambiar ubicacion"),
-              child: Container(
-          
-          child: Row(
+        onTap: (){
+          bool flagFrom=true;
+          Navigator.pushNamed(context, 'config_location',arguments:flagFrom );
+        },
+        
+        child: Container(
+        child: Row(
             children:<Widget>[
+
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(Icons.location_on,color: Colors.grey,size: _responsive.ip(2),),
@@ -317,8 +354,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
 
        actions: <Widget>[
-         IconAction(icon:LineIcons.search,onPressed:()=>showSearch(
-           context: context, delegate: DataSearch())),
+        //  IconAction(icon:LineIcons.search,onPressed:()=>showSearch(
+        //    context: context, delegate: DataSearch())),
         // IconButton(icon: Icon(LineIcons.search,color: Colors.grey,), onPressed: null),
         // IconButton(icon: Icon(LineIcons.shopping_cart,color: Colors.grey,), onPressed: null),
       
@@ -334,7 +371,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
 
   _cartItems(){
-    //_shoppingCartBloc.countItems();
     return  new Container( 
       child: new GestureDetector(
         onTap: () {
