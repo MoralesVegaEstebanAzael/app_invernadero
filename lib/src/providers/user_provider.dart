@@ -281,7 +281,7 @@ class UserProvider{
   } 
 
    Future<List<NotificacionModel>> cargarNotificaciones()async{
-    final url = "${AppConfig.base_url}/api/client/notifications"; 
+    final url = "${AppConfig.base_url}/api/client/notificationsAll"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",

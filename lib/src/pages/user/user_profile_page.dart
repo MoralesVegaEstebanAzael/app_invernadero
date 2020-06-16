@@ -27,8 +27,6 @@ class UserProfilePage extends StatefulWidget {
 class _UserProfilePageState extends State<UserProfilePage> {
   UserProvider userProvider = UserProvider();
   SecureStorage storage = new SecureStorage();
-  ClientBloc clienteBloc;
-  Responsive responsive;
    
   bool _blockCheck=true;
   bool _isLoading=false;
@@ -40,20 +38,18 @@ class _UserProfilePageState extends State<UserProfilePage> {
     // TODO: implement initState
     super.initState();
     options =  menuProvider.loadData();
-  }
 
+  
+  }
   @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
+  Widget build(BuildContext context) {
+    //LoginBloc userBloc = Provider.of(context);
+    //userBloc.cargarUsuario();
+
     ClientBloc clienteBloc = Provider.clientBloc(context);
     clienteBloc.getClient(); 
 
-    responsive = Responsive.of(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {      
+    final responsive = Responsive.of(context);
     return Scaffold(
       backgroundColor: Colors.white,//Color(0XFFEEEEEE),
       body: Container( 
