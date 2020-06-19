@@ -173,9 +173,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ),  
             margin: EdgeInsets.only(left: 15,right: 15,top: 10),
             // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
-          );
-
-          
+          );  
         }
       },
     );
@@ -314,8 +312,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       elevation: 0.0,
       title: GestureDetector(
         onTap: (){
-          bool flagFrom=true;
-          Navigator.pushNamed(context, 'config_location',arguments:flagFrom );
+          String route = 'home';
+          Navigator.pushNamed(context, 'config_location',arguments:route);
         },
         
         child: Container(

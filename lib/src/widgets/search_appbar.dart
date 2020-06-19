@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -30,11 +31,20 @@ class _SearchAppBarState extends State<SearchAppBar> {
   Icon _searchIcon = new Icon(LineIcons.search,color: Colors.grey,);
   Widget _appBarTitle;
   List<Widget> _actions;
+  Responsive responsive;
   
   @override
   void didChangeDependencies() {
+    responsive = Responsive.of(context);
     _actions = [];
-    _appBarTitle =  Text( this.widget.title,style: TextStyle(color:Colors.grey), );
+    _appBarTitle =  Text(
+        this.widget.title,
+        style:TextStyle(
+          fontFamily: 'Quicksand',
+          fontWeight: FontWeight.w900,
+          fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
+        ) ,
+      );
     _searchIcon = new Icon(LineIcons.search,color: Colors.grey,);
 
     _actions.add( IconButton(icon: _searchIcon , onPressed: _searchPressed),);
@@ -61,10 +71,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
       actions: _actions,
     );
   }
-
-
-
-
   void _searchPressed() {
     setState(() {
       if (this._searchIcon.icon == LineIcons.search) {
@@ -82,8 +88,14 @@ class _SearchAppBarState extends State<SearchAppBar> {
         );
       } else {
         this._searchIcon = new Icon(LineIcons.search,color: Colors.grey,);
-        this._appBarTitle = new Text( 'Carrito de compras',style: TextStyle(color:Colors.grey), );
-       // filteredNames = names;
+        this._appBarTitle =Text(
+          this.widget.title,
+          style:TextStyle(
+            fontFamily: 'Quicksand',
+            fontWeight: FontWeight.w900,
+            fontSize:responsive.ip(2.5),color:Color(0xFF545D68)
+          ) ,
+        );
         _filter.clear();
       }
     });

@@ -33,7 +33,7 @@ class ShoppingCartBloc{
   Stream<int> get count => _countItems.stream;
 
   //*** *** */
-
+  
   final _articController = new BehaviorSubject<List<ItemShoppingCartModel>>();
   Stream<List<ItemShoppingCartModel>> get artcStream => _articController.stream;
 
@@ -124,7 +124,7 @@ class ShoppingCartBloc{
     return db.itemsSCBoxisEmpty();
   }
 
-
+  
   //load with stream 
   void cargarArtic()async{
     final items = await  db.shoppingCartList();

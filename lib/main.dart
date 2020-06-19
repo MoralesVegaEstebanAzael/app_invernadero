@@ -16,6 +16,7 @@ import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
 import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
+import 'package:app_invernadero/src/pages/user/address_page.dart';
 
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
@@ -111,8 +112,8 @@ class MyApp extends StatelessWidget {
               'store'                 : (BuildContext)=>HomePage(),
               'shopping_cart'         : (BuildContext)=>ShoppingCartPage(),
               
-              'pedidos'               : (BuildContext)=>PedidosPage()
-
+              'pedidos'               : (BuildContext)=>PedidosPage(),
+              'address'               : (BuildContext)=>AddressPage(),
 
             },
           ),

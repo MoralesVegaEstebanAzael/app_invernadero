@@ -1,6 +1,6 @@
+import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/models/feature_model.dart';
-import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/mapbox_provider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:line_icons/line_icons.dart';
 class PlacesSearch extends SearchDelegate{
   final mapboxProvider = MapBoxProvider();
   FeatureBloc _featureBloc = FeatureBloc();
+  ClientBloc _clientBloc = ClientBloc();
   @override
   List<Widget> buildActions(BuildContext context) {
     // acciones del appbar(icon para limpiar o cancelar bussqueda)
@@ -66,6 +67,8 @@ class PlacesSearch extends SearchDelegate{
           final places = snapshot.data;
             return ListView(
               children: places.map((p){
+                //Placemark place = p.toJson();
+                Feature feature = p;
                 return ListTile(
                   title: Text(p.placeName),
                     subtitle: Text("${p.placeName}"),
@@ -77,6 +80,15 @@ class PlacesSearch extends SearchDelegate{
                       //_featureBloc.addCoordinate(p.geometry.coordinates);
                       _featureBloc.addPosition(position);
                       
+                      _featureBloc.insertFeature(feature);
+                      _featureBloc.features();
+                      print("To json ${p.toJson()}");
+                      
+                      print("Tratendo de agregar");
+                      print(feature.toJson());
+                      // AddressModel _address = AddressModel.fromJson(p.toJson());
+                      // _clientBloc.insertAddress(_address);
+
                       close(context, null);
                       //Navigator.pushNamed(context, 'product_detail',arguments: p);
                     },

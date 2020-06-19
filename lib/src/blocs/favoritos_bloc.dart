@@ -6,21 +6,19 @@ import 'package:rxdart/rxdart.dart';
 
 class FavoritosBloc{
   //providers
-  final _productoProvider = new ProductoProvider();
   final _db = new DBProvider();
- 
+  
   
   //Favoritos
 
   final _isFavoriteController = new BehaviorSubject<bool>();
-  
-  final _favoritesController = new BehaviorSubject<List<ProductoModel>>();
-  
+  final _favoritesController = new BehaviorSubject<List<FavoriteModel>>();
   final _countFavorites = new BehaviorSubject<int>();
   
-  Stream<List<ProductoModel>> get favoritosStream =>_favoritesController.stream;
+  Stream<List<FavoriteModel>> get favoritesStream =>_favoritesController.stream;
   Stream<int> get count => _countFavorites.stream;
-   Stream<bool> get isFavorite => _isFavoriteController.stream;
+  Stream<bool> get isFavorite => _isFavoriteController.stream;
+
 
   dispose(){
     _isFavoriteController.close();
@@ -28,16 +26,15 @@ class FavoritosBloc{
     _countFavorites.close();
   }
 
-  //favoritos
   void loadFavorites()async{
-    final productos =await _productoProvider.findProducts(_db.getFavorites());
-    _favoritesController.sink.add(productos);
-  } 
+    final list = await _db.favoritesList();
+    _favoritesController.sink.add(list);
+  }
 
   void addFavorite(ProductoModel producto){
     FavoriteModel favorite =  FavoriteModel(producto:producto);
     _db.addFavorite(favorite);
-    loadFavorites();
+    // loadFavorites();
   }
 
   void deleteFavorite(int id){
@@ -59,8 +56,23 @@ class FavoritosBloc{
   bool fav(int id){
     return _db.isFavorite(id);
   }
-
-  box(){
-    return _db.getFavoriteBox();
+  bool isEmpty(){
+   // return db.shoppingCartBoxisEmpty();
+    return _db.favoritesisEmpty();
   }
+  // box(){
+  //   return _db.getFavoriteBox();
+  // }
+
+   void filter(String query)async{
+    final items = await  _db.favoritesList();
+    if(query.isEmpty){
+      _favoritesController.sink.add(items);
+    }else{
+      final newItems= await _db.filterFavorites(items, query);
+      _favoritesController.sink.add(newItems);
+
+    }
+  }
+
 }

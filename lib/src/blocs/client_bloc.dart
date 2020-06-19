@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_invernadero/src/blocs/validators.dart';
 import 'package:app_invernadero/src/models/client_model.dart';
+import 'package:app_invernadero/src/models/feature_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -64,19 +65,30 @@ class ClientBloc with Validators{
   Function(String) get chanfeApellidoM => _apellidoMController.sink.add;
   Function(String) get changeRFC => _rfcController.sink.add;
 
+  StreamController<Position> _addressPositionController = BehaviorSubject<Position>();
 
-  void updateAddres(Position position,String addres){
+  Stream<Position> get addressPositionStream => _addressPositionController.stream;
+
+
+  //direcciones
+  
+
+  void updateAddres(Feature feature){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
-    client.lat = position.latitude;
-    client.lng = position.longitude;
-    client.direccion = addres;
+    client.lat = feature.geometry.coordinates[1];
+    client.lng = feature.geometry.coordinates[0];
+    client.direccion = feature.placeName;
+    _storage.idFeature = feature.id; //direccion default
     updateClient(client);
+    // insertAddress(address);
   }
 
   
   void updateClient(ClientModel client)async{
     await _dbProvider.updateClient(client);
   } 
+
+
   
 
   void getClient(){
@@ -136,6 +148,15 @@ class ClientBloc with Validators{
   void dirClient(){
     ClientModel client = _dbProvider.getClient(_storage.idClient);
     _direcController.sink.add(client.direccion);
+
+    Position position = Position(longitude:client.lng,latitude:client.lat);
+
+    _addressPositionController.sink.add(position);
+  }
+
+
+  void addressDelPosition(Position position){
+    _addressPositionController.sink.add(position);
   }
 
   void infClient(){
@@ -157,6 +178,16 @@ class ClientBloc with Validators{
     _apellidoMController.close();
     _rfcController.close();
   }
+
+  
+
+  Position latLongClient(){
+    String _id = _storage.idClient;
+    ClientModel c = _dbProvider.getClient(_id);
+    Position position = Position(latitude: c.lat,longitude: c.lng);
+    return position;
+  }
+
 }
     
  

@@ -1,8 +1,17 @@
 import 'dart:convert';
 
-Feature featureFromJson(String str) => Feature.fromJson(json.decode(str));
+import '../../app_config.dart';
+import 'feature/context_model.dart';
+import 'feature/geometry_model.dart';
+import 'feature/properties_model.dart';
 
-String featureToJson(Feature data) => json.encode(data.toJson());
+import 'package:hive/hive.dart';
+
+
+part 'feature_model.g.dart';
+
+@HiveType(
+  typeId: AppConfig.hive_type_13,adapterName: AppConfig.hive_adapter_13)
 
 class Feature {
     Feature({
@@ -17,16 +26,25 @@ class Feature {
         this.geometry,
         this.context,
     });
-
+    @HiveField(0)
     String id;
+    @HiveField(1)
     String type;
+    @HiveField(2)
     List<String> placeType;
+    @HiveField(3)
     double relevance;
+    @HiveField(4)
     Properties properties;
+    @HiveField(5)
     String text;
+    @HiveField(6)
     String placeName;
+    @HiveField(7)
     List<double> center;
+    @HiveField(8)
     Geometry geometry;
+    @HiveField(9)
     List<Context> context;
 
     factory Feature.fromJson(Map<String, dynamic> json) => Feature(
@@ -54,68 +72,9 @@ class Feature {
         "geometry": geometry.toJson(),
         "context": List<dynamic>.from(context.map((x) => x.toJson())),
     };
+
+  Feature featureFromJson(String str) => Feature.fromJson(json.decode(str));
+
+  String featureToJson(Feature data) => json.encode(data.toJson());
 }
 
-class Context {
-    Context({
-        this.id,
-        this.text,
-        this.wikidata,
-        this.shortCode,
-    });
-
-    String id;
-    String text;
-    String wikidata;
-    String shortCode;
-
-    factory Context.fromJson(Map<String, dynamic> json) => Context(
-        id: json["id"],
-        text: json["text"],
-        wikidata: json["wikidata"] == null ? null : json["wikidata"],
-        shortCode: json["short_code"] == null ? null : json["short_code"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "text": text,
-        "wikidata": wikidata == null ? null : wikidata,
-        "short_code": shortCode == null ? null : shortCode,
-    };
-}
-
-class Geometry {
-    Geometry({
-        this.type,
-        this.coordinates,
-    });
-
-    String type;
-    List<double> coordinates;
-
-    factory Geometry.fromJson(Map<String, dynamic> json) => Geometry(
-        type: json["type"],
-        coordinates: List<double>.from(json["coordinates"].map((x) => x.toDouble())),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "type": type,
-        "coordinates": List<dynamic>.from(coordinates.map((x) => x)),
-    };
-}
-
-class Properties {
-    Properties({
-        this.accuracy,
-    });
-
-    String accuracy;
-
-    factory Properties.fromJson(Map<String, dynamic> json) => Properties(
-        accuracy: json["accuracy"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "accuracy": accuracy,
-    };
-}

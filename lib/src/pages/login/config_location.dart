@@ -5,21 +5,18 @@ import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/providers/mapbox_provider.dart';
+import 'package:app_invernadero/src/models/feature_model.dart';
 import 'package:app_invernadero/src/search/mapbox_search.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
-import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:permission_handler/permission_handler.dart';
 
@@ -34,10 +31,10 @@ class _ConfigLocationState extends State<ConfigLocation> {
   SecureStorage _prefs = SecureStorage();
   Responsive _responsive;
   MapController  map;
-  String addres="";
-  LatLng latLng; 
+  Feature feature;
   
-  bool flagFrom;
+
+ String _route;
 
   @override
   void initState() { 
@@ -54,9 +51,9 @@ class _ConfigLocationState extends State<ConfigLocation> {
       _featureBloc = Provider.featureBloc(context);
       _clientBloc = Provider.clientBloc(context);
     }
-    flagFrom =  ModalRoute.of(context).settings.arguments;
-    if(flagFrom==null)
-      flagFrom=false;
+    _route =  ModalRoute.of(context).settings.arguments;
+    if(_route==null)
+      _route='';
     _responsive = Responsive.of(context);
   }
   
@@ -108,7 +105,6 @@ class _ConfigLocationState extends State<ConfigLocation> {
                 
                 Position position = snapshot.data;
                 _featureBloc.addPosition(position);
-                latLng =  LatLng(position.latitude,position.longitude);
 
                 return _content(position);
               }
@@ -154,6 +150,9 @@ class _ConfigLocationState extends State<ConfigLocation> {
     );
   }
   _content(Position position){
+    //geolocalizacion inversa
+    _featureBloc.getFeature(position.longitude, position.latitude);
+
     return Container(
       width:_responsive.widht,
       height: _responsive.height,
@@ -192,31 +191,67 @@ class _ConfigLocationState extends State<ConfigLocation> {
             children: <Widget>[
                       Icon(Icons.location_on,color: Colors.grey,),
 
-                      FutureBuilder(
-                        future: Geolocator().placemarkFromCoordinates(position.latitude, position.longitude),
-                        
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          
-                          if(snapshot.hasData){
-                            List<Placemark> p = snapshot.data;
-                            Placemark place = p[0];
-                            addres = "${place.subLocality} ${place.locality} ${place.country}";
-                            
 
-                           
-                                       return  Text(addres,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: _responsive.ip(1.3),
-                              color:Colors.grey,
-                              fontFamily: 'Quicksand',
-                              fontWeight: FontWeight.w800
-                            ),  
+                      StreamBuilder(
+                        stream: _featureBloc.featureStream ,
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          if(snapshot.hasData){
+                            feature = snapshot.data;
+
+                            return  Container(
+                              width: _responsive.wp(80),
+                              child: Text(feature.placeName,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: _responsive.ip(1.3),
+                                color:Colors.grey,
+                                fontFamily: 'Quicksand',
+                                fontWeight: FontWeight.w800
+                              ),  
+                              ),
                             );
                           }
-                          return CircularProgressIndicator();
+                          return Container();
                         },
                       ),
+                      // FutureBuilder(
+                      //   future: Geolocator().placemarkFromCoordinates(position.latitude, position.longitude),
+                        
+                      //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          
+                      //     if(snapshot.hasData){
+                      //       List<Placemark> p = snapshot.data;
+                      //       Placemark place = p[0];
+                      //       print("IDD: ${place.name}");
+                      //       locationID = place.name;
+                            
+                      //       // print("JSONNN ${place.toJson()}");
+                            
+                      //       _addressModel = AddressModel.fromJson(place.toJson());
+
+                      //       address = "${place.isoCountryCode}, ${place.country},  ${place.administrativeArea},"
+                      //       " ${place.subAdministrativeArea},  ${place.locality}, ${place.subLocality},"
+                      //       " ${place.thoroughfare}, "
+                      //       "${place.subThoroughfare}.";
+                            
+
+
+                      //       return  Container(
+                      //         width: _responsive.wp(80),
+                      //         child: Text(address,
+                      //         overflow: TextOverflow.ellipsis,
+                      //         style: TextStyle(
+                      //           fontSize: _responsive.ip(1.3),
+                      //           color:Colors.grey,
+                      //           fontFamily: 'Quicksand',
+                      //           fontWeight: FontWeight.w800
+                      //         ),  
+                      //         ),
+                      //       );
+                      //     }
+                      //     return  Container();
+                      //   },
+                      // ),
             ],
                       ),
                     ) ,
@@ -255,11 +290,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
     );
   }
 
-  _update(){
-     setState(() {
-                              
-                            });
-  }
+  
   _createFlutterMap(Position position) {
       
     var mapa =   FlutterMap(
@@ -318,9 +349,12 @@ class _ConfigLocationState extends State<ConfigLocation> {
   
   _onTap(Position position){
     if(_featureBloc.positionStream!=null){
-      _clientBloc.updateAddres(position, addres);
-
-      if(flagFrom)
+    
+     
+      _clientBloc.updateAddres(feature);  
+      _featureBloc.insertFeature(feature);
+      
+      if(_route=='home') //from home page
         Navigator.pop(context);
       else
         Navigator.pushReplacementNamed(context, 'home');

@@ -1,21 +1,26 @@
 import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/favorite_model.dart';
+import 'package:app_invernadero/src/models/feature/context_model.dart';
+import 'package:app_invernadero/src/models/feature/geometry_model.dart';
+import 'package:app_invernadero/src/models/feature/properties_model.dart';
+import 'package:app_invernadero/src/models/feature_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
-class DBProvider{
-  //Box shoppingCartBox;
-  
+class DBProvider{  
   Box itemsShoppingBox;
-  //Box productoBox;
   Box dataBaseBox;
   Box clientBox;
   Box favoriteBox;
   Box productBox;
   Box notificationBox;
+  Box featuresBox;
+
+  List<FavoriteModel> _favoritesList;
 
   static DBProvider _instance =
       DBProvider.internal();
@@ -24,19 +29,21 @@ class DBProvider{
 
   factory DBProvider() => _instance;
 
-
+  
   Future initDB()async{
     var path = await getApplicationDocumentsDirectory();
     Hive.init(path.path);
     //adapter register
-    //Hive.registerAdapter(ShoppingCartAdapter());
     Hive.registerAdapter(ItemShoppingCartAdapter());
     Hive.registerAdapter(ProductoAdapter());
     Hive.registerAdapter(ClientAdapter());
     Hive.registerAdapter(FavoriteAdapter());
-    //Hive.registerAdapter(ProductoAdapter());
     Hive.registerAdapter(NotificationsAdapter());
-
+    
+    Hive.registerAdapter(FeatureAdapter());
+    Hive.registerAdapter(ContextAdapter());
+    Hive.registerAdapter(GeometryAdapter());
+    Hive.registerAdapter(PropertiesAdapter());
 
     //shoppingCartBox= await Hive.openBox("shoppingCart");
     dataBaseBox = await Hive.openBox("db");
@@ -49,6 +56,8 @@ class DBProvider{
 
     productBox = await Hive.openBox("producto");
     notificationBox = await Hive.openBox("notification");
+    featuresBox = await Hive.openBox("features");
+
     return true;
   }
   
@@ -148,11 +157,35 @@ class DBProvider{
 
   //** FAVORITOS** */
 
+  Future<List<FavoriteModel>> filterFavorites(
+    List<FavoriteModel> lista,String query)async{
+    List<FavoriteModel> newList=
+      lista.where(
+        (f) => f.producto.nombre.toUpperCase().contains(query.toUpperCase())
+      ).toList();
+
+    return newList;
+  }
+
+
+  bool favoritesisEmpty(){
+    return favoriteBox.isEmpty;
+  }
+  
+  Future<List<FavoriteModel>> favoritesList()async{
+    Map map =  favoriteBox.toMap();
+    List<FavoriteModel> favorites =  map.values.toList().cast();
+    return favorites;
+  }
+  void favList(){
+    Map map = favoriteBox.toMap();
+    _favoritesList = map.values.toList().cast();
+  }
   void addFavorite(FavoriteModel favorito){
     favoriteBox.put(favorito.producto.id, favorito);
   }
 
-  
+
   bool isFavorite(int id){
     //print("isFavorite: " +favoriteBox.get(id));
     if(favoriteBox.get(id)!=null)
@@ -267,15 +300,10 @@ class DBProvider{
   }
 
   Future<List<ItemShoppingCartModel>> filterSC(List<ItemShoppingCartModel> lista,String query)async{
-    // print("FILTERRRRRRR");
-    // Map map = itemsShoppingBox.toMap();
-    // List<ItemShoppingCartModel> lista =  map.values.toList().cast();
-    // String query = 'a';
     List<ItemShoppingCartModel> newList=
       lista.where(
         (f) => f.producto.nombre.toUpperCase().contains(query.toUpperCase())
       ).toList(); //apples
-
     return newList;
   }
   
@@ -307,6 +335,8 @@ class DBProvider{
   void search(String query){
     //productBox.values.toList().indexWhere(); 
   }
+  
+  //***NOTIFICACIONES */
   insertNotification(Map<String, NotificacionModel> entries) async{
     await notificationBox.putAll(entries);
   }
@@ -326,6 +356,19 @@ class DBProvider{
   Future markAsReadNotifications(NotificacionModel notificacion)async{  
     await notificationBox.put(notificacion.id, notificacion) ;
   }
- 
-  
+
+
+  ///**FEATURES BOX */
+  insertFeature(Feature feature)async{
+    await featuresBox.put(feature.id, feature);
+  }
+  Future<List<Feature>> getFeature()async{
+    List<Feature> list = await featuresBox.toMap().values.toList().cast();
+    return list;
+  }
+
+  deleteFeature(Feature feature)async{
+    featuresBox.delete(feature.id);
+  }
+
 }

@@ -1,4 +1,5 @@
 import 'package:app_invernadero/src/blocs/client_bloc.dart';
+import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
@@ -24,7 +25,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Box box;
   ShoppingCartBloc _shoppingCartBloc;
   ClientBloc _clientBloc;
-  
+  FeatureBloc _featureBloc;
+
   int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
 
@@ -36,6 +38,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void didChangeDependencies() {
     responsive = Responsive.of(context);
+    _featureBloc = Provider.featureBloc(context);
     _shoppingCartBloc = Provider.shoppingCartBloc(context);
     _shoppingCartBloc.loadItems();
     box = _shoppingCartBloc.box();
@@ -72,7 +75,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       leading: Container(
         margin: EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: Colors.black12,
+            color: Colors.white,
             shape: BoxShape.circle,
           ),
         child: IconButton(
@@ -84,7 +87,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
 
-
+  
   Widget _listItems(){
     return Container(
       padding: EdgeInsets.all(4),
@@ -222,49 +225,78 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   _location(){
     return Container(
+      // color: Colors.red,
       width: responsive.widht,
       height: responsive.ip(10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children:<Widget>[
-          StreamBuilder(
-            stream: _clientBloc.dirStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              if(snapshot.hasData){
-                return Text(snapshot.data);
-              }
-              return Container();
-            },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children:<Widget>[
+                GestureDetector(
+                  onTap: ()=>Navigator.pushNamed(context, 'address'),
+                  child: Row(
+                  children: <Widget>[
+                    Icon(LineIcons.edit,color: Colors.grey),
+                      Text("Otra dirección",
+                          style: TextStyle(color:Colors.grey),
+                        )
+                    ],
+                  ),
+                ),
+              
+              ]
+            ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children:<Widget>[
-              Text("Dirección de envio",
-                style: TextStyle(
-                  color:Colors.grey
+              Container(
+                width: responsive.wp(50),
+                child: StreamBuilder(
+                  stream: _clientBloc.dirStream ,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    if(snapshot.hasData){
+                      return Text(
+                        snapshot.data);
+                    }
+                    return Container();
+                  },
                 ),
               ),
-              SizedBox(width: responsive.ip(1),),
-              Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    new Icon(
-                        Icons.brightness_1,
-                        size: responsive.ip(2), color: miTema.accentColor),
-                    new Icon(
-                      LineIcons.check,
-                      size: responsive.ip(1),
-                      color: Colors.white,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children:<Widget>[
+                  Text("Dirección de envio",
+                    style: TextStyle(
+                      color:Colors.grey
                     ),
-                  ],)
+                  ),
+                  SizedBox(width: responsive.ip(1),),
+                  Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        new Icon(
+                            Icons.brightness_1,
+                            size: responsive.ip(2), color: miTema.accentColor),
+                        new Icon(
+                          LineIcons.check,
+                          size: responsive.ip(1),
+                          color: Colors.white,
+                        ),
+                      ],)
+                ]
+              ),
+              Container(
+                height: 2,
+                color:MyColors.Grey,
+              ),
             ]
           ),
-          Container(
-            height: 2,
-            color:MyColors.Grey,
-          ),
-        ]
+        ],
       ),
     );
   }

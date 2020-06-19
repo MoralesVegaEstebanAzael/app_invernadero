@@ -62,6 +62,14 @@ class SecureStorage{
   set idClient(String idClient){
     _prefs.setString('id_client', idClient);
   }
+
+  get idFeature{
+    return _prefs.getString('id_feature')??'';
+  }
+  set idFeature(String idFeature){
+    _prefs.setString('id_feature', idFeature);
+  }
+  
   get route{
     return _prefs.getString('route')??'intro';
   }
