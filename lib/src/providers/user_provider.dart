@@ -297,7 +297,7 @@ class UserProvider{
     } 
 
     final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
-    final List<NotificacionModel> productos = List();
+    final List<NotificacionModel> notificaciones = List();
 
 
     Map notiMap = Map<String, NotificacionModel>();
@@ -307,7 +307,7 @@ class UserProvider{
        
       NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
       print(notiTemp); 
-      productos.add(notiTemp);
+      notificaciones.add(notiTemp);
          
       notiMap.putIfAbsent(id, ()=>notiTemp); 
 
@@ -316,7 +316,49 @@ class UserProvider{
     _dbProvider.insertNotification(notiMap); 
      
     if(decodeData==null) return [];
-    return productos; 
+    return notificaciones; 
+  }
+
+   Future<List<NotificacionModel>> unReadNotifications()async{
+    final url = "${AppConfig.base_url}/api/client/notifications"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+    
+    final response = await http.get(url, headers: headers,);
+
+    print("NOTIFICACIONES NO LEIDAS RESPUESTA----------------");
+    print(response.body);
+    
+    if(response.body.contains('error')){
+      print("sali aquiiiiiiiiiiiiiiiiiii");
+      return [];
+    } 
+
+    Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
+    final List<NotificacionModel> notificaciones = List();
+
+    Map notiMap = Map<String, NotificacionModel>();
+ 
+        decodeData.forEach((id,notification){
+       
+      NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
+      print(notiTemp); 
+      notificaciones.add(notiTemp);
+         
+      notiMap.putIfAbsent(id, ()=>notiTemp); 
+
+    });   
+    
+    
+
+   if(notiMap.isNotEmpty){
+    _dbProvider.insertNotification(notiMap);
+   }  
+     
+    if(decodeData==null) return [];
+    return notificaciones; 
   }
 
    Future<bool> markAsReadNotifications() async{ 

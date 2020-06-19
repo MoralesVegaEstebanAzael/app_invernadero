@@ -1,3 +1,4 @@
+import 'package:app_invernadero/src/services/local_services.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart'; 
@@ -9,7 +10,8 @@ import 'package:app_invernadero/src/blocs/notification_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';  
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';   
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:timeago/timeago.dart' as timeago; 
+import 'package:provider/provider.dart' as provider;
 
 class NotificationsPage extends StatefulWidget {
   NotificationsPage({Key key}) : super(key: key);
@@ -22,16 +24,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Responsive responsive;
   NotificacionesBloc _notificationBloc;
 
-  Box _notificationsBox; 
-  List<NotificacionModel> listaAux = new List();
+  Box _notificationsBox;  
+  Map notiMap = Map<String, NotificacionModel>();
+
+
+
 
   @override
   void didChangeDependencies() { 
     _notificationBloc = Provider.notificacionBloc(context) ; 
-    _notificationBloc.cargarNotificaciones();
+    //_notificationBloc.cargarNotificaciones(); 
 
     _notificationsBox = _notificationBloc.box(); 
       
+    provider.Provider.of<LocalService>(context).getUnreadNoritications();
 
     responsive = Responsive.of(context); 
     super.didChangeDependencies();
@@ -41,8 +47,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    //_notificationBloc.markAsReadNotifications(); 
-    marcarComoLeida();  
+    _notificationBloc.markAsReadNotifications(); 
+    marcarComoLeida(); 
   }
 
   @override
@@ -57,8 +63,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
              itemCount: value.length,
              itemBuilder: (context, i) {
                NotificacionModel noti = value.getAt(i);   
-                  listaAux.add(noti); 
-                  print(noti.readAt) ;
                   return _crearListTitle(noti);
              }
           ); 
@@ -104,7 +108,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   DateTime myDatetime = DateTime.parse(notificacion.createdAt);  
     return Container(   
         decoration: BoxDecoration(
-          color:  (notificacion.readAt == null) ? Colors.blueGrey[50] : null,
+          color:  (notificacion.readAt == null) ? Colors.blueGrey[50] : Colors.white,
           border: Border(
           bottom: BorderSide(width: 1, color: Color.fromRGBO(228, 228, 228, 1)),
         ),),
@@ -126,14 +130,18 @@ class _NotificationsPageState extends State<NotificationsPage> {
        );
   } 
 
-  void marcarComoLeida(){ 
-    for (var noti in listaAux) {
-      if(noti.readAt == null || noti.readAt == "") { 
-        noti.readAt = DateTime.now().toString();
-        _notificationBloc.updateLeidas(noti);
-        
-      }
-    }
+  void marcarComoLeida(){  
+    Map mapa = _notificationsBox.toMap(); 
+
+    mapa.forEach((k,v){
+      NotificacionModel item = v;
+      
+      if(item.readAt == null || item.readAt == ""){
+        item.readAt = DateTime. now().toString(); 
+        notiMap.putIfAbsent(k, ()=>item);  
+      } 
+    }); 
+    _notificationBloc.insertar(notiMap);
   }
 
   Widget _crearItemSlider(NotificacionModel notificacion, int index){
