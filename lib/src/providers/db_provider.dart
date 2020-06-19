@@ -337,9 +337,11 @@ class DBProvider{
   }
   
   //***NOTIFICACIONES */
+
+
   insertNotification(Map<String, NotificacionModel> entries) async{
     await notificationBox.putAll(entries);
-  }
+  } 
 
   Box notificationsBox(){
     return notificationBox;
@@ -352,9 +354,10 @@ class DBProvider{
    void deleteNotification(int id){ 
      notificationBox.delete(id); 
   }
+ 
 
-  Future markAsReadNotifications(NotificacionModel notificacion)async{  
-    await notificationBox.put(notificacion.id, notificacion) ;
+  Future markAsReadNotifications(NotificacionModel notification)async{
+    await itemsShoppingBox.put(notification.id, notification);
   }
 
 
