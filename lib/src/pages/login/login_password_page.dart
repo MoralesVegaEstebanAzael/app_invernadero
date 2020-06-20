@@ -168,7 +168,7 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
       
       if(info['ok']){
         print("Almacenando productos en local");
-        _productoBloc.cargarProductos();
+       // _productoBloc.cargarProductos();
         
         if(_user.direccion==null || _user.direccion=='0'){
           Navigator.pushReplacementNamed(context, 'config_location');

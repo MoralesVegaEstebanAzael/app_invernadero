@@ -74,13 +74,12 @@ class _AddressPageState extends State<AddressPage> {
       ),
     );
   }
+
   _setSelection(Feature feature){
-    print("Vambiando");
     setState(() {
       //storage.idFeature = feature.id;
       clientBloc.updateAddres(feature);
-      idFeature = storage.idFeature;
-      
+      idFeature = storage.idFeature; 
     });
 
     // setState(() {

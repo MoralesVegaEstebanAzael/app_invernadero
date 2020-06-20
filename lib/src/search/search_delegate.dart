@@ -50,15 +50,14 @@ class DataSearch extends SearchDelegate{
 
   @override
   String get searchFieldLabel => 'Buscar';
-
+  
   @override
   Widget buildSuggestions(BuildContext context) {
     // sugerencias que aparecen al escribir
     if(query.isEmpty){
       return Center(
-        child: Container( 
-          child: PlaceHolder(img: 'assets/images/empty_states/empty_find.svg', title: "Buscar productos")
-          
+        child: Container(   
+          child: PlaceHolder(img: 'assets/images/empty_states/empty_search.svg', title: "Buscar productos")
         ),
       );
     }
@@ -94,7 +93,7 @@ class DataSearch extends SearchDelegate{
           //     height: 60,
           //     width: 60,
           //   ),
-          child: PlaceHolder(img: 'assets/images/empty_states/empty_search.svg', title: "no hay resultados")
+          child: PlaceHolder(img: 'assets/images/empty_states/empty_result.svg', title: "no hay resultados")
         ),
       ) ;
         }

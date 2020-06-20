@@ -6,7 +6,7 @@ class EmptySliderProduct extends StatelessWidget {
 
   final Responsive responsive;
 
-  const EmptySliderProduct({Key key, this.responsive}) : super(key: key);
+  const EmptySliderProduct({Key key,@required this.responsive}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

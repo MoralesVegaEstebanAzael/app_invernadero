@@ -27,6 +27,8 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/pages/checkout_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/services/local_services.dart';
+import 'package:app_invernadero/src/services/product_services.dart';
+import 'package:app_invernadero/src/services/promocion_services.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/widgets/menu_bar.dart';
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
           child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_)=> new LocalService()),
+          ChangeNotifierProvider(create: (_)=> new PromocionService(),),
+           ChangeNotifierProvider(create: (_)=> new ProductoService(),)
           
         ],
         

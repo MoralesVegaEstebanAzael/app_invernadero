@@ -13,7 +13,7 @@ import 'package:http/http.dart' as http;
 class PromocionProvider{
   final _storage = SecureStorage();  
 
-  Future<List<PromocionModel>> loadPromociones(BuildContext context)async{
+  Future<List<PromocionModel>> loadPromociones()async{
     try {
       final url = "${AppConfig.base_url}/api/client/promociones"; 
       final token = await _storage.read('token');
@@ -21,10 +21,13 @@ class PromocionProvider{
         HttpHeaders.authorizationHeader: "Bearer $token",
         "Accept": "application/json",};
 
-      final response = await http.get(
+    
+
+      final response = await http.get(  
         url, 
-        headers: headers,).timeout(
-            Duration(seconds: 10));
+        headers: headers);
+        // headers: headers,).timeout(
+        //     Duration(seconds: 10));
 
       print("++++++PROMOCIONES+++++" + response.statusCode.toString());
       print(response.body);
@@ -41,10 +44,10 @@ class PromocionProvider{
       if(decodeData==null) return [];
         return promociones;
       } on TimeoutException catch (e) {
-       Flushbar(
-      message:   "Parece que no estas conectado a internet.",
-      duration:  Duration(seconds:1),              
-    )..show(context);
+    //    Flushbar(
+    //   message:   "Parece que no estas conectado a internet.",
+    //   duration:  Duration(seconds:1),              
+    // )..show(context);
       return [];
     } on Error catch (e) {
       print('Error: $e');

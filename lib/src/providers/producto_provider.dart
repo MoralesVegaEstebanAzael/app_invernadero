@@ -8,10 +8,30 @@ import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ProductoProvider{
+  // static final ProductoProvider _singleton = ProductoProvider._internal();
+  // factory ProductoProvider() {
+  //   return _singleton;
+  // }
+    
+  // ProductoProvider._internal();
+
+
+  int _productosPage=0;
+  bool _loading=false;
   final _storage = SecureStorage();  
   final _dbProvider = DBProvider();
+
+  // indexPage(){ //reset index
+  //   _productosPage=0;
+  // }
+
   Future<List<ProductoModel>> cargarProductos()async{
-    final url = "${AppConfig.base_url}/api/client/productos"; 
+    
+    if(_loading)return [];
+    _loading=true;
+    
+    _productosPage++;
+    final url = "${AppConfig.base_url}/api/client/productos?page=$_productosPage"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -21,30 +41,34 @@ class ProductoProvider{
       url, 
       headers: headers,);
     print("PRODUCTOS RESPUESTA----------------");
+
     print(response.body);
-    if(response.body.contains('message')){
-      return [];
+    if(response.body.contains('page_on_limit')){
+      print("PAGEEEEEE $_productosPage");
+      //return [];
+      //_productosPage=0;
+     //return cargarProductos();
+      return[];
     } 
     
     final Map<dynamic,dynamic> decodeData = json.decode(response.body)['productos'];
     final List<ProductoModel> productos = List();
 
-  
+
     Map prodMap = Map<int, ProductoModel>();
 
 
     decodeData.forEach((id,producto){
       ProductoModel productoTemp = ProductoModel.fromJson(producto);
       productos.add(productoTemp);
-         
       prodMap.putIfAbsent(int.parse(id), ()=>productoTemp);
-
     });
     
     print("tamaño");
-    print(    _dbProvider.productBox.length);
-     _dbProvider.insertProducts(prodMap);
+    print(   _dbProvider.productBox.length);
+    //  _dbProvider.insertProducts(prodMap);
    // print(_dbProvider.productBox.length);
+   _loading=false;
     if(decodeData==null) return [];
     return productos;
     

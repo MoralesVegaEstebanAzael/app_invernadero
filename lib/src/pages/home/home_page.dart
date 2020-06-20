@@ -12,10 +12,13 @@ import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/services/local_services.dart';
+import 'package:app_invernadero/src/services/product_services.dart';
+import 'package:app_invernadero/src/services/promocion_services.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/empty_product_slider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,36 +37,37 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   AutomaticKeepAliveClientMixin<HomePage> {
   ClientBloc _clientBloc;
   ShoppingCartBloc _shoppingCartBloc;
-  ProductoBloc _productoBloc;
-
+  //ProductoBloc _productoBloc;
+  //List<PromocionModel> promocionesList=new List();
   AnimationController _controller;
-  PromocionBloc _promocionBloc;
+  //PromocionBloc _promocionBloc;
   Responsive _responsive;
-  Stream<List<PromocionModel>> promocionesStream;
+  // Stream<List<PromocionModel>> promocionesStream;
   int _current=0;
 
-  Box _productsBox;
+  // Box _productsBox;
   FavoritosBloc _favoritosBloc;
   @override
-  void initState() {
+  void initState()  {
     super.initState();
     _controller = AnimationController(vsync: this);
     
   }
-
+  
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if(_promocionBloc==null){
-      _promocionBloc = Provider.promocionesBloc(context);
-      _promocionBloc.cargarPromociones(context);
-      promocionesStream = _promocionBloc.promocionStream;
+    //promocionesList=  prov.Provider.of<LocalService>(context).promociones; 
+
+      // _promocionBloc = Provider.promocionesBloc(context);
+      // _promocionBloc.cargarPromociones(context);
+      // promocionesStream = _promocionBloc.promocionStream;
 
       _clientBloc = Provider.clientBloc(context);
       _clientBloc.dirClient();
       _responsive = Responsive.of(context);
-      _productoBloc = Provider.productoBloc(context);
+     // _productoBloc = ProductoBloc(); //Provider.productoBloc(context);
 
       _shoppingCartBloc = Provider.shoppingCartBloc(context);
       _shoppingCartBloc.countItems();
@@ -71,8 +75,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _favoritosBloc = Provider.favoritosBloc(context);
 
 
-      _productsBox = _productoBloc.box();
-    }
+      // _productsBox = _productoBloc.box();
+
+
+   // _productoBloc.resetPage();
+   // _productoBloc.products(); 
+   
   }
 
 
@@ -80,7 +88,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void dispose() {
     _controller.dispose(); 
-    _productoBloc.dispose();
+    //_productoBloc.dispose();
     super.dispose();  
   }
 
@@ -88,9 +96,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) { 
-    prov.Provider.of<LocalService>(context);
-    _shoppingCartBloc.countItems();
-
+    // prov.Provider.of<LocalService>(context);
+   // _shoppingCartBloc.countItems();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -141,11 +148,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                     ),
                   ),
                 ),
-
-                ProductosScrollView(
-                  productsBox:_productsBox,
-                  favoritosBloc:_favoritosBloc,
-                  responsive:_responsive),
+                
+                StreamBuilder(
+                  stream: prov.Provider.of<ProductoService>(context).productsStream,
+                  builder: (BuildContext context, AsyncSnapshot snapshot){
+                    if(snapshot.hasData){
+                      List<ProductoModel> list = snapshot.data;
+                      return ProductosScrollView(
+                        productsList:list,
+                        favoritosBloc:_favoritosBloc,
+                        responsive:_responsive,
+                        nextPage: prov.Provider.of<ProductoService>(context).getProductos,);
+                    }
+                    // return EmptySliderProduct(responsive:_responsive);
+                    return Container();
+                  },
+                ),
+                
                 ],
               ),
           ),
@@ -154,15 +173,32 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
   
-  
+  //promociones
   Widget _sliderPage() {
+    
+    // if(promocionesList.isNotEmpty){
+    //   return  _crearItem(promocionesList,context); 
+    // }else {
+    //   return Container(
+    //     width:_responsive.widht,
+    //     height:_responsive.ip(20),
+    //     decoration: BoxDecoration(
+    //       color:MyColors.PlaceholderBackground,
+    //       borderRadius:BorderRadius.circular(15),
+    //     ),  
+    //     margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+    //     // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
+    //   );  
+    // }
+   
     return StreamBuilder(
-      stream: promocionesStream,
+      stream:  prov.Provider.of<PromocionService>(context).promocionStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
         print("slider");
         print(snapshot.data);
         if(snapshot.data!=null&&  snapshot.data.isNotEmpty){
-          return  _crearItem(snapshot,context); 
+          List<PromocionModel> list = snapshot.data;
+          return  _crearItem(list,context); 
         }else {
           return Container(
             width:_responsive.widht,
@@ -179,9 +215,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
   
-  Widget _crearItem(AsyncSnapshot<List<PromocionModel>> snapshot,BuildContext context){
-    final promocion = snapshot.data;
-    if(promocion.length>0){
+  Widget _crearItem(List<PromocionModel> list,BuildContext context){
+    final promocion = list;
+    //if(promocion.length>0){
       return Container(
         decoration: BoxDecoration(
           color:miTema.primaryColor,
@@ -270,10 +306,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ],
         ),
       );
-    }else{
-      print("Ha ocurrido un error");
-      return Container();
-    }
+    // }else{
+    //   print("Ha ocurrido un error");
+    //   return Container();
+    // }
   }
 
   
@@ -435,8 +471,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Future<Null> _pullData()async{
     final duration = Duration(seconds: 2);
     new Timer(duration,(){
-      _productoBloc.cargarProductos();
-      _promocionBloc.cargarPromociones(context);
+     // _productoBloc.products();
+      //_promocionBloc.cargarPromociones(context);
     });
 
     return Future.delayed(duration);

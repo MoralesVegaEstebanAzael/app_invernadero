@@ -12,17 +12,34 @@ import 'package:like_button/like_button.dart';
 
 class ProductosScrollView extends StatelessWidget  {
 
-  final Box productsBox;
+  // final Box productsBox;
+  final List<ProductoModel> productsList;
   final FavoritosBloc favoritosBloc;
   final Responsive responsive;
-  
-  const ProductosScrollView({Key key, this.productsBox, this.favoritosBloc, this.responsive}) : super(key: key);
+  final Function nextPage;
+  ProductosScrollView({Key key, this.productsList, this.favoritosBloc, this.responsive, this.nextPage}) : super(key: key);
+
+  final  _controller = new PageController(initialPage:1,viewportFraction:0.3);
+  final _scontroller = new ScrollController(initialScrollOffset:1);
+
   @override
   Widget build(BuildContext context) {
-    print("desde productss hori");
+
+    // _controller.addListener((){
+    //   if(_controller.position.pixels>=_controller.position.maxScrollExtent-200){
+    //     print("pull...");
+    //   }
+    // });
+
+    _scontroller.addListener((){
+      if(_scontroller.position.pixels>= _scontroller.position.maxScrollExtent){
+        print("hacer peticion....->>>");
+        nextPage();
+      }
+    });
     return AspectRatio(
       aspectRatio: 16/8,
-      child:(productsBox.length>0)
+      child:(productsList.length>0)
         ? _items(context) 
         : 
         EmptySliderProduct(responsive:responsive)
@@ -30,29 +47,38 @@ class ProductosScrollView extends StatelessWidget  {
   }
 
   _items(context){
-   
+    // return PageView.builder(
+    //   itemCount: productsList.length,
+    //   pageSnapping: false,
+    //   controller: _controller,
+    //   itemBuilder: (BuildContext context,index){
+    //     ProductoModel p = productsList[index];
+    //     return _createCard(context,p);
+    //   },
+    // );
+
     return Container( 
       margin: EdgeInsets.only(left:18),
-       child: ValueListenableBuilder(
-        valueListenable: productsBox.listenable(),
-          builder: (BuildContext context,value,_){
-          return 
+      child:  
           ListView.builder(
-              scrollDirection: Axis.horizontal,
-                  physics: CustomScrollPhysics(itemDimension: 300),
-            itemCount: value.length,
+            controller: _scontroller,
+            scrollDirection: Axis.horizontal,
+             physics: CustomScrollPhysics(itemDimension: 300),
+            //physics: CustomScrollPhysics(itemDimension: 500),            
+            itemCount: productsList.length,
             itemBuilder: (BuildContext context,index){
-              ProductoModel p = value.getAt(index);
+              ProductoModel p = productsList[index];
               return _createCard(context,p);
             },
-          );
-        }),
+          ),
+
+      
     );
   }
 
   Widget _createCard(BuildContext context,ProductoModel producto){
     final tarjeta =  Container(  
-      width: responsive.ip(20),
+      width: responsive.ip(20), //20
       decoration: BoxDecoration(
         color: miTema.accentColor,
         borderRadius: BorderRadius.circular(10),
