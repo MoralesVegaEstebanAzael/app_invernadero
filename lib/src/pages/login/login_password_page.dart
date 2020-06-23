@@ -173,7 +173,10 @@ class _LoginPasswordPageState extends State<LoginPasswordPage> {
         if(_user.direccion==null || _user.direccion=='0'){
           Navigator.pushReplacementNamed(context, 'config_location');
         }else{
-          
+          //login completo
+
+         
+
           Navigator.pushReplacementNamed(context, 'home');
         }
       }else{

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
+import 'package:app_invernadero/src/models/push_notifications_provider.dart';
 import 'package:app_invernadero/src/models/userModel.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
@@ -29,6 +30,7 @@ class UserProvider{
 
   final _storage = SecureStorage();  
   DBProvider _dbProvider = DBProvider();
+  final fcm = PushNotificationsProvider();
 
   Future<Map<String,dynamic>> buscarUsuario({@required String celular})async{
       await _storage.write('celular', celular);
@@ -83,6 +85,12 @@ class UserProvider{
         
         _storage.idClient = client.id;
         _storage.sesion = true;
+        
+        //create new firebase cloud messaging token
+        await fcm.refreshToken();  
+        final fcmToken = await fcm.getFCMToken();
+        // save new fcm token
+        await this.fcmToken(fcmToken: fcmToken);
 
        //  return {'ok':false};
       return {'ok':true, 'celular' : decodedResp};
@@ -172,8 +180,17 @@ class UserProvider{
       
       if(decodedResp.containsKey('message')){ 
         // TODO: remove  token 
+       
+        
+        //delete fcm token
+        fcm.deleteToken();
+        //set state ->> fcm token 
+        final fcmT = await fcm.getFCMToken();
+        
+        await this.deleteFcmToken(fcmToken: fcmT);
         await _storage.delete('token');
         _storage.sesion = false;
+        
         return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
@@ -375,8 +392,60 @@ class UserProvider{
     return true;
   }
 
+  //create fcm token
+  Future<bool> fcmToken({@required  String fcmToken})async{
+    print(">>>>>>>>>>>>> CREATE FCM TOKEN>>>>>>>>>>>>>>>>");
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
 
-  
+    final url = "${AppConfig.base_url}/api/client/fcm_token";
+    
+    final response = await http.post(
+      url,headers:headers ,
+      body: {
+        "fcm_token" : fcmToken ,}
+      );
+    
+    Map<String,dynamic> decodedResp = jsonDecode(response.body);
+    
+    print("status ${response.statusCode}");
+    print(response.body);
+    if(decodedResp.containsKey('result')){ 
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  //delete_fcm_token
+  Future<bool> deleteFcmToken({@required  String fcmToken})async{
+    print(">>>>>>>>>>>>> DELETE FCM TOKEN>>>>>>>>>>>>>>>>");
+
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+
+    final url = "${AppConfig.base_url}/api/client/delete_fcm_token";
+    
+    final response = await http.post(
+      url,headers:headers ,
+      body: {
+        "fcm_token" : fcmToken ,}
+      );
+    
+    Map<String,dynamic> decodedResp = jsonDecode(response.body);
+    
+    print("STATUS: ${response.statusCode}");
+    print(response.body);
+    if(decodedResp.containsKey('result')){ 
+    return true;
+    }else{
+      return false;
+    }
+  }
   
 
   

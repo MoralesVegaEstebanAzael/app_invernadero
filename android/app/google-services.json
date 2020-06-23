@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "216390701286",
+    "firebase_url": "https://sainvernadero-b3cc6.firebaseio.com",
+    "project_id": "sainvernadero-b3cc6",
+    "storage_bucket": "sainvernadero-b3cc6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216390701286:android:526566b9e6ebe5bcdf2b27",
+        "android_client_info": {
+          "package_name": "com.itoaxaca.sainvernadero"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216390701286-9dopv9f12scr10ogbj8sg1p2fu3g0c73.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itoaxaca.sainvernadero",
+            "certificate_hash": "e463da9efd058a38d868765a966388f4332d8073"
+          }
+        },
+        {
+          "client_id": "216390701286-j25oeune7tq8j6looao8gp59kslij995.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpumlFzRSBKWmU2PaRtVwMOgSyWJ_dLKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216390701286-j25oeune7tq8j6looao8gp59kslij995.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -478,8 +478,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     return Future.delayed(duration);
   }
 
-   @override
+  @override
   bool get wantKeepAlive => true;
+
+  
  
 }
 

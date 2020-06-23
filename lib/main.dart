@@ -1,5 +1,6 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
+import 'package:app_invernadero/src/models/push_notifications_provider.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
@@ -44,6 +45,8 @@ import 'package:app_invernadero/src/blocs/provider.dart' as customProvider;
 void main() async{
   //var path = await getApplicationDocumentsDirectory();
   //Hive.init(path.path );
+  
+
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();
@@ -59,6 +62,10 @@ void main() async{
     
   ));
 
+  PushNotificationsProvider provider = PushNotificationsProvider();
+  provider.initNotifications();
+  provider.getToken();
+  
 // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   runApp(MyApp());
 } 
@@ -76,7 +83,7 @@ class MyApp extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_)=> new LocalService()),
           ChangeNotifierProvider(create: (_)=> new PromocionService(),),
-           ChangeNotifierProvider(create: (_)=> new ProductoService(),)
+          ChangeNotifierProvider(create: (_)=> new ProductoService(),)
           
         ],
         
