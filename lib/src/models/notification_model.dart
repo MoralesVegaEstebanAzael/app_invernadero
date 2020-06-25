@@ -65,7 +65,8 @@ class NotificacionModel {
     };
 
     NotificacionModel notificacionModelFromJson(String str) => NotificacionModel.fromJson(json.decode(str));
-
+    
     String notificacionModelToJson(NotificacionModel data) => json.encode(data.toJson());
 
+   
 }

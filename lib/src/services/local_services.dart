@@ -30,15 +30,15 @@ class LocalService with ChangeNotifier{
     });
   } 
   
-  getUnreadNoritications(){ 
-    print("DESDE SERVICES");
-    _notificacionesBloc.cargarUnreadNotifications();
-  }
+  // getUnreadNoritications(){ 
+  //   print("DESDE SERVICES");
+  //   _notificacionesBloc.cargarUnreadNotifications();
+  // }
   
   getPromociones()async{
     print("*************cargando promocionessss");
     final list =  await _promocionProvider.loadPromociones();
-
+    
     this.promociones.addAll(list);
     notifyListeners();
   }

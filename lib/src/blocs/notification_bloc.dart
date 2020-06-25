@@ -22,38 +22,63 @@ class NotificacionesBloc{
   Stream<List<NotificacionModel>> get notificacionesStream => _notificacionesController.stream;
   Stream<bool> get cargando => _cargandoController.stream; 
 
+
+  final _unreadNotificationController = new BehaviorSubject<List<NotificacionModel>>();
+
+  Stream<List<NotificacionModel>> get unreadNotificationsStream => _unreadNotificationController.stream;
+
+  List<NotificacionModel> unreadNotificationsList= List();
+
   void cargarNotificaciones() async{
-    final notificaciones = await _userProvider.cargarNotificaciones(); 
-    _notificacionesController.sink.add(notificaciones);
+    // final notificaciones = await _userProvider.cargarNotificaciones(); 
+    final notifications = await _dbProvider.notificationsList(); 
+    
+    print("LONGITUD BOX>>> ${_dbProvider.notificationBox.length}");
+    _notificacionesController.sink.add(notifications);
   } 
 
-  void cargarUnreadNotifications() async { 
-    final  unreadNoti = await _userProvider.unReadNotifications(); 
-      _notificacionesController.sink.add(unreadNoti); 
+  // void cargarUnreadNotifications() async { 
+  //   final  unreadNoti = await _userProvider.unReadNotifications(); 
+  //     _notificacionesController.sink.add(unreadNoti); 
+  // }
+
+  // void insertar(Map<String, NotificacionModel> entries){
+  //    _dbProvider.insertNotification(entries);
+
+  // }
+
+  ///add notifications from services
+  void addUnReadNotifications(List<NotificacionModel> notificationsList){
+    if(notificationsList.isNotEmpty && notificationsList!=null){
+      _unreadNotificationController.sink.add(notificationsList);
+
+      unreadNotificationsList = notificationsList;
+    }
   }
 
-  void insertar(Map<String, NotificacionModel> entries){
-    print("insertooooooooooooooooooo");
-     _dbProvider.insertNotification(entries);
-
+  void deleteNotification(NotificacionModel notification)async{
+    await _dbProvider.deleteNotification(notification.id);
+    
+    cargarNotificaciones();
   }
 
+  
   void markAsReadNotifications() async {
-    _cargandoController.sink.add(true);
-    await _userProvider.markAsReadNotifications();
-    _cargandoController.sink.add(false);
+    //update notificaciones local
+    if(unreadNotificationsList.length>0 && unreadNotificationsList!=null){
+      await _userProvider.markAsReadNotifications(unreadNotificationsList);
+      unreadNotificationsList.clear();
+    }
   }
 
-   void updateLeidas(NotificacionModel noti)async{ 
-    await _dbProvider.markAsReadNotifications(noti); 
-  }
+  // void updateLeidas(NotificacionModel noti)async{ 
+  //   await _dbProvider.markAsReadNotifications(noti); 
+  // }
 
-  box(){
-    return _dbProvider.notificationBox;
-  }
-
+  
   dispose(){
     _notificacionesController.close();
     _cargandoController.close(); 
+    _unreadNotificationController.close();
   }
 }

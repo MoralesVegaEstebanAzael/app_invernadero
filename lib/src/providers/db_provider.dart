@@ -338,8 +338,10 @@ class DBProvider{
   
   //***NOTIFICACIONES */
 
+ 
 
   insertNotification(Map<String, NotificacionModel> entries) async{
+    print("**********guardando en hive");
     await notificationBox.putAll(entries);
   } 
 
@@ -351,15 +353,23 @@ class DBProvider{
     await notificationBox.clear();
   }
 
-   void deleteNotification(int id){ 
-     notificationBox.delete(id); 
+   void deleteNotification(String id){ 
+    notificationBox.delete(id); 
   }
- 
-
-  Future markAsReadNotifications(NotificacionModel notification)async{
-    await itemsShoppingBox.put(notification.id, notification);
+  
+  void markAsRead(NotificacionModel notificacionModel){
+    NotificacionModel notification = notificationBox.get(notificacionModel.id);
+    notification.readAt = notification.readAt;
+    notificationBox.put(notification.id, notification);
   }
 
+
+   Future<List<NotificacionModel>> notificationsList()async{
+    Map map =  notificationBox.toMap();
+    List<NotificacionModel> notifications =  map.values.toList().cast();
+    notifications..sort((b, a) => a.createdAt.compareTo(b.createdAt));
+    return notifications;
+  }
 
   ///**FEATURES BOX */
   insertFeature(Feature feature)async{

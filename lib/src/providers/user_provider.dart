@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
-import 'package:app_invernadero/src/models/push_notifications_provider.dart';
 import 'package:app_invernadero/src/models/userModel.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/providers/push_notifications_provider.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -343,54 +343,102 @@ class UserProvider{
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Accept": "application/json",};
     
-    final response = await http.get(url, headers: headers,);
+    final response = await http.get(
+      url, 
+      headers: headers,);
 
-    print("NOTIFICACIONES NO LEIDAS RESPUESTA----------------");
+    print("***********NOTIFICACIONES NO LEIDAS RESPUESTA-**************");
     print(response.body);
     
     if(response.body.contains('error')){
-      print("sali aquiiiiiiiiiiiiiiiiiii");
       return [];
     } 
 
-    Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
-    final List<NotificacionModel> notificaciones = List();
+    // Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
+    // final List<NotificacionModel> notificaciones = List();
 
-    Map notiMap = Map<String, NotificacionModel>();
+    // Map notiMap = Map<String, NotificacionModel>();
  
-        decodeData.forEach((id,notification){
+    //     decodeData.forEach((id,notification){
        
-      NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
-      print(notiTemp); 
-      notificaciones.add(notiTemp);
+    //   NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
+    //   notificaciones.add(notiTemp);
          
-      notiMap.putIfAbsent(id, ()=>notiTemp); 
+    //   notiMap.putIfAbsent(id, ()=>notiTemp); 
 
-    });   
+    // });   
     
     
 
-   if(notiMap.isNotEmpty){
-    _dbProvider.insertNotification(notiMap);
-   }  
+   final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];
+      final List<NotificacionModel> notifications = List();
+
+
+      Map notifiMap = Map<String, NotificacionModel>();
+
+
+      decodeData.forEach((id,notification){
+        NotificacionModel notiTemp = NotificacionModel.fromJson(notification);
+        notifications.add(notiTemp);
+        notifiMap.putIfAbsent(id, ()=>notiTemp);
+      });
+
+      _dbProvider.insertNotification(notifiMap);
      
     if(decodeData==null) return [];
-    return notificaciones; 
+    return notifications; 
   }
 
-   Future<bool> markAsReadNotifications() async{ 
-    final url = "${AppConfig.base_url}/api/client/notifications_mark_read"; 
+   Future<List<NotificacionModel>> markAsReadNotifications(List<NotificacionModel> list) async{ 
+    final url = "${AppConfig.base_url}/api/client/notifications_mark_as_read"; 
     final token = await _storage.read('token');
+    
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
+      "Content-Type" : "application/json",
       "Accept": "application/json",}; 
     
     final response = await http.post(
       url, 
-      headers: headers);
+      headers: headers,
+      body: json.encode( 
+        {
+        "notifications" :list ,
+        }
+        )
+    );
+    print("MARK AS READ****");
+    print(response.body);
 
-    return true;
+
+    if(response.body.contains("notifications") && response.body.contains("id")){
+      final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notifications'];
+      final List<NotificacionModel> notifications = List();
+
+
+      Map notifiMap = Map<String, NotificacionModel>();
+
+
+      decodeData.forEach((id,notification){
+        NotificacionModel notiTemp = NotificacionModel.fromJson(notification);
+        notifications.add(notiTemp);
+        //notifiMap.putIfAbsent(id, ()=>notiTemp);
+
+        _dbProvider.markAsRead(notiTemp);
+      });
+
+
+      //_dbProvider.insertNotification(notifiMap);
+
+      if(notifications.isNotEmpty)
+      return notifications;
+      else 
+      return [];
+    }
+    return [];
   }
+
+
 
   //create fcm token
   Future<bool> fcmToken({@required  String fcmToken})async{

@@ -12,14 +12,17 @@ import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/search/search_delegate.dart';
 import 'package:app_invernadero/src/services/local_services.dart';
+import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:app_invernadero/src/services/product_services.dart';
 import 'package:app_invernadero/src/services/promocion_services.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/badge_icon.dart';
 import 'package:app_invernadero/src/widgets/empty_product_slider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/products_empty.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +77,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
       _favoritosBloc = Provider.favoritosBloc(context);
 
-
+     prov.Provider.of<NotificationService>(context);
       // _productsBox = _productoBloc.box();
 
 
@@ -98,6 +101,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) { 
     // prov.Provider.of<LocalService>(context);
    // _shoppingCartBloc.countItems();
+
+   
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -161,9 +166,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                         nextPage: prov.Provider.of<ProductoService>(context).getProductos,);
                     }
                     // return EmptySliderProduct(responsive:_responsive);
-                    return Container();
+                    return ProductsEmpty();
                   },
                 ),
+
+               // ProductsEmpty(),
                 
                 ],
               ),
@@ -397,12 +404,38 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         // IconAction(icon:LineIcons.shopping_cart,
         //   onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
         // )
-
-        _cartItems()
+        StreamBuilder(
+          stream: _shoppingCartBloc.count ,
+          builder: (BuildContext context, AsyncSnapshot snapshot){
+            if(snapshot.hasData){
+              int number = snapshot.data;
+              return BadgeIcon(
+                iconButton:  new IconButton(icon: new Icon(LineIcons.shopping_cart,
+                color: MyColors.BlackAccent,),
+                  onPressed: null,
+              ),
+              number: number,
+              onTap:() =>_func()
+         
+        , 
+              );
+            }
+            return Container();
+          },
+        ),
+       // _cartItems()
       ],
     );
   }
 
+  _func(){
+     Navigator.of(context).push(
+              new MaterialPageRoute(
+                  builder:(BuildContext context) =>
+                  new ShoppingCartPage()
+              )
+          );
+  }
 
   _cartItems(){
     return  new Container( 
@@ -434,7 +467,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   right: _responsive.ip(0.6),
                   top: _responsive.ip(1),
                 
-                child: new Stack(
+                  child: new Stack(
                   alignment: Alignment.center,
                   children: <Widget>[
                     new Icon(

@@ -1,6 +1,5 @@
 
 import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/models/push_notifications_provider.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/intro_screen.dart';
 import 'package:app_invernadero/src/pages/login/code_verification_page3.dart';
@@ -27,7 +26,9 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 
 import 'package:app_invernadero/src/pages/checkout_page.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/providers/push_notifications_provider.dart';
 import 'package:app_invernadero/src/services/local_services.dart';
+import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:app_invernadero/src/services/product_services.dart';
 import 'package:app_invernadero/src/services/promocion_services.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -65,8 +66,8 @@ void main() async{
   PushNotificationsProvider provider = PushNotificationsProvider();
   provider.initNotifications();
   provider.getToken();
-  
-// SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+
+// SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyl e.dark);
   runApp(MyApp());
 } 
 
@@ -81,9 +82,10 @@ class MyApp extends StatelessWidget {
     return customProvider.Provider(
           child: MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_)=> new LocalService()),
+          //ChangeNotifierProvider(create: (_)=> new LocalService()),
           ChangeNotifierProvider(create: (_)=> new PromocionService(),),
-          ChangeNotifierProvider(create: (_)=> new ProductoService(),)
+          ChangeNotifierProvider(create: (_)=> new ProductoService(),),
+          ChangeNotifierProvider(create: (_)=> new NotificationService(),)
           
         ],
         
