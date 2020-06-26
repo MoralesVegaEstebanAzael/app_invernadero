@@ -1,14 +1,20 @@
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
+import 'package:app_invernadero/src/blocs/notification_bloc.dart';
+import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/notifications/notifications_page.dart';
 import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
+import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/badge_bottom_icon.dart';
+import 'package:app_invernadero/src/widgets/badge_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:provider/provider.dart';
 
 
 class BottomNavBarApp extends StatefulWidget {
@@ -19,7 +25,8 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
   BottomNavBloc _bottomNavBarBloc;
   Responsive _responsive;
   SecureStorage _prefs = SecureStorage();
-  
+  NotificacionesBloc _notificacionesBloc = NotificacionesBloc();
+
   final _homePage = HomePage();
   final _pedidosPage = PedidosPage();
   final _userProfilePage = UserProfilePage();
@@ -42,6 +49,10 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     pageList.add(_homePage);
     pageList.add(_favoritesPage);
     pageList.add(_userProfilePage);
+
+    
+    
+
   }
   
   
@@ -49,6 +60,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
   @override
   void didChangeDependencies() {
     _responsive = Responsive.of(context);
+    Provider.of<NotificationService>(context);
     super.didChangeDependencies();
   }
   @override
@@ -131,7 +143,18 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
                       title: Text('Notificaciones',style: TextStyle(
                       fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
                     ),),
-                      icon: Icon(LineIcons.bell,),
+                      icon: StreamBuilder(
+                        stream: _notificacionesBloc.unreadNotificationsStream ,
+                        builder: (BuildContext context, AsyncSnapshot<List<NotificacionModel>> snapshot){
+                          if(snapshot.data!=null){
+                            return  BadgeBottomIcon(
+                              icon:Icon(LineIcons.bell),
+                              number:snapshot.data.length,
+                            );
+                          }
+                          return Icon(LineIcons.bell,);
+                        },
+                      ),//Icon(LineIcons.bell,),
                     ),
 
 
@@ -161,7 +184,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
               ),
       ),
 
-       floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
           backgroundColor: miTema.accentColor,
           onPressed: () {
             //indice=2;

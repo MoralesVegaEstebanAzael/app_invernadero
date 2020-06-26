@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
       _favoritosBloc = Provider.favoritosBloc(context);
 
-     prov.Provider.of<NotificationService>(context);
+     
       // _productsBox = _productoBloc.box();
 
 

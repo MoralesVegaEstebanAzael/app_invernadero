@@ -30,35 +30,21 @@ class NotificacionesBloc{
   List<NotificacionModel> unreadNotificationsList= List();
 
   void cargarNotificaciones() async{
-    // final notificaciones = await _userProvider.cargarNotificaciones(); 
     final notifications = await _dbProvider.notificationsList(); 
-    
-    print("LONGITUD BOX>>> ${_dbProvider.notificationBox.length}");
     _notificacionesController.sink.add(notifications);
   } 
 
-  // void cargarUnreadNotifications() async { 
-  //   final  unreadNoti = await _userProvider.unReadNotifications(); 
-  //     _notificacionesController.sink.add(unreadNoti); 
-  // }
-
-  // void insertar(Map<String, NotificacionModel> entries){
-  //    _dbProvider.insertNotification(entries);
-
-  // }
 
   ///add notifications from services
   void addUnReadNotifications(List<NotificacionModel> notificationsList){
     if(notificationsList.isNotEmpty && notificationsList!=null){
       _unreadNotificationController.sink.add(notificationsList);
-
       unreadNotificationsList = notificationsList;
     }
   }
 
   void deleteNotification(NotificacionModel notification)async{
     await _dbProvider.deleteNotification(notification.id);
-    
     cargarNotificaciones();
   }
 
@@ -67,15 +53,21 @@ class NotificacionesBloc{
     //update notificaciones local
     if(unreadNotificationsList.length>0 && unreadNotificationsList!=null){
       await _userProvider.markAsReadNotifications(unreadNotificationsList);
+      _unreadNotificationController.add(null);
       unreadNotificationsList.clear();
     }
   }
 
-  // void updateLeidas(NotificacionModel noti)async{ 
-  //   await _dbProvider.markAsReadNotifications(noti); 
-  // }
+  void filter(String query)async{
+    final notifications = await  _dbProvider.notificationsList();
+    if(query.isEmpty){
+      _notificacionesController.sink.add(notifications);
+    }else{
+      final notificationsCopy= await _dbProvider.filterNotifications(notifications, query);
+       _notificacionesController.sink.add(notificationsCopy);
 
-  
+    }
+  }
   dispose(){
     _notificacionesController.close();
     _cargandoController.close(); 

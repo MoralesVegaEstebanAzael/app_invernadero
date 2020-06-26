@@ -25,6 +25,7 @@ class NotificationService with ChangeNotifier{
   void getNotifications()async{
     print(">>>>>>>>>>>>>cargando NOTIFICACIONES>>>>>>>>>>>>>");
     notificationsList=  await _userProvider.unReadNotifications();
+    
     notificacionesBloc.addUnReadNotifications(notificationsList);
     notifyListeners();
   }

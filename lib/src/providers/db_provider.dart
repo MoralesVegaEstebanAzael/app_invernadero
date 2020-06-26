@@ -337,11 +337,7 @@ class DBProvider{
   }
   
   //***NOTIFICACIONES */
-
- 
-
   insertNotification(Map<String, NotificacionModel> entries) async{
-    print("**********guardando en hive");
     await notificationBox.putAll(entries);
   } 
 
@@ -364,14 +360,27 @@ class DBProvider{
   }
 
 
-   Future<List<NotificacionModel>> notificationsList()async{
+  Future<List<NotificacionModel>> notificationsList()async{
     Map map =  notificationBox.toMap();
     List<NotificacionModel> notifications =  map.values.toList().cast();
     notifications..sort((b, a) => a.createdAt.compareTo(b.createdAt));
     return notifications;
   }
 
-  ///**FEATURES BOX */
+
+
+  Future<List<NotificacionModel>> filterNotifications(
+    List<NotificacionModel> lista,String query)async{
+    List<NotificacionModel> copyList=
+      lista.where(
+        (f) => f.data['titulo'].toUpperCase().contains(query.toUpperCase())
+      ).toList();
+
+    return copyList;
+  }
+
+
+  ///** MAP BOX ->>FEATURES BOX */
   insertFeature(Feature feature)async{
     await featuresBox.put(feature.id, feature);
   }

@@ -64,7 +64,7 @@ class FavoritosBloc{
   //   return _db.getFavoriteBox();
   // }
 
-   void filter(String query)async{
+  void filter(String query)async{
     final items = await  _db.favoritesList();
     if(query.isEmpty){
       _favoritesController.sink.add(items);
