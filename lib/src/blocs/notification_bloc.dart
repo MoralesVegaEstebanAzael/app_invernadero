@@ -34,7 +34,7 @@ class NotificacionesBloc{
     _notificacionesController.sink.add(notifications);
   } 
 
-
+  
   ///add notifications from services
   void addUnReadNotifications(List<NotificacionModel> notificationsList){
     if(notificationsList.isNotEmpty && notificationsList!=null){
