@@ -10,23 +10,35 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 class NotificationService with ChangeNotifier{
-  
+  static final NotificationService _singleton = NotificationService._internal();
+
+  factory NotificationService() => _singleton;
+
+  NotificationService._internal(){
+    this.getNotifications();
+  }// private constructor
+
+
   UserProvider _userProvider = UserProvider();
   NotificacionesBloc notificacionesBloc = NotificacionesBloc();
   List<NotificacionModel> notificationsList= List();
   
-  //final _productsController = new BehaviorSubject<List<ProductoModel>>();
-  //Stream<List<ProductoModel>> get productsStream =>_productsController.stream;
+  
 
-  NotificationService(){
-    this.getNotifications();
-  }
+  // NotificationService(){
+  //   this.getNotifications();
+  // }
   
   void getNotifications()async{
     print(">>>>>>>>>>>>>cargando NOTIFICACIONES>>>>>>>>>>>>>");
     notificationsList=  await _userProvider.unReadNotifications();
-    
     notificacionesBloc.addUnReadNotifications(notificationsList);
     notifyListeners();
   }
+
+  void loadNotifi()async{
+    print("<<<load notifications>>>");
+    await notificacionesBloc.cargarNotificaciones();
+  }
+
 }

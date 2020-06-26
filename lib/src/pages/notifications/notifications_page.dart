@@ -126,6 +126,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   Widget _crearListTitle(NotificacionModel notificacion){ 
   bool flag = _notificationBloc.unreadNotificationsList.contains(notificacion); 
+
   DateTime myDatetime = DateTime.parse(notificacion.createdAt);  
     return Container(   
         decoration: BoxDecoration(
@@ -150,7 +151,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ), 
        );
   } 
-
   _func(){
     Navigator.of(context).push(
     new MaterialPageRoute(

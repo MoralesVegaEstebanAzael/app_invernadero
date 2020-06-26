@@ -3,18 +3,19 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class PushNotificationsProvider{
-  static final PushNotificationsProvider _singleton = PushNotificationsProvider._internal();
+   static final PushNotificationsProvider _singleton = PushNotificationsProvider._internal();
 
-  factory PushNotificationsProvider() {
-    return _singleton;
-  }
+  factory PushNotificationsProvider() => _singleton;
+
+  PushNotificationsProvider._internal();// private constructor
+
+
   
-
-  PushNotificationsProvider._internal();
-
+ 
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final _messageStreamController = StreamController<String>.broadcast();
@@ -35,29 +36,59 @@ class PushNotificationsProvider{
 
 
   initNotifications(){
+    NotificationService _notificationService = NotificationService();
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
       onMessage: ( info ) async {
+
         print("====ON MESSAGE===");
         print(info);
+        await  _notificationService.getNotifications();
+        
+       //print(info['data']);
+        await  _notificationService.loadNotifi();
+        // print(info);
 
-        String argument='no-data';
-        if(Platform.isAndroid){ 
-          argument = info['data']['comida']??'no-data';
-        }
+        // String argument='no-data';
+        // if(Platform.isAndroid){ 
+        //   argument = info['data']['comida']??'no-data';
+        // }
 
-        _messageStreamController.sink.add(argument);
+        // _messageStreamController.sink.add(argument);
+
+        
       },
       onLaunch: ( info ) async {
+        /**SEGUNDO PLANO */
         print("====ON LAUNCH===");
+
+        //await  _notificationService.getNotifications();
+        
         print(info);
-        final notif = info['data']['argument'];
-        print(notif);
+
+
+
+        //await  _notificationService.loadNotifi();
+        //NotificationService _notificationService = NotificationService();
+
+        //await _notificationService.getNotifications();
+
+        // print(info);
+        // final notif = info['data']['argument'];
+        // print(notif);
       },
 
       onResume: ( info ) async {
         print("====ON RESUME===");
         print(info);
+
+        final tipo = info['data']['tipo'];
+        if(tipo=='pedido'){
+          await  _notificationService.getNotifications();
+          await  _notificationService.loadNotifi();
+        }else{
+          print("errorcillo");
+        }
       }
     );
 

@@ -86,7 +86,6 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_)=> new PromocionService(),),
           ChangeNotifierProvider(create: (_)=> new ProductoService(),),
           ChangeNotifierProvider(create: (_)=> new NotificationService(),)
-          
         ],
         
         child: MaterialApp(
