@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:app_invernadero/src/pages/home/home_page.dart';
 import 'package:app_invernadero/src/pages/notifications/notifications_page.dart';
 import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
+import 'package:app_invernadero/src/pages/user/profile_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/services/notifications_service.dart';
@@ -29,7 +30,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
 
   final _homePage = HomePage();
   final _pedidosPage = PedidosPage();
-  final _userProfilePage = UserProfilePage();
+  final _userProfilePage = ProfilePage();// UserProfilePage();
   final _notificationsPage = NotificationsPage();
   final _favoritesPage = FavoritosPage();
 

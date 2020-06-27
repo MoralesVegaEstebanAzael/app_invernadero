@@ -380,6 +380,10 @@ class DBProvider{
   }
 
 
+  bool notifIsEmpty(){
+    return notificationBox.isEmpty;
+  }
+
   ///** MAP BOX ->>FEATURES BOX */
   insertFeature(Feature feature)async{
     await featuresBox.put(feature.id, feature);

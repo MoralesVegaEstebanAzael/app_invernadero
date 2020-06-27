@@ -73,4 +73,8 @@ class NotificacionesBloc{
     _cargandoController.close(); 
     _unreadNotificationController.close();
   }
+
+  bool isEmpty(){
+    return _dbProvider.notifIsEmpty();
+  }
 }

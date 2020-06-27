@@ -7,19 +7,14 @@ import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class PushNotificationsProvider{
-   static final PushNotificationsProvider _singleton = PushNotificationsProvider._internal();
-
-  factory PushNotificationsProvider() => _singleton;
-
-  PushNotificationsProvider._internal();// private constructor
-
-
   
- 
-
+  static final PushNotificationsProvider _singleton = PushNotificationsProvider._internal();
+  factory PushNotificationsProvider() => _singleton;
+  PushNotificationsProvider._internal();// private constructor
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final _messageStreamController = StreamController<String>.broadcast();
   Stream<String> get message => _messageStreamController.stream;
+  
   getToken(){
     //send token server
     
@@ -86,8 +81,6 @@ class PushNotificationsProvider{
         if(tipo=='pedido'){
           await  _notificationService.getNotifications();
           await  _notificationService.loadNotifi();
-        }else{
-          print("errorcillo");
         }
       }
     );

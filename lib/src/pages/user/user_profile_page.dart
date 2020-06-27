@@ -224,7 +224,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
         padding: EdgeInsets.symmetric(horizontal:5),    
         child:  ListTile(
         title: Text(opt['texto']),
-        leading: getIcon(opt['icon']),
+        subtitle: Text(opt['subtitulo']),
+        leading: Container(),//getIcon(opt['icon'],_responsive),
         trailing:opt['texto']=='Notificaciones'? 
             Icon(_switch, size: 40,color:miTema.primaryColor) 
             : Icon(LineIcons.angle_right,color:Colors.grey),

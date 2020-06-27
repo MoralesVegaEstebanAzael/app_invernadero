@@ -35,7 +35,7 @@ class NotificationService with ChangeNotifier{
     notificacionesBloc.addUnReadNotifications(notificationsList);
     notifyListeners();
   }
-
+  
   void loadNotifi()async{
     print("<<<load notifications>>>");
     await notificacionesBloc.cargarNotificaciones();

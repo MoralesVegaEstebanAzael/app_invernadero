@@ -368,9 +368,8 @@ class UserProvider{
 
     // });   
     
-    
-
-   final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];
+     if(response.body.contains("notifications") && response.body.contains("id")){
+       final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];
       final List<NotificacionModel> notifications = List();
 
 
@@ -384,9 +383,10 @@ class UserProvider{
       });
 
       _dbProvider.insertNotification(notifiMap);
-     
-    if(decodeData==null) return [];
-    return notifications; 
+      if(decodeData==null) return [];
+      return notifications; 
+     }
+    return [];
   }
 
    Future<List<NotificacionModel>> markAsReadNotifications(List<NotificacionModel> list) async{ 

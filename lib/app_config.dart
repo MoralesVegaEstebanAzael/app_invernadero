@@ -58,7 +58,9 @@ class AppConfig{
 
   //** MAPBOX */
   static const String mapbox_api_token='pk.eyJ1IjoiYXphZWxtb3JhbGVzcyIsImEiOiJjazhqNmdwZ3UwMGN3M2VxYnNkNWp2cW85In0.QrGCrwp63Tf0kU2ceIjIww';
-                                        
+
+
+  static const List<String> type_notifications= ['pedido','promocion','producto'];                               
 }
 
 //physics : BouncingScrollPhysics
