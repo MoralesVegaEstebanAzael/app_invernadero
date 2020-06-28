@@ -139,10 +139,10 @@ class ClientBloc with Validators{
   }
 
   void initialData(ClientModel client){
-    _nombreController.sink.add(client.nombre);
-    _apellidoPController.sink.add(client.ap);
-    _apellidoMController.sink.add(client.am);
-    _rfcController.sink.add(client.rfc);
+    _nombreController.sink.add(client.nombre==null?'':client.nombre);
+    _apellidoPController.sink.add(client.ap==null?'':client.ap);
+    _apellidoMController.sink.add(client.am==null?'':client.am);
+    _rfcController.sink.add(client.rfc==null?'':client.rfc);
   }
 
   void dirClient(){

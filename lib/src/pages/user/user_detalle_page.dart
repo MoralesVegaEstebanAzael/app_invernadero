@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/client_model.dart'; 
 import 'package:app_invernadero/src/theme/theme.dart'; 
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:app_invernadero/src/widgets/my_appbar.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';  
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,7 +22,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool _guardando = false;
  
-  ClientModel user = new ClientModel();
+  ClientModel user;
   File foto;
 
   ClientBloc clientBloc;
@@ -36,10 +37,10 @@ class _UserDetallePageState extends State<UserDetallePage> {
 
     responsive = Responsive.of(context); 
 
-    final ClientModel userData = ModalRoute.of(context).settings.arguments;
-    if (userData != null) {
-      user = userData;
-    }
+    user = ModalRoute.of(context).settings.arguments;
+    // if (userData != null) {
+    //   user = userData;
+    // }
 
     clientBloc.initialData(user);
 
@@ -49,7 +50,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
   Widget build(BuildContext context) {  
     return Scaffold(
       key: scaffoldKey,
-      appBar: _appBar(),  
+      appBar: MyAppBar(title: "Editar datos"),  
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(30.0),
@@ -72,8 +73,12 @@ class _UserDetallePageState extends State<UserDetallePage> {
                   stream: clientBloc.nombreStream ,  
                   initialData: user.nombre,
                   builder: (BuildContext context, AsyncSnapshot snapshot){
-                    return  
-                    _inputText(user.nombre, 'Nombre *', snapshot.error, clientBloc.changeNombre);
+                    // if(snapshot.hasData){
+                      return  
+                      _inputText(user.nombre, 'Nombre *', snapshot.error, clientBloc.changeNombre);
+                    // }
+                    // return _inputText(user.nombre, 'nom *', snapshot.error.toString(), clientBloc.changeNombre);
+
                   },
                 ),
 
@@ -126,36 +131,11 @@ class _UserDetallePageState extends State<UserDetallePage> {
     );
   }
 
-  _appBar(){
-    return AppBar(
-      brightness: Brightness.light,
-      backgroundColor: Colors.white,
-      elevation: 0.0, 
-      iconTheme: IconThemeData(
-        color:Color(0xFF545D68) //change your color here
-      ),
-      title: Text("Actualizar datos personales",
-        style:TextStyle(
-          fontFamily: 'Varela',fontSize:responsive.ip(2.3),color:Color(0xFF545D68)
-        ) ,
-       ),
-      leading: Container(
-        margin: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.black12,
-            shape: BoxShape.circle,
-          ),
-        child: IconButton(
-          icon: Icon(LineIcons.angle_left, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        ), 
-      );
-  }
   
-  Widget _inputText(String rfc,String label, String errorText,Function(String) func){  
+  
+  Widget _inputText(String value,String label, String errorText,Function(String) func){  
     return TextFormField(  
-          initialValue: rfc,
+          initialValue: value,
           textCapitalization: TextCapitalization.sentences,
           keyboardType: TextInputType.text,
           decoration: InputDecoration(
@@ -166,7 +146,7 @@ class _UserDetallePageState extends State<UserDetallePage> {
               hintStyle: TextStyle(color:Colors.grey),
               labelText: label,
               labelStyle: _style, 
-              errorText: errorText
+              errorText: errorText!=null?'':errorText
           ), 
           onChanged: func, 
         );
