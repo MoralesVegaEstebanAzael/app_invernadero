@@ -1,7 +1,9 @@
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/blocs/test_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
+import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
@@ -27,22 +29,28 @@ class ShoppingCartPage extends StatefulWidget {
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Responsive responsive;
-  ShoppingCartBloc _shoppingCartBloc;
+  ShoppingCartBloc _shoppingCartBloc=ShoppingCartBloc();
   Stream<List<ItemShoppingCartModel>> _streamItems;
   BottomNavBloc _bottomNavBloc;
   bool flagFrom;
 
+  //TestBloc _testBloc = TestBloc();
   ///
   @override
   void initState() { 
     _bottomNavBloc = BottomNavBloc();
-   
+   //_testBloc.shoppingCartFect();
+    _shoppingCartBloc.cargarArtic();
+
+    //_shoppingCartBloc.shoppingCartFetch();
+
+
     super.initState();
   }
 
   @override
   void dispose() {
-    _shoppingCartBloc.dispose();
+    //_shoppingCartBloc.dispose();
     if(flagFrom)
      FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
     super.dispose();
@@ -50,12 +58,15 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   
   @override
   void didChangeDependencies() {
-    _shoppingCartBloc = Provider.shoppingCartBloc(context);
+   // _shoppingCartBloc = Provider.shoppingCartBloc(context);
 
     //news methods 
-    _shoppingCartBloc.cargarArtic();
+   
+    //_shoppingCartBloc.shoppingCartFect();
+    
     _streamItems = _shoppingCartBloc.artcStream;
 
+   
     
     ///
     responsive = Responsive.of(context);
@@ -234,6 +245,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     );
   }
   Widget _itemView(int index,ItemShoppingCartModel item){
+    ProductoModel prodTemp = _shoppingCartBloc.getItem(item.producto.id);
+    
     return Padding(
         padding: const EdgeInsets.symmetric(vertical:4,horizontal: 8),
         child: Container(
@@ -249,11 +262,27 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       children:<Widget>[
         Padding(
         padding: const EdgeInsets.all(4),
-        child: FadeInImage(
+        child: 
+          prodTemp.cantExis>0? //no agotado
+          FadeInImage(
           width: 90,
           height: double.infinity,
           image: NetworkImage(item.producto.urlImagen), 
-          placeholder: AssetImage('assets/placeholder.png')),
+          placeholder: AssetImage('assets/placeholder.png'))
+          :
+          Container(
+            height:90,
+            width:90,
+            child:Column(
+              children: <Widget>[
+              SvgPicture.asset('assets/images/item_agotado.svg',
+              height: 65,
+              width: 65,
+              ),
+              Text("Agotado",style:TextStyle(fontSize:responsive.ip(1.2),color: Colors.redAccent,fontFamily: 'Quicksand',fontWeight: FontWeight.w700))
+            ],)
+          ),
+          
         ),
         Container(
           width: responsive.ip(20),

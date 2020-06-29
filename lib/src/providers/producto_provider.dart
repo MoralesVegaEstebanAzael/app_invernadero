@@ -149,6 +149,50 @@ class ProductoProvider{
     }
     return Future<bool>.value(true);
   }
+
+  int x =0;
+  Future<List<ProductoModel>> shoppingCartFetch() async{ 
+    final url = "${AppConfig.base_url}/api/client/shopping_cart_fetch"; 
+    final token = await _storage.read('token');
+    List<int> list = await _dbProvider.getItemsSCid();
+    
+    if(list==null || list.isEmpty){
+      return [];
+    }
+    x++;
+    print("veces... $x");
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Content-Type" : "application/json",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: json.encode( 
+        {
+        "products" :list ,
+        }
+        )
+    );
+    print("SHOPPING CART FETCH");
+    print(response.body);
+
+    if(response.body.contains("productos") && response.body.contains("id")){
+      final Map<dynamic,dynamic> decodeData = json.decode(response.body)['productos'];
+      final List<ProductoModel> productos = List();
+
+      decodeData.forEach((id,p){
+        ProductoModel productItem = ProductoModel.fromJson(p);
+        productos.add(productItem);
+      });
+      if(productos.isNotEmpty)
+      return productos;
+      else 
+      return [];
+    }
+    return [];
+  }
 }
 
 

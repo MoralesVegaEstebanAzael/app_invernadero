@@ -292,6 +292,15 @@ class DBProvider{
     return total;
   }
 
+  Future<List<int>> getItemsSCid()async{
+    List<int> idsList = List();
+    await itemsShoppingBox.toMap().values.toList().forEach((f){
+      ItemShoppingCartModel item = f;
+      idsList.add(item.producto.id);
+    });
+    return idsList;
+  }
+
   //lista de productos del carrito de compras
   Future<List<ItemShoppingCartModel>> shoppingCartList()async{
     Map map =  itemsShoppingBox.toMap();

@@ -6,7 +6,6 @@ import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -22,36 +21,42 @@ class CheckoutPage extends StatefulWidget {
 
 class _CheckoutPageState extends State<CheckoutPage> {
   Responsive responsive;
-  Box box;
-  ShoppingCartBloc _shoppingCartBloc;
+  // Box box;
+  ShoppingCartBloc _shoppingCartBloc = ShoppingCartBloc();
   ClientBloc _clientBloc;
-  FeatureBloc _featureBloc;
-
+  // FeatureBloc _featureBloc;
+  List<ItemShoppingCartModel> itemsFinal=List();
   int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
 
   @override
   void initState() {
     super.initState();
+    itemsFinal = _shoppingCartBloc.getItemsFinalList();
   }
 
   @override
   void didChangeDependencies() {
     responsive = Responsive.of(context);
-    _featureBloc = Provider.featureBloc(context);
-    _shoppingCartBloc = Provider.shoppingCartBloc(context);
-    _shoppingCartBloc.loadItems();
-    box = _shoppingCartBloc.box();
+    // _featureBloc = Provider.featureBloc(context);
+   // _shoppingCartBloc = Provider.shoppingCartBloc(context);
+    // _shoppingCartBloc.loadItems();
+    // box = _shoppingCartBloc.box();
 
    // _stream = _shoppingCartBloc.shoppingCartStream;
-
+    
     _clientBloc = Provider.clientBloc(context);
     _clientBloc.dirClient();
     super.didChangeDependencies();
   }
-
+  @override
+  void dispose() {
+    _shoppingCartBloc.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+    print("Construyendi");
     return Scaffold(
       appBar: _appBar(),
       backgroundColor: Colors.white,
@@ -115,19 +120,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
           ),
          
-          WatchBoxBuilder(
-          box: box, 
-          builder: (BuildContext context,Box box){
-            return 
+          // WatchBoxBuilder(
+          // box: box, 
+          // builder: (BuildContext context,Box box){
+          //   return 
               Expanded(
                 child:  ListView.builder(
-                  itemCount:  box.length,
+                  itemCount:  itemsFinal.length,
                   itemBuilder: (context, index) {
-                    ItemShoppingCartModel item = box.getAt(index);
+                    ItemShoppingCartModel item = itemsFinal[index];
                     return _itemView(item,index);
                     })
-              );
-          }),
+              // );
+          //}
+          ),
           _confirmation()
         ],
       ),
@@ -328,11 +334,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
 
               StreamBuilder( 
-                      stream: _shoppingCartBloc.total ,
+                      //stream: _shoppingCartBloc.total ,
+                      stream: _shoppingCartBloc.totalFinal,
                       initialData: 0 ,
                       builder: (BuildContext context, AsyncSnapshot snapshot){
-                        return Text( 
+                        return
+               Text( 
                           "\$ ${snapshot.data} MX",
+                          //"\$ ${_shoppingCartBloc.totalFinal} MX",
                           style: TextStyle(
                             fontSize: responsive.ip(2),
                             color:Colors.grey,

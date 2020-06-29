@@ -54,7 +54,7 @@ class BottomNavBloc{
     return indice;
   }
 
-  close() {
+  dispose() {
     _navBarController?.close();
   }
 }

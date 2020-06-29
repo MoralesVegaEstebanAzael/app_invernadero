@@ -1,4 +1,5 @@
 import 'package:app_invernadero/src/blocs/notification_bloc.dart';
+import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
@@ -13,8 +14,11 @@ class ProductoService with ChangeNotifier{
   final _productsController = new BehaviorSubject<List<ProductoModel>>();
   Stream<List<ProductoModel>> get productsStream =>_productsController.stream;
 
+  ShoppingCartBloc _shoppingCartBloc = ShoppingCartBloc();
+
   ProductoService(){
     this.getProductos();
+    this.fetchProducts();
   }
   
   
@@ -32,6 +36,12 @@ class ProductoService with ChangeNotifier{
     notifyListeners();
   }
 
-
+  void fetchProducts()async{
+    final list = await _productoProvider.shoppingCartFetch();
+    if(list!=[]&&list.isNotEmpty){
+      _shoppingCartBloc.scFetchList = list;
+    }
+    notifyListeners();
+  }
 
 }

@@ -39,7 +39,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin,
   AutomaticKeepAliveClientMixin<HomePage> {
   ClientBloc _clientBloc;
-  ShoppingCartBloc _shoppingCartBloc;
+  ShoppingCartBloc _shoppingCartBloc=ShoppingCartBloc();
   //ProductoBloc _productoBloc;
   //List<PromocionModel> promocionesList=new List();
   AnimationController _controller;
@@ -47,14 +47,20 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   Responsive _responsive;
   // Stream<List<PromocionModel>> promocionesStream;
   int _current=0;
-
+  
+  
   // Box _productsBox;
   FavoritosBloc _favoritosBloc;
+  
+  Stream<List<ProductoModel>> productsStream;
+  Stream<List<PromocionModel>> promocionesStream;
+
+  
   @override
   void initState()  {
     super.initState();
     _controller = AnimationController(vsync: this);
-    
+   // _shoppingCartBloc.shoppingCartFetch();
   }
   
 
@@ -72,12 +78,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _responsive = Responsive.of(context);
      // _productoBloc = ProductoBloc(); //Provider.productoBloc(context);
 
-      _shoppingCartBloc = Provider.shoppingCartBloc(context);
+     // _shoppingCartBloc = Provider.shoppingCartBloc(context);
       _shoppingCartBloc.countItems();
 
       _favoritosBloc = Provider.favoritosBloc(context);
 
-     
+
+      productsStream = prov.Provider.of<ProductoService>(context).productsStream;
+      promocionesStream = prov.Provider.of<PromocionService>(context).promocionStream;
       // _productsBox = _productoBloc.box();
 
 
@@ -92,6 +100,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   void dispose() {
     _controller.dispose(); 
     //_productoBloc.dispose();
+
     super.dispose();  
   }
 
@@ -155,7 +164,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
                 
                 StreamBuilder(
-                  stream: prov.Provider.of<ProductoService>(context).productsStream,
+                  stream: productsStream,
                   builder: (BuildContext context, AsyncSnapshot snapshot){
                     if(snapshot.hasData){
                       List<ProductoModel> list = snapshot.data;
@@ -199,7 +208,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // }
    
     return StreamBuilder(
-      stream:  prov.Provider.of<PromocionService>(context).promocionStream,
+      stream:  promocionesStream,
       builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
         print("slider");
         print(snapshot.data);

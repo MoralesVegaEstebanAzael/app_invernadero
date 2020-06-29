@@ -1,6 +1,7 @@
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ShoppingCartBloc{
@@ -9,130 +10,66 @@ class ShoppingCartBloc{
     return _singleton;
   }
   
-
   ShoppingCartBloc._internal();
-
-  final _itemsSCcontroller = new BehaviorSubject<List<ItemShoppingCartModel>>();
-  
-  final _cargandoController = new BehaviorSubject<bool>();
   final db = new DBProvider();
+  final productoProvider = ProductoProvider();
+
   final _totalController = new BehaviorSubject<double>();
-  final _subtotalController = new BehaviorSubject<double>();
-  final _countItems = new BehaviorSubject<int>();
-
-  
-
-  //Stream<List<ShoppingCartModel>> get shoppingCartStream =>_shoppingCartController.stream;
-  Stream<List<ItemShoppingCartModel>> get shoppingCartStream => _itemsSCcontroller.stream;
-
-  Stream<bool> get cargando =>_cargandoController.stream;
-  Stream<double> get subtotal => _subtotalController.stream;
-  Stream<double> get total =>_totalController.stream;
-  
-  
-  Stream<int> get count => _countItems.stream;
-
-  //*** *** */
-  
+  final _countItemsController = new BehaviorSubject<int>();
   final _articController = new BehaviorSubject<List<ItemShoppingCartModel>>();
+  final _shoppingCartFetchController = new BehaviorSubject<List<ProductoModel>>();
+
+
+  final _totalFinalController = new BehaviorSubject<double>();
+  Stream<double> get totalFinal =>_totalFinalController.stream;
+
+  Stream<double> get total =>_totalController.stream;
+  Stream<int> get count => _countItemsController.stream;  
   Stream<List<ItemShoppingCartModel>> get artcStream => _articController.stream;
+  Stream<List<ProductoModel>> get _scFecthStream => _shoppingCartFetchController.stream;
 
+
+  List<ProductoModel> scFetchList = new List();
+  List<ItemShoppingCartModel> tempItems = List();
   
 
-  void loadItems()async{
-    final items = await db.getItemsSC();
-    //_shoppingCartController.sink.add(items);
-    _itemsSCcontroller.sink.add(items);
-    totalItems();
-    
-    countItems();
-  }
 
-  void insertItem(ItemShoppingCartModel item){
-    db.insertItemSC(item);
-    countItems();
-  }
-  // void updateItem(ShoppingCartModel item)async{
-  //   _cargandoController.sink.add(true);
-  //   await db.updateItemShoppingCart(item);
-  //   _cargandoController.sink.add(false);
-  //   totalItems();
-  // } 
 
-  
-  void subtotalItem(ItemShoppingCartModel item)async{
-    //Replantear en base a si es menudeo o mayoreo
-    double subtotal = item.cantidad * item.producto.precioMen;
-    item.subtotal = subtotal;
-    await db.updateItemSC(item);
+  void insertItem(ProductoModel p){
 
-   // _subtotalController.sink.add(db.)
+    if(p.cantExis>=0){
+      
+      ItemShoppingCartModel item = ItemShoppingCartModel(
+                    producto: p,
+                    cantidad: 1,
+                    subtotal: 1*p.precioMen
+                  );
+      db.insertItemSC(item);
+      countItems();
+      cargarArtic();
 
-  }
-  
-  void totalItems(){ //precio total de items
-    _totalController.sink.add(db.totalSC());
-  }
-  
-  
-  void countItems(){//total de items guardados
-     _countItems.sink.add(db.countItemsSC());
+      shoppingCartFetch();
     }
-  
-  void incItem(ItemShoppingCartModel item)async{
-    print("incrementando");
-    item.cantidad++;
-    await db.updateItemSC(item);
-    subtotalItem(item); //new method
-    totalItems();
   }
-
-  void decItem(ItemShoppingCartModel item)async{
-    if(item.cantidad>1)
-      item.cantidad--;
-    _cargandoController.sink.add(true);
-     await db.updateItemSC(item);
-    subtotalItem(item); //new method
-    totalItems();
-  }
-
-  void deleteItem(ItemShoppingCartModel item)async{
-     await db.deleteItemSC(item);
-    loadItems();
-   
-  }
-
-  void deleteAllItems()async{
-    await db.deleteItemsSC();
-    loadItems();
-  }
-
-
-  dispose(){
-    //_shoppingCartController.close();
-  //  _cargandoController.close();
-    //_totalController.close();
-    //db.dispose();
-  }
-
-  box(){
-   // return db.getShoppingCartBox();
-    return db.getItemsSCBox();
-  }
-  bool isEmpty(){
-   // return db.shoppingCartBoxisEmpty();
-    return db.itemsSCBoxisEmpty();
-  }
-
-  
   //load with stream 
-  void cargarArtic()async{
-    final items = await  db.shoppingCartList();
-    _articController.sink.add(items);
+  void cargarArtic()async{   
+    
+    tempItems = await  db.shoppingCartList();
+    _articController.sink.add(tempItems);
     totalItems();
   } 
 
+  void shoppingCartFetch()async{
+    
+    scFetchList = await productoProvider.shoppingCartFetch();
+    
+  }
+
+
+
   void incItems(ItemShoppingCartModel item)async{
+    if(agotado(item.producto.id))
+      return;
     item.cantidad++;
     double subtotal = item.cantidad * item.producto.precioMen;
     item.subtotal = subtotal;
@@ -142,7 +79,9 @@ class ShoppingCartBloc{
   }
 
   void decItems(ItemShoppingCartModel item)async{
-     if(item.cantidad>1)
+    if(agotado(item.producto.id))
+      return;
+    if(item.cantidad>1)
       item.cantidad--;
     double subtotal = item.cantidad * item.producto.precioMen;
     item.subtotal = subtotal;
@@ -157,7 +96,6 @@ class ShoppingCartBloc{
   }
 
   void deleteAllSC()async{
-    print("Eliminando tod...");
     await db.deleteAllItemsSC();
     await cargarArtic();
   }
@@ -172,9 +110,61 @@ class ShoppingCartBloc{
       _articController.sink.add(newItems);
     }
   }
-
   
-
   
+  void totalItems(){ //precio total de items
+    _totalController.sink.add(db.totalSC());
+  }
+  
+  void countItems(){//total de items guardados
+    //if(!_countItems.isClosed)
+     _countItemsController.sink.add(db.countItemsSC());
+  }
+  dispose(){
+    // _articController.close();
+    // _countItemsController.close();
+    //_totalController.close();
+   // _totalFinalController.onPause;
+    // _shoppingCartFetchController.close();
+    // _isDisposed = true;
+  }
+
+  box(){
+    return db.getItemsSCBox();
+  }
+  bool isEmpty(){
+    return db.itemsSCBoxisEmpty();
+  }
+
+  ProductoModel getItem(int id){
+    return scFetchList.firstWhere((test)=>test.id==id);
+  }
+
+
+  bool agotado(int id){
+    ProductoModel p =  scFetchList.firstWhere((test)=>test.id==id);
+    if(p!=null){
+      if(p.cantExis<=0)
+        return true;
+      return false;
+    }
+    return false;
+  }
  
+  List<ItemShoppingCartModel> getItemsFinalList(){
+    double totalFinal=0;
+    List<ItemShoppingCartModel> itemsFinal = List();
+    tempItems.forEach((item){
+      ItemShoppingCartModel i = item;
+      if(!agotado(i.producto.id)){
+        itemsFinal.add(i);
+        totalFinal+=i.subtotal;
+        print("LIST FINL ${i.producto.nombre}");
+      }
+    });
+    _totalFinalController.sink.add(totalFinal);
+    return itemsFinal;
+  }
+
+
 }

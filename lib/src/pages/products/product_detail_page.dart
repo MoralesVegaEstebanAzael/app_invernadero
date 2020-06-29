@@ -265,12 +265,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Text("AGREGAR",style: TextStyle(fontFamily: 'Quiksand',color:Colors.white,letterSpacing: 1,fontSize: 15),),
                   ),
                   onPressed: (){
-                     ItemShoppingCartModel item = ItemShoppingCartModel(
-                      producto: producto,
-                      cantidad: 1,
-                      subtotal: 1*producto.precioMen
-                    );
-                    _shoppingCartBloc.insertItem(item);
+                    
+                    _shoppingCartBloc.insertItem(producto);
                     
                       setState(() {
                         

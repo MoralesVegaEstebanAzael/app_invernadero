@@ -21,7 +21,7 @@ class BadgeIcon extends StatelessWidget {
         child: new Stack(
           children: <Widget>[
             iconButton,
-            (number>=0)?
+            (number>0)?
            new Positioned(
             right: _responsive.ip(0.6),
             top: _responsive.ip(1),

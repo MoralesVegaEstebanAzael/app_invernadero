@@ -45,11 +45,11 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     _prefs.route = 'home';
 
     
-    pageList.add(_pedidosPage);
-    pageList.add(_notificationsPage);
-    pageList.add(_homePage);
-    pageList.add(_favoritesPage);
-    pageList.add(_userProfilePage);
+    // pageList.add(_pedidosPage);
+    // pageList.add(_notificationsPage);
+    // pageList.add(_homePage);
+    // pageList.add(_favoritesPage);
+    // pageList.add(_userProfilePage);
 
     
     
@@ -66,7 +66,7 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
   }
   @override
   void dispose() {
-    //_bottomNavBarBloc.close();
+    _bottomNavBarBloc.dispose();
     super.dispose();
   }
 
