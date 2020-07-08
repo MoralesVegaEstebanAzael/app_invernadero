@@ -20,7 +20,7 @@ class NotificationsAdapter extends TypeAdapter<NotificacionModel> {
       id: fields[0] as String,
       type: fields[1] as String,
       notifiableType: fields[2] as String,
-      notifiableId: fields[3] as String,
+      notifiableId: fields[3] as int,
       data: fields[4] as dynamic,
       readAt: fields[5] as String,
       createdAt: fields[6] as String,

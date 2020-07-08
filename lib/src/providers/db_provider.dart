@@ -347,6 +347,7 @@ class DBProvider{
   
   //***NOTIFICACIONES */
   insertNotification(Map<String, NotificacionModel> entries) async{
+    print("insertando notificaciones.....");
     await notificationBox.putAll(entries);
   } 
 
@@ -370,9 +371,11 @@ class DBProvider{
 
 
   Future<List<NotificacionModel>> notificationsList()async{
+    
     Map map =  notificationBox.toMap();
     List<NotificacionModel> notifications =  map.values.toList().cast();
     notifications..sort((b, a) => a.createdAt.compareTo(b.createdAt));
+    print("notificacionesss ${map.length}");
     return notifications;
   }
 

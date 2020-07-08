@@ -19,7 +19,7 @@ class NotificacionModel {
     @HiveField(2)
     String notifiableType;
     @HiveField(3)
-    String notifiableId;
+    int notifiableId;
     @HiveField(4)
     dynamic data;
     @HiveField(5)

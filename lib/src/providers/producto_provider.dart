@@ -160,8 +160,6 @@ class ProductoProvider{
     if(list==null || list.isEmpty){
       return [];
     }
-    x++;
-    print("veces... $x");
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
       "Content-Type" : "application/json",
@@ -176,7 +174,7 @@ class ProductoProvider{
         }
         )
     );
-    print("SHOPPING CART FETCH");
+    print("******************SHOPPING CART FETCH******************");
     print(response.body);
 
     if(response.body.contains("productos") && response.body.contains("id")){

@@ -347,35 +347,23 @@ class UserProvider{
       url, 
       headers: headers,);
 
-    print("***********NOTIFICACIONES NO LEIDAS RESPUESTA-**************");
     print(response.body);
     
     if(response.body.contains('error')){
       return [];
     } 
 
-    // Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];  
-    // final List<NotificacionModel> notificaciones = List();
-
-    // Map notiMap = Map<String, NotificacionModel>();
- 
-    //     decodeData.forEach((id,notification){
-       
-    //   NotificacionModel notiTemp = NotificacionModel.fromJson(notification);  
-    //   notificaciones.add(notiTemp);
-         
-    //   notiMap.putIfAbsent(id, ()=>notiTemp); 
-
-    // });   
     
-     if(response.body.contains("notifications") && response.body.contains("id")){
+     print("***********NOTIFICACIONES NO LEIDAS RESPUESTA-**************");
+   
+     if(response.body.contains("notificaciones") && response.body.contains("id")){
        final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notificaciones'];
       final List<NotificacionModel> notifications = List();
 
 
       Map notifiMap = Map<String, NotificacionModel>();
 
-
+    
       decodeData.forEach((id,notification){
         NotificacionModel notiTemp = NotificacionModel.fromJson(notification);
         notifications.add(notiTemp);

@@ -264,11 +264,19 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         padding: const EdgeInsets.all(4),
         child: 
           prodTemp.cantExis>0? //no agotado
-          FadeInImage(
+          Container(
+            child:(item.producto.urlImagen!=null)?
+             FadeInImage(
           width: 90,
           height: double.infinity,
           image: NetworkImage(item.producto.urlImagen), 
-          placeholder: AssetImage('assets/placeholder.png'))
+          placeholder: AssetImage('assets/placeholder.png')):
+          Container(
+              width: 90,
+            height: double.infinity,
+            child:Image.asset('assets/placeholder.png')
+          )
+          )
           :
           Container(
             height:90,
