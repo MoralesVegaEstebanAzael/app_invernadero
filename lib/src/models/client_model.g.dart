@@ -17,7 +17,7 @@ class ClientAdapter extends TypeAdapter<ClientModel> {
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return ClientModel(
-      id: fields[0] as String,
+      id: fields[0] as int,
       nombre: fields[1] as String,
       ap: fields[2] as String,
       am: fields[3] as String,

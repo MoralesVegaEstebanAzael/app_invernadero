@@ -56,11 +56,11 @@ class SecureStorage{
   }
 
   get idClient{
-    return _prefs.getString('id_client')??'';
+    return _prefs.getInt('id_client')??'';
   }
 
-  set idClient(String idClient){
-    _prefs.setString('id_client', idClient);
+  set idClient(int idClient){
+    _prefs.setInt('id_client', idClient);
   }
 
   get idFeature{

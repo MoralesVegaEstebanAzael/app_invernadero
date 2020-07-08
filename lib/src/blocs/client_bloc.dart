@@ -22,6 +22,31 @@ class ClientBloc with Validators{
   
   ClientBloc._internal();
   
+
+  /**new methods */
+
+  final _nameController = BehaviorSubject<String>();
+  final _apController = BehaviorSubject<String>();
+  final _amController = BehaviorSubject<String>();
+  final _rfController = BehaviorSubject<String>();
+  
+  Stream<String> get nameStream=> _nameController.stream.transform(validarNombre);
+  Stream<String> get apStream=> _apController.stream.transform(validarAp);
+  Stream<String> get amStream=> _amController.stream.transform(validarAm);
+  Stream<String> get rfStream=> _rfController.stream.transform(validarRFC);
+
+
+
+  Function(String) get changeName => _nameController.sink.add;
+  Function(String) get changeAp => _apController.sink.add;
+  Function(String) get changeAm => _amController.sink.add;
+  Function(String) get changeR => _rfController.sink.add;
+
+
+
+  //****** */
+
+
   final StreamController<ClientModel> _clientController = 
   StreamController<ClientModel>.broadcast();
 
@@ -53,6 +78,7 @@ class ClientBloc with Validators{
   
   Stream<bool> get formValidStream =>  
     CombineLatestStream.combine4(nombreStream, apellidoPStream, apellidoMStream, rfcStream, (n,p,m,r) => true);
+
 
   String get nombre =>_nombreController.value;
   String get apellidoP =>_apellidoPController.value;
@@ -182,10 +208,18 @@ class ClientBloc with Validators{
   
 
   Position latLongClient(){
-    String _id = _storage.idClient;
+    int _id = _storage.idClient;
     ClientModel c = _dbProvider.getClient(_id);
     Position position = Position(latitude: c.lat,longitude: c.lng);
     return position;
+  }
+
+  bool information(){
+    ClientModel client =  _dbProvider.getClient(_storage.idClient); 
+    if(client.nombre!=null && client.am!=null&& client.ap!=null&&client.rfc!=null){
+      return true;
+    }
+    return false;
   }
 
 }

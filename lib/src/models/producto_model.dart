@@ -26,6 +26,8 @@ class ProductoModel {
   @HiveField(6)
   int cantExis;
   @HiveField(7)
+  int semana;
+  @HiveField(8)
   String urlImagen;
   
   ProductoModel({
@@ -36,6 +38,7 @@ class ProductoModel {
       this.precioMay,
       this.precioMen,
       this.cantExis,
+      this.semana,
       this.urlImagen,
   });
 
@@ -47,6 +50,7 @@ class ProductoModel {
       precioMay: json["precioMay"].toDouble(),
       precioMen: json["precioMen"].toDouble(),
       cantExis: json["cantExis"],
+      semana: json["semana"],
       urlImagen: json["url_imagen"],
   );
 

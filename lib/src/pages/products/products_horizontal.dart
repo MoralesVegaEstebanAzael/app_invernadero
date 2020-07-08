@@ -94,12 +94,16 @@ class ProductosScrollView extends StatelessWidget  {
               tag:producto.id,
               child: ClipRRect(
               borderRadius: BorderRadius.circular(20.0),
-              child: FadeInImage(
+              child: (producto.urlImagen!=null)? FadeInImage(
               placeholder: AssetImage('assets/placeholder.png'), 
               image: NetworkImage(producto.urlImagen),
               fit : BoxFit.cover,
               height: responsive.ip(13),
-              ),
+              ):
+              Container(
+                height:responsive.ip(13),
+                child:Image.asset('assets/placeholder.png')
+              )
               ),
             ),
           ),

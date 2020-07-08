@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_invernadero/app_config.dart';
+import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
@@ -190,6 +191,61 @@ class ProductoProvider{
       return productos;
       else 
       return [];
+    }
+    return [];
+  }
+
+
+
+  Future<bool> pedido(List<ItemShoppingCartModel> listItems)async{
+    final url = "${AppConfig.base_url}/api/client/addpedidoDetails"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",};
+      
+      List pedidoProductos = toJson(listItems);
+
+      if(pedidoProductos == [] || pedidoProductos.isEmpty){
+        return false;
+      }
+
+     var body = json.encode({
+      "productos": pedidoProductos
+      });
+ 
+
+    final response = await http.post(
+      url, 
+      headers: headers,
+       body: body
+    ); 
+
+    print("PEDIDO RESPUESTA----------------");
+    print(response.body);
+
+    if(response.body.contains('soldOut')){
+      return false;
+    } 
+     
+    final decodeData = jsonDecode(response.body);
+    print(decodeData); 
+    return true; 
+  }
+
+   List toJson(List<ItemShoppingCartModel> items){ 
+    Map<String,int> mapAux = {};  
+    List aux = new List();  
+      items.forEach((v){    
+        ItemShoppingCartModel item = v; 
+        mapAux = {
+          'idProducto': item.producto.id,
+          'cantidad': item.cantidad
+        };
+        aux.add(mapAux);        
+      });
+    if(aux.isNotEmpty){
+      return aux; 
     }
     return [];
   }

@@ -35,6 +35,18 @@ class Validators{
     }
   );
 
+  final validarAp=StreamTransformer<String,String>.fromHandlers(
+    handleData: (ap,sink){
+      (ap.length>1)?sink.add(ap):sink.addError("Ingrese este campo");
+    }
+  );
+
+  final validarAm=StreamTransformer<String,String>.fromHandlers(
+    handleData: (am,sink){
+      (am.length>1)?sink.add(am):sink.addError("Ingrese este campo");
+    }
+  );
+
  final validarRFC = StreamTransformer<String, String>.fromHandlers(
    handleData: (rfc, sink){ 
       bool rfcValid = 

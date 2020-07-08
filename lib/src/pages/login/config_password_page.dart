@@ -190,7 +190,7 @@ class _ConfigPasswordPageState extends State<ConfigPasswordPage> {
         Navigator.pushReplacementNamed(context, 'config_location');
       }else{
         print("ocurrio un error durante la peticion");
-        Scaffold.of(context).showSnackBar(snackBar);
+       // Scaffold.of(context).showSnackBar(snackBar);
       }
     }
   }

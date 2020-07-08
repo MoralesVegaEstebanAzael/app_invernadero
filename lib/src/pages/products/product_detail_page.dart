@@ -175,11 +175,20 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   padding: const EdgeInsets.only(bottom:45.0),
                    child:Hero(
                       tag: producto.id,
-                      child: //(producto.urlImagen!=null)?
-                    FadeInImage(
-                        width: responsive.ip(25),
-                        image: NetworkImage(producto.urlImagen) , 
-                        placeholder: AssetImage('assets/placeholder.png'),)
+                      child:  (producto.urlImagen!=null)? FadeInImage(
+              placeholder: AssetImage('assets/placeholder.png'), 
+              image: NetworkImage(producto.urlImagen),
+              fit : BoxFit.cover,
+              height: responsive.ip(13),
+              ):
+              Container(
+                height:responsive.ip(13),
+                child:Image.asset('assets/placeholder.png')
+              )//(producto.urlImagen!=null)?
+                    // FadeInImage(
+                    //     width: responsive.ip(25),
+                    //     image: NetworkImage(producto.urlImagen) , 
+                    //     placeholder: AssetImage('assets/placeholder.png'),)
                     ),
                 ),
               ),

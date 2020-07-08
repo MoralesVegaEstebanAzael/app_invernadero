@@ -321,7 +321,7 @@ class DBProvider{
     await clientBox.put(client.id,client);
   }
   
-  ClientModel getClient(String id){
+  ClientModel getClient(int id){
     return clientBox.get(id);
   }
   

@@ -383,19 +383,23 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   
-  void _confirmar(){
-    print("confirmar");
-    _clientBloc.informactionClient()
-    ?
-    print("Se envia el pedido")
-    :
-    print("actualiza tus datos");
+  void _confirmar()async{
+    Map response = await _shoppingCartBloc.sendPedido(itemsFinal);
+    switch(response['ok']){
+      case 1:
+        print("TOODO CON EXITO");
+      break;
+      case 0:
+        print("ERROR DE SERVIDOR");
+      break;
+      case 2:
+      print("CONFIGURAR DATOS");
+        // Navigator.pushNamed(context, 'detail');
+      break;
+    }
   }
 
-
-
-
-
+  
   void _handleRadioValueChange(int value) {
     setState(() {
       _radioValue = value;

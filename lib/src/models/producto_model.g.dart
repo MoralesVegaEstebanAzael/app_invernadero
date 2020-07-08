@@ -24,14 +24,15 @@ class ProductoAdapter extends TypeAdapter<ProductoModel> {
       precioMay: fields[4] as double,
       precioMen: fields[5] as double,
       cantExis: fields[6] as int,
-      urlImagen: fields[7] as String,
+      semana: fields[7] as int,
+      urlImagen: fields[8] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductoModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,6 +48,8 @@ class ProductoAdapter extends TypeAdapter<ProductoModel> {
       ..writeByte(6)
       ..write(obj.cantExis)
       ..writeByte(7)
+      ..write(obj.semana)
+      ..writeByte(8)
       ..write(obj.urlImagen);
   }
 }

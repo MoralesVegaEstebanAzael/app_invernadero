@@ -17,7 +17,7 @@ class UserDetallePage extends StatefulWidget {
 
 class _UserDetallePageState extends State<UserDetallePage> {
   
-  final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18);
+  final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18,fontFamily: 'Quicksand',fontWeight: FontWeight.w700);
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool _guardando = false;
@@ -30,18 +30,11 @@ class _UserDetallePageState extends State<UserDetallePage> {
  
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies(); 
-    
+
     clientBloc = Provider.clientBloc(context);
-
     responsive = Responsive.of(context); 
-
     user = ModalRoute.of(context).settings.arguments;
-    // if (userData != null) {
-    //   user = userData;
-    // }
-
     clientBloc.initialData(user);
 
   }
@@ -49,109 +42,112 @@ class _UserDetallePageState extends State<UserDetallePage> {
   @override
   Widget build(BuildContext context) {  
     return Scaffold(
-      key: scaffoldKey,
+      backgroundColor: Colors.white,
       appBar: MyAppBar(title: "Editar datos"),  
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(30.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: <Widget>[
-                _mostrarFoto(),  
-                SizedBox(height:responsive.ip(6)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Datos personales", style:TextStyle(fontFamily: 'Varela',fontSize:responsive.ip(2),color:Color(0xFF545D68))),
-                    Text("* Campos obligatorios", style:TextStyle(fontFamily: 'Varela',fontSize:responsive.ip(1.5),color:Colors.grey)),
-               
-                  ],
-                ),
-                SizedBox(height:responsive.ip(1)),
-                StreamBuilder(
-                  stream: clientBloc.nombreStream ,  
-                  initialData: user.nombre,
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    // if(snapshot.hasData){
-                      return  
-                      _inputText(user.nombre, 'Nombre *', snapshot.error, clientBloc.changeNombre);
-                    // }
-                    // return _inputText(user.nombre, 'nom *', snapshot.error.toString(), clientBloc.changeNombre);
-
-                  },
-                ),
-
-                SizedBox(height:responsive.ip(1)),
-                StreamBuilder(
-                  stream: clientBloc.apellidoPStream , 
-                  initialData: user.ap,
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    return  
-                    _inputText(user.ap,'Apellido paterno *', snapshot.error, clientBloc.changeApellidoP);
-                  },
-                ),
-
-                SizedBox(height:responsive.ip(1)),
-                StreamBuilder(
-                  stream: clientBloc.apellidoMStream , 
-                  initialData: user.am,
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    return  
-                    _inputText(user.am, 'Apellido materno *', snapshot.error, clientBloc.chanfeApellidoM);
-                  },
-                ),
-
-                SizedBox(height:responsive.ip(1)),   
-                StreamBuilder(
-                  stream: clientBloc.rfcStream ,  
-                  initialData: user.rfc,
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    return  
-                     _inputText(user.rfc, "RFC *", snapshot.error, clientBloc.changeRFC);
-                  },
-                ), 
-
-                SizedBox(height:responsive.ip(6)),
-                StreamBuilder(
-                  stream: clientBloc.formValidStream, 
-                  builder: (BuildContext context, AsyncSnapshot snapshot){
-                    return  RoundedButton(
-                      label: 'Guardar', 
-                      onPressed:  snapshot.hasData ? () => _submit() : null,
-                      //_submit,        
-                    );
-                  },
-                ),
-              ],
-            ),
+      body: Container(   
+        height: double.infinity,
+        width: double.infinity,
+        padding: EdgeInsets.all(20),
+        child: Column(
+        children: <Widget>[
+          _mostrarFoto(),  
+          SizedBox(height:responsive.ip(6)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("Datos personales", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(2),color:Color(0xFF545D68))),
+              Text("* Campos obligatorios", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(1.5),color:Colors.grey)),
+            ],
           ),
-        ),
-      ),
+           SizedBox(height:5),
+          SizedBox(height:responsive.ip(1)),
+          Expanded(
+            child: _inputs(),
+          ),
+           
+      ],
+    ),
+    ),
     );
   }
+  
+  _inputs(){
+    return SingleChildScrollView(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text("Nombre",
+            style:_style),
+          StreamBuilder(
+            stream:clientBloc.nameStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return _inputTextt(
+                TextInputType.text,snapshot.error,clientBloc.changeName);
+            },
+          ),
+          SizedBox(height:5),
+          Text("Apellido Paterno",
+            style:_style),
+          StreamBuilder(
+            stream:clientBloc.apStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return _inputTextt(
+                TextInputType.text,snapshot.error,clientBloc.changeAp);
+            },
+          ),
 
-  
-  
-  Widget _inputText(String value,String label, String errorText,Function(String) func){  
-    return TextFormField(  
-          initialValue: value,
-          textCapitalization: TextCapitalization.sentences,
-          keyboardType: TextInputType.text,
-          decoration: InputDecoration(
-              focusedBorder:  UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd))),
-              enabledBorder: UnderlineInputBorder(      
-                              borderSide: BorderSide(color:Color(0xffdddddd)),),
-              hintStyle: TextStyle(color:Colors.grey),
-              labelText: label,
-              labelStyle: _style, 
-              errorText: errorText!=null?'':errorText
-          ), 
-          onChanged: func, 
-        );
+          Text("Apellido Materno",
+            style:_style),
+          StreamBuilder(
+            stream:clientBloc.amStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return _inputTextt(
+                TextInputType.text,snapshot.error,clientBloc.changeAm);
+            },
+          ),
+
+          Text("RFC",
+            style:_style),
+          StreamBuilder(
+            stream:clientBloc.rfStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              return _inputTextt(
+                TextInputType.text,snapshot.error,clientBloc.changeR);
+            },
+          ),
+
+
+         
+        ],
+      ),
+    );
   } 
 
+  Widget _inputTextt(TextInputType textInput, String errorText,Function(String) func){
+    
+
+    return TextField(
+      
+      keyboardType: textInput,
+      decoration: InputDecoration(
+          focusedBorder:  UnderlineInputBorder(      
+                          borderSide: BorderSide(color:Color(0xffdddddd))),
+          enabledBorder: UnderlineInputBorder(      
+                          borderSide: BorderSide(color:Color(0xffdddddd)),),
+          hintStyle: TextStyle(color:Colors.grey),
+          errorText: errorText,
+      ),
+      textCapitalization: TextCapitalization.sentences, 
+      onChanged: func,
+    );
+  } 
+  
+  _button(){
+    return  Align(
+      alignment: Alignment.bottomRight,
+      child: Container(height:20,width:double.infinity,color:Colors.red),  
+    );
+  }
   Widget _mostrarFoto(){     
     if(user.urlImagen != null){      
       return Stack(

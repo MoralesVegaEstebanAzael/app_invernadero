@@ -12,7 +12,7 @@ part 'client_model.g.dart';
 
 class ClientModel {
    @HiveField(0)
-    String id;
+    int id; 
     @HiveField(1)
     String nombre;
     @HiveField(2)

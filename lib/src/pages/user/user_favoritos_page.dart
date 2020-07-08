@@ -108,11 +108,20 @@ class _FavoritosPageState extends State<FavoritosPage> {
           Container(
             margin:EdgeInsets.only(right:responsive.ip(2)),
             padding: const EdgeInsets.all(4),
-            child: FadeInImage(
+            child:(item.urlImagen!=null)? FadeInImage(
               width: 90,
               height: double.infinity,
               image: NetworkImage(item.urlImagen), 
-              placeholder: AssetImage('assets/placeholder.png')),
+              placeholder: AssetImage('assets/placeholder.png'))
+              :
+              Container(
+                width:90,
+                height:double.infinity,
+                child:Image.asset('assets/placeholder.png')
+              )
+              ,
+
+              
           ),
           Container(
             width: responsive.ip(25),

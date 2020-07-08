@@ -70,12 +70,22 @@ class DataSearch extends SearchDelegate{
             return ListView(
               children: productos.map((p){
                 return ListTile(
-                  leading: FadeInImage(
-                    placeholder:AssetImage('assets/placeholder.png'), 
-                    image: NetworkImage(p.urlImagen),
-                    width: 50.0,
-                    fit:BoxFit.contain
-                    ),
+                  // leading: FadeInImage(
+                  //   placeholder:AssetImage('assets/placeholder.png'), 
+                  //   image: NetworkImage(p.urlImagen),
+                  //   width: 50.0,
+                  //   fit:BoxFit.contain
+                  //   ),
+                   leading:  (p.urlImagen!=null)? FadeInImage(
+              placeholder: AssetImage('assets/placeholder.png'), 
+              image: NetworkImage(p.urlImagen),
+              fit : BoxFit.contain,
+              width: 50.0,
+              ):
+              Container(
+              width: 50.0,
+                child:Image.asset('assets/placeholder.png')
+              ),
                     title: Text(p.nombre),
                     subtitle: Text("\$ ${p.precioMen} MX"),
                     onTap: (){

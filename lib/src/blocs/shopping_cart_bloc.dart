@@ -1,7 +1,9 @@
+import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ShoppingCartBloc{
@@ -12,6 +14,7 @@ class ShoppingCartBloc{
   
   ShoppingCartBloc._internal();
   final db = new DBProvider();
+  final _storage = SecureStorage();  
   final productoProvider = ProductoProvider();
 
   final _totalController = new BehaviorSubject<double>();
@@ -118,7 +121,7 @@ class ShoppingCartBloc{
   
   void countItems(){//total de items guardados
     //if(!_countItems.isClosed)
-     _countItemsController.sink.add(db.countItemsSC());
+    _countItemsController.sink.add(db.countItemsSC());
   }
   dispose(){
     // _articController.close();
@@ -140,7 +143,7 @@ class ShoppingCartBloc{
     return scFetchList.firstWhere((test)=>test.id==id);
   }
 
-
+  
   bool agotado(int id){
     ProductoModel p =  scFetchList.firstWhere((test)=>test.id==id);
     if(p!=null){
@@ -165,6 +168,21 @@ class ShoppingCartBloc{
     _totalFinalController.sink.add(totalFinal);
     return itemsFinal;
   }
-
-
+  bool information(){
+    ClientModel client =  db.getClient(_storage.idClient); 
+    if(client.nombre!=null && client.am!=null&& client.ap!=null&&client.rfc!=null){
+      return true;
+    }
+    return false;
+  }
+  
+  Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items )async{
+    if(information()){
+      bool f = await productoProvider.pedido(items);
+      if(f)
+      return {'ok':1, 'message' : 'Pedido realizado'};
+      return {'ok':0,'message' : 'Ha ocurrido un problema con la peticioón'};
+    }
+    return {'ok':2,'message' : 'Información requerida'};
+  }
 }

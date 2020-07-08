@@ -116,7 +116,7 @@ class UserProvider{
       body: {"celular":celular,"password":password});
     
     Map<String,dynamic> decodedResp = jsonDecode(response.body);
-    
+    print("${   response.body}");
     
     print(decodedResp); 
     if(decodedResp.containsKey('result')){ 
