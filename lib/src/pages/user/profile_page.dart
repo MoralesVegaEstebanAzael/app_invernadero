@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/client_model.dart';
@@ -7,7 +9,9 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/icon_string_util.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -26,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading=false;
   IconData _switch = LineIcons.toggle_on;
   Future<List<dynamic>> options;
-
+  File foto;
 
   @override
   void didChangeDependencies() {
@@ -40,7 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
+      body: Stack(
+        children: <Widget>[
+          SafeArea(
           child: Container(
             margin: EdgeInsets.only(left:10,right:10),
           height: double.infinity,
@@ -63,8 +69,18 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ),
       ),
+       _isLoading ? Positioned.fill(child:  Container(
+                    color:Colors.black45,
+                    child: Center(
+                      child:SpinKitCircle(color: miTema.accentColor),
+                    ),
+                  ),):Container()
+        ],
+      )
     );
   }
+
+  
 
   _header(){
     return Container( 
@@ -127,8 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ]
-        ),
-        
+        ), 
         trailing: IconButton(
           icon:Icon(LineIcons.ellipsis_v,size: _responsive.ip(3),color: Colors.black,) , 
           onPressed: ()=> _settingModalBottomSheet(context,user)),
@@ -260,21 +275,58 @@ class _ProfilePageState extends State<ProfilePage> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext bc){
-          return Container(
-            child: new Wrap(
-            children: <Widget>[
+        return Container(
+          child: new Wrap(
+          children: <Widget>[
             new ListTile(
               leading: new Icon(LineIcons.edit),
               title: new Text('Editar',style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w400),),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.pushNamed(context, 'user_detalle', arguments: user);
-              }   
+              onTap: () { 
+                 _procesarImagen(user);  
+                Navigator.pop(context);
+              },
             ),
             ],
-          ),
-          );
+           ),
+        );
       }
     );
+  } 
+
+  _procesarImagen(ClientModel user) async{
+    ImageSource origen = ImageSource.gallery;
+    foto = await ImagePicker.pickImage(
+      source: origen
+    ); 
+    if(foto != null){ 
+      user.urlImagen = null; //limpieza para redibujar la nueva foto
+    }  
+    setState(() {
+     _guardarImagen(user);  
+    }); 
   }
+
+  _guardarImagen(ClientModel user) async{ 
+
+    if (foto != null) {
+      
+      setState(() {
+        _isLoading=true;
+      });
+
+      user.urlImagen = await clientBloc.subirFoto(foto);
+      print("++++++++++++++++++++++++++++");
+      print(user.urlImagen);
+      clientBloc.updateImagen(user.urlImagen);
+      print("------------------------");
+      clientBloc.updatePhoto(user);  
+
+       setState(() {
+        _isLoading=false;
+      });
+       
+    }
+    
+  }
+ 
 }

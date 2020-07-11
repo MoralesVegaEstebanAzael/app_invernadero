@@ -21,6 +21,7 @@ import 'package:app_invernadero/src/pages/user/configuration_page.dart';
 
 import 'package:app_invernadero/src/pages/user/user_acercade_page.dart';
 import 'package:app_invernadero/src/pages/user/user_ayuda_page.dart';
+import 'package:app_invernadero/src/pages/user/user_datos_update.dart';
 import 'package:app_invernadero/src/pages/user/user_detalle_page.dart';
 import 'package:app_invernadero/src/pages/user/user_favoritos_page.dart';
 import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
@@ -127,6 +128,8 @@ class MyApp extends StatelessWidget {
               
               'pedidos'               : (BuildContext)=>PedidosPage(),
               'address'               : (BuildContext)=>AddressPage(),
+
+              'detalleDatosUpdate'         : (BuildContext)=>DetalleDatosUpdate(),
 
             },
           ),

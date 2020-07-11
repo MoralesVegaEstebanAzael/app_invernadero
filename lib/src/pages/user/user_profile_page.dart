@@ -1,12 +1,9 @@
-import 'package:app_invernadero/src/blocs/client_bloc.dart';
-import 'package:app_invernadero/src/blocs/login_bloc.dart';
-import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/models/userModel.dart';
+import 'package:app_invernadero/src/blocs/client_bloc.dart'; 
+import 'package:app_invernadero/src/blocs/provider.dart'; 
 import 'package:app_invernadero/src/providers/menu_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
-import 'package:app_invernadero/src/theme/theme.dart';
-import 'package:app_invernadero/src/utils/icon_string_util.dart';
+import 'package:app_invernadero/src/theme/theme.dart'; 
 import 'package:app_invernadero/src/utils/responsive.dart'; 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,9 +11,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:line_icons/line_icons.dart';
 
-import '../../models/client_model.dart';
-import '../../models/client_model.dart';
-import '../../models/client_model.dart';
+import '../../models/client_model.dart'; 
 
 
 class UserProfilePage extends StatefulWidget {
@@ -26,6 +21,8 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   UserProvider userProvider = UserProvider();
+  ClientBloc clienteBloc;
+  Responsive responsive;
   SecureStorage storage = new SecureStorage();
    
   bool _blockCheck=true;
@@ -37,23 +34,24 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    options =  menuProvider.loadData();
-
-  
+    options =  menuProvider.loadData();  
   }
+
   @override
-  Widget build(BuildContext context) {
-    //LoginBloc userBloc = Provider.of(context);
-    //userBloc.cargarUsuario();
+  void didChangeDependencies() { 
+    super.didChangeDependencies();
 
-    ClientBloc clienteBloc = Provider.clientBloc(context);
+    responsive = Responsive.of(context);
+
+    clienteBloc = Provider.clientBloc(context);
     clienteBloc.getClient(); 
+  }
 
-    final responsive = Responsive.of(context);
+  @override
+  Widget build(BuildContext context) {  
     return Scaffold(
       backgroundColor: Colors.white,//Color(0XFFEEEEEE),
-      body: Container( 
-        
+      body: Container(  
         height: responsive.height,
         child: Stack(
           children:<Widget>[
@@ -167,13 +165,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         IconButton(
           icon: Icon(Icons.create, size: 30.0),  
           color: Colors.white,
-          onPressed: ()=> Navigator.pushNamed(context, 'user_detalle', arguments: user))
-       /* FlatButton(  
-          onPressed: () => {
-             Navigator.pushNamed(context, 'user_detalle', arguments: user),
-          },
-          child: Text("Edit" ,style: TextStyle(color:Colors.white)),
-        ),*/
+          onPressed: ()=> Navigator.pushNamed(context, 'user_detalle', arguments: user)) 
       ],
     );
   }  
