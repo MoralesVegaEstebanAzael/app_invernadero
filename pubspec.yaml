@@ -55,6 +55,7 @@ dependencies:
   timeago: ^2.0.26
   firebase_messaging: ^6.0.16
   intl: 
+  lite_rolling_switch: ^0.1.1
 
 dev_dependencies:
   flutter_test:

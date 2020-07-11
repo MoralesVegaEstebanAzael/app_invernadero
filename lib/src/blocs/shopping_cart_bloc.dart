@@ -1,3 +1,4 @@
+import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
@@ -38,15 +39,28 @@ class ShoppingCartBloc{
 
 
 
-  void insertItem(ProductoModel p){
+  void insertItem(ProductoModel p,bool unidades,dynamic cantidad){
 
     if(p.cantExis>=0){
-      
-      ItemShoppingCartModel item = ItemShoppingCartModel(
-                    producto: p,
-                    cantidad: 1,
-                    subtotal: 1*p.precioMen
-                  );
+       ItemShoppingCartModel item;
+      if(unidades){ //comprando por cajas
+        int c = int.parse(cantidad.toString());
+        item = ItemShoppingCartModel(
+                  producto: p,
+                  cantidad: c,
+                  subtotal: c*p.precioMen*AppConfig.cajaKilos,//<<----- kilos x caja
+                  unidad: unidades,  
+                );      
+      }else{
+        double kilos = double.parse(cantidad.toString());
+        item = ItemShoppingCartModel(
+                  producto: p,
+                  subtotal: kilos*p.precioMay,//<<-----comprando por kilos
+                  unidad: unidades,  
+                  kilos: kilos
+                );
+      }
+
       db.insertItemSC(item);
       countItems();
       cargarArtic();
@@ -73,12 +87,20 @@ class ShoppingCartBloc{
   void incItems(ItemShoppingCartModel item)async{
     if(agotado(item.producto.id))
       return;
-    item.cantidad++;
-    double subtotal = item.cantidad * item.producto.precioMen;
-    item.subtotal = subtotal;
 
-    await db.updateItemSC(item);
-    cargarArtic();
+    
+    // item.cantidad++;
+    // double subtotal = item.cantidad * item.producto.precioMen;
+    // item.subtotal = subtotal;
+
+    if(item.unidad){//producto por caja
+      item.cantidad++;
+      double subtotal = item.cantidad * item.producto.precioMen*AppConfig.cajaKilos;
+      item.subtotal = subtotal;
+      
+      await db.updateItemSC(item);
+      cargarArtic();
+    }
   }
 
   void decItems(ItemShoppingCartModel item)async{

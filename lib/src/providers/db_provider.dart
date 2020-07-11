@@ -218,11 +218,25 @@ class DBProvider{
 
         //** CARRITO DE COMPRAS**/
   insertItemSC(ItemShoppingCartModel item)async{
-    final _item= await itemsShoppingBox.get(item.producto.id);
+    ItemShoppingCartModel _item= await itemsShoppingBox.get(item.producto.id);
     if(_item!=null){
-      _item.cantidad++;
-      _item.subtotal += item.cantidad*item.producto.precioMen;
-      await updateItemSC(_item);
+      // _item.cantidad++;
+      // _item.subtotal += item.cantidad*item.producto.precioMen;
+      if(item.unidad== _item.unidad){ //
+
+        if(item.unidad){ //actualizar por cajas
+          _item.cantidad += item.cantidad;
+          _item.subtotal += item.subtotal;
+
+        }else{ //actualiza por kilos
+          _item.kilos += item.kilos;
+          _item.subtotal += item.subtotal;
+        }
+        await updateItemSC(_item);
+
+      }else{
+        print("Ya estas comprando por la unidad...");
+      }
     }else{
       await itemsShoppingBox.put(item.producto.id,item );
     }
@@ -287,7 +301,8 @@ class DBProvider{
     ItemShoppingCartModel item;
     map.forEach((k,v){
       item =v;
-      total += item.cantidad*item.producto.precioMen;
+      //total += item.cantidad*item.producto.precioMen;
+      total+= item.subtotal;
     });
     return total;
   }

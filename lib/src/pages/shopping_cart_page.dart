@@ -33,7 +33,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   Stream<List<ItemShoppingCartModel>> _streamItems;
   BottomNavBloc _bottomNavBloc;
   bool flagFrom;
-
+  
   //TestBloc _testBloc = TestBloc();
   ///
   @override
@@ -358,14 +358,20 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               child: Center(child: Icon(Icons.remove,color: Colors.white,))
             ),
       ),
-        SizedBox(width:responsive.ip(2)),
+        SizedBox(width:responsive.ip(1)),
         
         Container(
           
-          width: responsive.ip(4),
-          child: Center(child: Text(item.cantidad.toString(),style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),))),
+          width: responsive.ip(6),
+          child: Center(
+            
+            child: Text(
+              item.cantidad!=null? 
+              item.cantidad.toString() 
+              : 
+              item.kilos.toString()+"kg" ,style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),))),
         
-        SizedBox(width:responsive.ip(2)),
+        SizedBox(width:responsive.ip(1)),
         GestureDetector(
           //onTap: ()=>_shoppingCartBloc.incItem(item),
           onTap: ()=>_shoppingCartBloc.incItems(item),  

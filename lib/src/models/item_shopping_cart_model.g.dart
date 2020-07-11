@@ -20,18 +20,24 @@ class ItemShoppingCartAdapter extends TypeAdapter<ItemShoppingCartModel> {
       producto: fields[0] as ProductoModel,
       cantidad: fields[1] as int,
       subtotal: fields[2] as double,
+      unidad: fields[3] as bool,
+      kilos: fields[4] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, ItemShoppingCartModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.producto)
       ..writeByte(1)
       ..write(obj.cantidad)
       ..writeByte(2)
-      ..write(obj.subtotal);
+      ..write(obj.subtotal)
+      ..writeByte(3)
+      ..write(obj.unidad)
+      ..writeByte(4)
+      ..write(obj.kilos);
   }
 }
