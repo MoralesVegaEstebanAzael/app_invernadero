@@ -42,7 +42,21 @@ class ClientBloc with Validators{
   Function(String) get changeAm => _amController.sink.add;
   Function(String) get changeR => _rfController.sink.add;
 
+  
+  String get nombre => _nameController.value;
+  String get apellidoP => _apController.value;
+  String get apellidoM => _amController.value;
+  String get rfc => _rfController.value;
 
+
+   //obtener el ultimo vakir 
+  /*String get nombre => (_nameController.value == null) ? "" : _nameController.value;
+  String get apellidoP => (_apController.value == null) ? "" : _apController.value;
+  String get apellidoM => (_amController.value == null) ? "" : _amController.value;
+  String get rfc => (_rfController.value == null) ? "" : _rfController.value;*/
+
+
+ 
 
   //****** */
 
@@ -64,33 +78,7 @@ class ClientBloc with Validators{
   final _userProvider = new UserProvider();
   Stream<ClientModel> get userStream =>_userControler.stream;
   Stream<bool> get cargando => _cargandoController.stream;
-
-  final _nombreController = BehaviorSubject<String>();
-  final _apellidoPController = BehaviorSubject<String>();
-  final _apellidoMController = BehaviorSubject<String>();
-  final _rfcController = BehaviorSubject<String>();
-
-  //recuperar los datos del stream
-  Stream<String> get nombreStream => _nombreController.stream.transform(validarNombre) ;
-  Stream<String> get apellidoPStream => _apellidoPController.stream.transform(validarNombre);
-  Stream<String> get apellidoMStream => _apellidoMController.stream.transform(validarNombre);
-  Stream<String> get rfcStream => _rfcController.stream.transform(validarRFC);
-  
-  Stream<bool> get formValidStream =>  
-    CombineLatestStream.combine4(nombreStream, apellidoPStream, apellidoMStream, rfcStream, (n,p,m,r) => true);
-
-
-  String get nombre =>_nombreController.value;
-  String get apellidoP =>_apellidoPController.value;
-  String get apellidoM =>_apellidoMController.value;
-  String get rfc =>_rfcController.value;
-
-  //insertat valores al stream
-  Function(String) get changeNombre => _nombreController.sink.add;
-  Function(String) get changeApellidoP => _apellidoPController.sink.add;
-  Function(String) get chanfeApellidoM => _apellidoMController.sink.add;
-  Function(String) get changeRFC => _rfcController.sink.add;
-
+   
   StreamController<Position> _addressPositionController = BehaviorSubject<Position>();
 
   Stream<Position> get addressPositionStream => _addressPositionController.stream;
@@ -118,10 +106,7 @@ class ClientBloc with Validators{
   
 
   void getClient(){
-    ClientModel client =  _dbProvider.getClient(_storage.idClient); 
-    //print("///////////////////////////////////////////");
-    //print(client);
-    //print("Clienteeeeeeeeeeeee: ${client.urlImagen}");
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);  
     _userControler.sink.add(client);
   }
 
@@ -130,6 +115,7 @@ class ClientBloc with Validators{
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
     client.urlImagen = url;
     await _dbProvider.updateClient(client); 
+    print("----url actualizado en la base local");
     _cargandoController.sink.add(false);
   }
 
@@ -141,6 +127,42 @@ class ClientBloc with Validators{
     client.am = am;
     client.rfc = rfc; 
     await _dbProvider.updateClient(client);
+    _cargandoController.sink.add(false);
+  }
+
+  void updateNameLocal(String nombre) async{
+    _cargandoController.sink.add(true);
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);
+    client.nombre = nombre; 
+    await _dbProvider.updateClient(client);
+    print("%%%Nombre actualizado en la base local%%%");
+    _cargandoController.sink.add(false);
+  }
+
+  void updateApaternoLocal(String aPaterno) async{
+    _cargandoController.sink.add(true);
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);
+    client.ap = aPaterno; 
+    await _dbProvider.updateClient(client);
+    print("%%% Apellido paterno actualizado en la base local%%%");
+    _cargandoController.sink.add(false);
+  }
+
+  void updateAmaternoLocal(String aMaterno) async{
+    _cargandoController.sink.add(true);
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);
+    client.am = aMaterno; 
+    await _dbProvider.updateClient(client);
+    print("%%% Apellido materno actualizado en la base local%%%");
+    _cargandoController.sink.add(false);
+  }
+
+  void updateRFCLocal(String rfc) async{
+    _cargandoController.sink.add(true);
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);
+    client.rfc = rfc; 
+    await _dbProvider.updateClient(client);
+    print("%%% RFC actualizado en la base local%%%");
     _cargandoController.sink.add(false);
   }
 
@@ -158,18 +180,47 @@ class ClientBloc with Validators{
     _cargandoController.sink.add(false);
   }
 
-  void updatePhoto(String url_imagen) async{
+  void updateNameCliente(ClientModel cliente) async {
     _cargandoController.sink.add(true);
-    await _userProvider.updatePhoto(url_imagen: url_imagen);
+    await _userProvider.updateName(cliente);
+    print("+++Nombre actualizado en la base remota+++");
     _cargandoController.sink.add(false);
   }
 
-  void initialData(ClientModel client){
+  void updatePaternoCliente(ClientModel cliente) async {
+    _cargandoController.sink.add(true);
+    await _userProvider.updateApaterno(cliente);
+    print("+++Apellido Paterno actualizado en la base remota+++");
+    _cargandoController.sink.add(false);
+  }
+
+  void updateMaternoCliente(ClientModel cliente) async {
+    _cargandoController.sink.add(true);
+    await _userProvider.updateAmaterno(cliente);
+    print("+++Apellido Materno actualizado en la base remota+++");
+    _cargandoController.sink.add(false);
+  }
+
+  void updateRFCliente(ClientModel cliente)async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updateRFC(cliente);
+    print("+++RFC actualizado en la base remota+++");
+    _cargandoController.sink.add(false);
+  }
+
+  void updatePhoto(ClientModel cliente) async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updatePhoto(cliente);
+    print("----url actualizado el la base remota");
+    _cargandoController.sink.add(false);
+  }
+
+  /*void initialData(ClientModel client){
     _nombreController.sink.add(client.nombre==null?'':client.nombre);
     _apellidoPController.sink.add(client.ap==null?'':client.ap);
     _apellidoMController.sink.add(client.am==null?'':client.am);
     _rfcController.sink.add(client.rfc==null?'':client.rfc);
-  }
+  }*/
 
   void dirClient(){
     ClientModel client = _dbProvider.getClient(_storage.idClient);
@@ -199,10 +250,10 @@ class ClientBloc with Validators{
     _infController.close(); 
     _userControler.close();
     _cargandoController.close();
-    _nombreController.close();
-    _apellidoPController.close();
-    _apellidoMController.close();
-    _rfcController.close();
+    _nameController.close();
+    _apController.close();
+    _amController.close();
+    _rfController.close();
   }
 
   

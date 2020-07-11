@@ -4,8 +4,7 @@ import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/client_model.dart'; 
 import 'package:app_invernadero/src/theme/theme.dart'; 
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/my_appbar.dart';
-import 'package:app_invernadero/src/widgets/rounded_button.dart';  
+import 'package:app_invernadero/src/widgets/my_appbar.dart'; 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';  
@@ -17,10 +16,9 @@ class UserDetallePage extends StatefulWidget {
 
 class _UserDetallePageState extends State<UserDetallePage> {
   
-  final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:18,fontFamily: 'Quicksand',fontWeight: FontWeight.w700);
+  final TextStyle _style =  TextStyle(color:Colors.grey,fontSize:16,fontFamily: 'Quicksand',fontWeight: FontWeight.w500);
   final formKey = GlobalKey<FormState>();
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _guardando = false;
+  final scaffoldKey = GlobalKey<ScaffoldState>(); 
  
   ClientModel user;
   File foto;
@@ -34,9 +32,8 @@ class _UserDetallePageState extends State<UserDetallePage> {
 
     clientBloc = Provider.clientBloc(context);
     responsive = Responsive.of(context); 
-    user = ModalRoute.of(context).settings.arguments;
-    clientBloc.initialData(user);
 
+    //user = ModalRoute.of(context).settings.arguments;  
   }
 
   @override
@@ -48,221 +45,73 @@ class _UserDetallePageState extends State<UserDetallePage> {
         height: double.infinity,
         width: double.infinity,
         padding: EdgeInsets.all(20),
-        child: Column(
-        children: <Widget>[
-          _mostrarFoto(),  
-          SizedBox(height:responsive.ip(6)),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text("Datos personales", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(2),color:Color(0xFF545D68))),
-              Text("* Campos obligatorios", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(1.5),color:Colors.grey)),
+        child:  StreamBuilder(
+        stream: clientBloc.userStream,
+        builder: (BuildContext context, AsyncSnapshot<ClientModel> snapshot){
+           if (snapshot.hasData) {
+            user = snapshot.data;
+
+            return Column(
+              children: <Widget>[ 
+                 
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Datos personales", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(2),color:Color(0xFF545D68))),
+                    Text("* Campos obligatorios", style:TextStyle(fontFamily: 'Quicksand',fontSize:responsive.ip(1.5),color:Colors.grey)),
+                  ],
+                ),
+                SizedBox(height:5),
+                SizedBox(height:responsive.ip(1)),
+                Expanded(
+                  child: _myListView(context),
+                ),
+                
             ],
-          ),
-           SizedBox(height:5),
-          SizedBox(height:responsive.ip(1)),
-          Expanded(
-            child: _inputs(),
-          ),
-           
-      ],
-    ),
+          );
+          }else { 
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     ),
     );
   }
-  
-  _inputs(){
-    return SingleChildScrollView(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Nombre",
-            style:_style),
-          StreamBuilder(
-            stream:clientBloc.nameStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              return _inputTextt(
-                TextInputType.text,snapshot.error,clientBloc.changeName);
-            },
-          ),
-          SizedBox(height:5),
-          Text("Apellido Paterno",
-            style:_style),
-          StreamBuilder(
-            stream:clientBloc.apStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              return _inputTextt(
-                TextInputType.text,snapshot.error,clientBloc.changeAp);
-            },
-          ),
 
-          Text("Apellido Materno",
-            style:_style),
-          StreamBuilder(
-            stream:clientBloc.amStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              return _inputTextt(
-                TextInputType.text,snapshot.error,clientBloc.changeAm);
-            },
-          ),
-
-          Text("RFC",
-            style:_style),
-          StreamBuilder(
-            stream:clientBloc.rfStream ,
-            builder: (BuildContext context, AsyncSnapshot snapshot){
-              return _inputTextt(
-                TextInputType.text,snapshot.error,clientBloc.changeR);
-            },
-          ),
-
-
-         
-        ],
-      ),
-    );
-  } 
-
-  Widget _inputTextt(TextInputType textInput, String errorText,Function(String) func){
-    
-
-    return TextField(
-      
-      keyboardType: textInput,
-      decoration: InputDecoration(
-          focusedBorder:  UnderlineInputBorder(      
-                          borderSide: BorderSide(color:Color(0xffdddddd))),
-          enabledBorder: UnderlineInputBorder(      
-                          borderSide: BorderSide(color:Color(0xffdddddd)),),
-          hintStyle: TextStyle(color:Colors.grey),
-          errorText: errorText,
-      ),
-      textCapitalization: TextCapitalization.sentences, 
-      onChanged: func,
-    );
-  } 
-  
-  _button(){
-    return  Align(
-      alignment: Alignment.bottomRight,
-      child: Container(height:20,width:double.infinity,color:Colors.red),  
-    );
-  }
-  Widget _mostrarFoto(){     
-    if(user.urlImagen != null){      
-      return Stack(
-        alignment: const Alignment(0.8, 1.0),
-        children: <Widget>[
-           ClipRRect(
-            borderRadius: BorderRadius.circular(100),
-            child: Container(
-              height: 150,
-              width: 150,
-              child: FadeInImage(
-              image: NetworkImage(user.urlImagen),
-              placeholder: AssetImage('assets/jar-loading.gif'), 
-              fit: BoxFit.fill,
-          ),
-        ),
-       ),
-       Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: miTema.accentColor,
-            ),         
-            child: IconButton(
-                icon: Icon(LineIcons.camera, color:Colors.white, size: 30,), 
-                onPressed: _selectFoto,
-              ),
-          ),
-      ],
-      );
-      
-     
-    }else {
-      return Stack(
-        alignment: const Alignment(0.8, 1.0),
-        children: <Widget>[          
-            Container(
-            height: 160,
-            width: 160,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              image: DecorationImage(image: AssetImage(foto?.path ?? 'assets/no-image.png'), fit: BoxFit.cover ),
+  Widget _myListView(BuildContext context) {
+    TextStyle _styleTitle = TextStyle(fontSize:18,fontFamily: 'Quicksand',fontWeight: FontWeight.w600);
+    return ListView(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,      
+        children: ListTile.divideTiles(
+        context: context, 
+        tiles: [
+            ListTile(
+              title: Text('Nombre', style: _styleTitle ),
+              subtitle: Text('${user.nombre}',style: _style),
+              trailing: Icon(LineIcons.angle_right,color:Colors.grey),
+              onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['nombre',user]),
             ),
-          ),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(100),
-              color: miTema.accentColor,
-            ),         
-            child: IconButton(
-                icon: Icon(LineIcons.camera, color:Colors.white, size: 30,), 
-                onPressed: _selectFoto  
-              ),
-          ),
-        ],
+            ListTile(
+              title: Text('Apellido Paterno',style: _styleTitle),
+              subtitle: Text('${user.ap}',style: _style),
+              trailing: Icon(LineIcons.angle_right,color:Colors.grey),
+              onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['ap',user]),
+            ),
+            ListTile(
+              title: Text('Apellido Materno',style: _styleTitle),
+              subtitle: Text('${user.am}',style: _style),
+              trailing: Icon(LineIcons.angle_right,color:Colors.grey),
+              onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['am',user]),
+            ),
+             ListTile(
+              title: Text('RFC',style: _styleTitle),
+              subtitle: Text('${user.rfc}',style: _style),
+              trailing: Icon(LineIcons.angle_right,color:Colors.grey),
+              onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['rfc',user]),
+            ),
+          ],
+        ).toList(),
       );
     }
-  }
-
-  _selectFoto() async{
-    _procesarImagen(ImageSource.gallery);   
-  }
- 
-  _procesarImagen(ImageSource origen) async{
-    foto = await ImagePicker.pickImage(
-      source: origen
-    ); 
-    if(foto != null){ 
-      user.urlImagen = null; //limpieza para redibujar la nueva foto
-    } 
-    setState(() {
-      _guardarImagen();      
-    });
-  }
-
-  _guardarImagen() async{
-    if (foto != null) {
-      user.urlImagen = await clientBloc.subirFoto(foto);
-      clientBloc.updateImagen(user.urlImagen);
-      print("++++++++++++++++++++++++++++");
-      print(user.urlImagen);
-      print("------------------------");
-      //clientBloc.updatePhoto(user.urlImagen); 
-      print("------------------------");
-    }
-  }
-
-  void mostrarSnackbar(String mensaje){
-    final snackbar = SnackBar(
-      content: Text(mensaje),
-      duration: Duration(milliseconds: 1500),
-      backgroundColor: miTema.accentColor,
-    );
-    scaffoldKey.currentState.showSnackBar(snackbar);
-
-  } 
-
-  void _submit() async{
-   if (!formKey.currentState.validate()) return;
-    formKey.currentState.save(); //guardar la informacon de todos los textfield
-
-       //TODO: ACTUALIZAR LOS DATOS DEL USUARIO
-      print('actualizar usuario'); 
-      clientBloc.updateDatos(clientBloc.nombre, clientBloc.apellidoP, clientBloc.apellidoM, clientBloc.rfc);
-      print("+++++++++++++++++++++++++++++++++");
-      //userProvider.updateDatosUser(user);
-      clientBloc.updateInfoCliente(user);      
-      print("+++++++++++++++++++++++++++++++++"); 
-    
-
-    //setState(() { _guardando = false; });
-    mostrarSnackbar('Datos actualizados');
-    Navigator.pop(context);
-   /* setState(() {
-      userBloc.cargarUsuario();
-
-    });*/
-  }
 }

@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_invernadero/src/models/client_model.dart';
-import 'package:app_invernadero/src/models/notification_model.dart';
-import 'package:app_invernadero/src/models/producto_model.dart';
-import 'package:app_invernadero/src/models/userModel.dart';
-import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/models/notification_model.dart'; 
+import 'package:app_invernadero/src/models/userModel.dart'; 
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/push_notifications_provider.dart';
 import 'package:mime_type/mime_type.dart';
@@ -244,8 +242,7 @@ class UserProvider{
     return true;
   }
 
-   Future<bool> updatePhoto({@required String url_imagen}) async{
-    final celular = _storage.user.phone;
+   Future<bool> updatePhoto(ClientModel user) async{ 
     final url = "${AppConfig.base_url}/api/client/update_photo"; 
     final token = await _storage.read('token');
     Map<String, String> headers = {
@@ -256,8 +253,8 @@ class UserProvider{
       url, 
       headers: headers,
       body: {
-        "celular":celular,
-        "url_imagen":url_imagen,  
+        "celular":user.celular,
+        "url_imagen":user.urlImagen,  
       });
 
     final decodeData = json.decode(response.body);
@@ -483,6 +480,86 @@ class UserProvider{
     }
   }
   
+
+  Future<bool> updateName(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updateName"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: {
+        "celular":cliente.celular,
+        "nombre":cliente.nombre,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+  Future<bool> updateApaterno(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updatePaterno"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: {
+        "celular":cliente.celular,
+        "ap":cliente.ap,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+  Future<bool> updateAmaterno(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updateMaterno"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: {
+        "celular":cliente.celular,
+        "am":cliente.am,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+  Future<bool> updateRFC(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updateRfc"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: {
+        "celular":cliente.celular,
+        "rfc":cliente.rfc,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
 
   
 }
