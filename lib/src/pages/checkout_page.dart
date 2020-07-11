@@ -6,8 +6,10 @@ import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:line_icons/line_icons.dart';
@@ -28,6 +30,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   List<ItemShoppingCartModel> itemsFinal=List();
   int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
+  bool _isLoading=false;
+
+
 
   @override
   void initState() {
@@ -60,7 +65,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return Scaffold(
       appBar: _appBar(),
       backgroundColor: Colors.white,
-      body:_listItems()
+      body: Stack(
+        children:<Widget>[
+          Positioned(child:  _listItems()),
+          
+          _isLoading? Positioned.fill(child:  Container(
+                      color:Colors.white,
+                      child: Center(
+                        child:SpinKitCircle(color: miTema.accentColor),
+                      ),
+                    ))
+          : Container()
+        ]
+      ),
     );
   }
 
@@ -161,7 +178,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
               )),
           Container(
             width: responsive.wp(20),
-            child: Text("Cajas: ${item.cantidad}")),
+            child: Text(item.unidad ?
+                  "Cajas: ${item.cantidad}"
+                  :
+                  "Kg: ${item.kilos}"
+                  )),
           Container(
               width: responsive.wp(25),
               child: Text("\$ ${item.subtotal} MX",textAlign: TextAlign.right,)),
@@ -384,17 +405,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   
   void _confirmar()async{
+   
+    setState(() {
+       _isLoading=true;
+    });
     Map response = await _shoppingCartBloc.sendPedido(itemsFinal);
+    setState(() {
+      _isLoading=false;
+    });
     switch(response['ok']){
       case 1:
         print("TOODO CON EXITO");
+        //
+        // Flushbar(
+        //       message:  "Tu pedido ha sido enviado.",
+        //       duration:  Duration(seconds: 2),              
+        //     )..show(context);
+        _shoppingCartBloc.deleteAllSC();
+        final nav = Navigator.of(context);
+        nav.pop();
+        nav.pop();
       break;
       case 0:
-        print("ERROR DE SERVIDOR");
+       Flushbar(
+              message:  "Algo ha salido mal.",
+              duration:  Duration(seconds: 2),              
+            )..show(context);
       break;
       case 2:
       print("CONFIGURAR DATOS");
         // Navigator.pushNamed(context, 'detail');
+          Flushbar(
+              message:  "Configura tus datos",
+              duration:  Duration(seconds: 2),              
+            )..show(context);
+        Navigator.pushNamed(context, 'configuracion');
       break;
     }
   }

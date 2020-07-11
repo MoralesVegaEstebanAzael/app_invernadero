@@ -3,6 +3,7 @@ import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:rxdart/rxdart.dart';
@@ -97,7 +98,7 @@ class ShoppingCartBloc{
       item.cantidad++;
       double subtotal = item.cantidad * item.producto.precioMen*AppConfig.cajaKilos;
       item.subtotal = subtotal;
-      
+
       await db.updateItemSC(item);
       cargarArtic();
     }
@@ -192,6 +193,7 @@ class ShoppingCartBloc{
   }
   bool information(){
     ClientModel client =  db.getClient(_storage.idClient); 
+     
     if(client.nombre!=null && client.am!=null&& client.ap!=null&&client.rfc!=null){
       return true;
     }
@@ -199,11 +201,14 @@ class ShoppingCartBloc{
   }
   
   Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items )async{
-    if(information()){
-      bool f = await productoProvider.pedido(items);
+    if(information()){ //verificar que el usuario tenga sus datos
+      print("haciendo pedido");
+      PedidoProvider pp = PedidoProvider();
+      bool f = await pp.pedido(items);
       if(f)
-      return {'ok':1, 'message' : 'Pedido realizado'};
+        return {'ok':1, 'message' : 'Pedido realizado'};
       return {'ok':0,'message' : 'Ha ocurrido un problema con la peticioón'};
+      //return  {'ok':1,'message' : 'Pedido realizado'};
     }
     return {'ok':2,'message' : 'Información requerida'};
   }

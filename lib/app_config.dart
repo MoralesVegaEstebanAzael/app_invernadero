@@ -47,6 +47,7 @@ class AppConfig{
 
 
 
+
   static const int hive_type_11 = 11;
   static const String hive_adapter_11 = "GeometryAdapter";
 
@@ -58,6 +59,18 @@ class AppConfig{
 
   static const int hive_type_14 = 14;
   static const String hive_adapter_14 = "PropertiesAdapter";
+
+  
+  static const int hive_type_15 =15;
+  static const String hive_adapter_15 = "PedidoAdapter";
+
+  static const int hive_type_16 =16;
+  static const String hive_adapter_16 = "DetallePedidoAdapter";
+
+
+  static const int hive_type_17 =17;
+  static const String hive_adapter_17 = "PedidoModelAdapter";
+
 
   //** MAPBOX */
   static const String mapbox_api_token='pk.eyJ1IjoiYXphZWxtb3JhbGVzcyIsImEiOiJjazhqNmdwZ3UwMGN3M2VxYnNkNWp2cW85In0.QrGCrwp63Tf0kU2ceIjIww';

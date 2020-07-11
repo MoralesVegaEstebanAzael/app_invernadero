@@ -5,6 +5,9 @@ import 'package:app_invernadero/src/models/feature/geometry_model.dart';
 import 'package:app_invernadero/src/models/feature/properties_model.dart';
 import 'package:app_invernadero/src/models/feature_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
+import 'package:app_invernadero/src/models/pedido/detalle.dart';
+import 'package:app_invernadero/src/models/pedido/pedido.dart';
+import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,6 +22,9 @@ class DBProvider{
   Box productBox;
   Box notificationBox;
   Box featuresBox;
+
+  Box pedidoBox;
+
 
   List<FavoriteModel> _favoritesList;
 
@@ -44,6 +50,9 @@ class DBProvider{
     Hive.registerAdapter(ContextAdapter());
     Hive.registerAdapter(GeometryAdapter());
     Hive.registerAdapter(PropertiesAdapter());
+    Hive.registerAdapter(PedidoAdapter());
+    Hive.registerAdapter(DetallePedidoAdapter());
+    Hive.registerAdapter(PedidoModelAdapter());
 
     //shoppingCartBox= await Hive.openBox("shoppingCart");
     dataBaseBox = await Hive.openBox("db");
@@ -57,6 +66,8 @@ class DBProvider{
     productBox = await Hive.openBox("producto");
     notificationBox = await Hive.openBox("notification");
     featuresBox = await Hive.openBox("features");
+
+    pedidoBox = await Hive.openBox("pedido");
 
     return true;
   }
@@ -316,6 +327,36 @@ class DBProvider{
     return idsList;
   }
 
+  Future<List<double>> getItemsSCcantidades()async{
+    List<double> cantidadesList = List();
+      await itemsShoppingBox.toMap().values.toList().forEach((f){
+      ItemShoppingCartModel item = f;
+
+      item.unidad //por cajas
+      ?
+      cantidadesList.add(double.parse(item.cantidad.toString()))
+      :
+      cantidadesList.add(item.kilos);
+      });
+      return cantidadesList;
+  }
+
+
+  Future<List<String>> getItemsSCmedidas()async{
+    List<String> medidasList = List();
+    await itemsShoppingBox.toMap().values.toList().forEach((f){
+      ItemShoppingCartModel item = f;
+      
+      item.unidad
+      ?
+      medidasList.add("caja")
+      :
+      medidasList.add("kilo");
+    });
+    return medidasList;
+  }
+
+  
   //lista de productos del carrito de compras
   Future<List<ItemShoppingCartModel>> shoppingCartList()async{
     Map map =  itemsShoppingBox.toMap();
@@ -423,5 +464,20 @@ class DBProvider{
   deleteFeature(Feature feature)async{
     featuresBox.delete(feature.id);
   }
+
+
+  //***PEDIDOS - DETALLES****//
+
+  insertPedidos(Map<int, PedidoModel> entries)async{
+    await pedidoBox.putAll(entries);
+  }
+
+  insertPedido(PedidoModel pedido)async{
+    print("Guardando pedidooooo");
+    await pedidoBox.put(pedido.pedido.id, pedido);
+    print("longitud de box pedido ${pedidoBox.length}");
+  }
+
+
 
 }
