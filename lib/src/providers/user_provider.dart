@@ -412,6 +412,7 @@ class UserProvider{
         _dbProvider.markAsRead(notiTemp);
       });
 
+      
 
       //_dbProvider.insertNotification(notifiMap);
 

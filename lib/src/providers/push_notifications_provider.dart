@@ -72,8 +72,10 @@ class PushNotificationsProvider{
         // final notif = info['data']['argument'];
         // print(notif);
       },
-
+      //
       onResume: ( info ) async {
+
+        //
         print("====ON RESUME===");
         print(info);
 

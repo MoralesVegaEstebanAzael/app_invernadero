@@ -85,7 +85,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   
   _appBar(){
     return  SearchAppBar(
-        title: "Mis Favoritos", 
+        title: "Notificaciones", 
         actions: <Widget>[
           
           StreamBuilder(
@@ -119,14 +119,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
              itemCount: snapshot.data.length,
              itemBuilder: (context, i) {
                NotificacionModel noti = snapshot.data[i];   
-                  return Dismissible(
-                     key: Key(noti.id),
-                     onDismissed: (direction) {
-                        setState(() {
-                         _notificationBloc.deleteNotification(noti);
-                        });
-                      },
-                    child: _crearListTitle(noti));
+                  return _crearListTitle(noti);
              }
           ); 
         }else {
@@ -144,7 +137,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   print("${notificacion.createdAt}");
     return Container(   
         decoration: BoxDecoration(
-          color:  (flag) ? Colors.blueGrey[50] : Colors.white,
+          color:  (flag) ? Colors.red : Colors.white,
           border: Border(
           bottom: BorderSide(width: 1, color: Color.fromRGBO(228, 228, 228, 1)),
         ),),

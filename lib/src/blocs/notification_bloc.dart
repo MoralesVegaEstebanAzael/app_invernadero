@@ -44,8 +44,11 @@ class NotificacionesBloc{
   }
 
   void deleteNotification(NotificacionModel notification)async{
-    await _dbProvider.deleteNotification(notification.id);
-    cargarNotificaciones();
+    print("Delete ${notification.readAt}");
+    if(notification.readAt!=null){
+      await _dbProvider.deleteNotification(notification.id);
+      cargarNotificaciones();
+    }
   }
 
   
