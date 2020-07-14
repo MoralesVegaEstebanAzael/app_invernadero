@@ -562,5 +562,24 @@ class UserProvider{
     return true;
   }
 
+   Future<bool> updateEmail(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updateEmail"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: { 
+        "email":cliente.correo,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
   
 }

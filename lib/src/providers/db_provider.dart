@@ -445,8 +445,7 @@ class DBProvider{
       ).toList();
 
     return copyList;
-  }
-
+  } 
 
   bool notifIsEmpty(){
     return notificationBox.isEmpty;
@@ -478,6 +477,39 @@ class DBProvider{
     print("longitud de box pedido ${pedidoBox.length}");
   }
 
+  Future<List<PedidoModel>> pedidosList()async{
+    Map map =  pedidoBox.toMap();
+    List<PedidoModel> pedidos =  map.values.toList().cast();
+    return pedidos;
+  }
 
+  bool  pedidosIsEmpty(){
+    return pedidoBox.isEmpty;
+  }
+  List getDetailsP(){
+    Map mapa =  pedidoBox.toMap();
+    List favData = List();
+    mapa.forEach((k,v) => favData.add(k));
+    print("Accediendo en fav array");
+   
+    return favData;
+  }
+
+  List<Detalle> getDetalles(int idPedido){
+    Map mapa =  pedidoBox.toMap();
+    List<Detalle> lista = List();
+    mapa.forEach((k,v){
+      PedidoModel pedido = v;
+      if(pedido.pedido.id == idPedido){  
+          pedido.detalles.forEach((k,v){
+            Detalle det = pedido.detalles[k]; 
+              print(det.nombreProducto); 
+              lista.add(det);
+          });
+      }
+    });
+
+    return lista;
+  }
 
 }

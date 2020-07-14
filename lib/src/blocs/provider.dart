@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/login_bloc.dart';
 import 'package:app_invernadero/src/blocs/notification_bloc.dart';
+import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart'; 
@@ -19,6 +20,7 @@ class Provider extends InheritedWidget with ChangeNotifier{
   final _bottomNavBloc = BottomNavBloc();
   final _clientBloc = ClientBloc();
   final _notificationBloc = NotificacionesBloc();
+  final _pedidoBloc = PedidosBloc();
   
   static Provider _instancia;
 
@@ -70,6 +72,10 @@ class Provider extends InheritedWidget with ChangeNotifier{
 
   static NotificacionesBloc notificacionBloc(BuildContext context){
     return context.dependOnInheritedWidgetOfExactType<Provider>()._notificationBloc;
+  }
+
+  static PedidosBloc pedidoBloc(BuildContext context){
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._pedidoBloc;
   }
 
   dispose(){

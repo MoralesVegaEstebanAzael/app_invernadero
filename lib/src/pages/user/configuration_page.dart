@@ -130,6 +130,12 @@ class _ConfigurationPageState extends State<ConfigurationPage> {
               onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['rfc',_user]),
             ),
             ListTile(
+              title: Text('Correo electrónico',style: _styleTitle),
+              subtitle: Text('${_user.correo}',style: _styleSubTitle),
+              trailing: Icon(LineIcons.angle_right,color:Colors.grey),
+              onTap: ()=> Navigator.pushNamed(context, 'detalleDatosUpdate', arguments: ['email',_user]),
+            ),
+            ListTile(
               title:  Text("Contraseña", style: _styleTitle),
               subtitle: Text("**********",style: _styleSubTitle,),
               trailing: Icon(LineIcons.angle_right,size: 20,),

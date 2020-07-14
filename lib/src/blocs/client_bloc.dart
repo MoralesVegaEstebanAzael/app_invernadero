@@ -29,24 +29,27 @@ class ClientBloc with Validators{
   final _apController = BehaviorSubject<String>();
   final _amController = BehaviorSubject<String>();
   final _rfController = BehaviorSubject<String>();
+  final _emailController = BehaviorSubject<String>();
   
   Stream<String> get nameStream=> _nameController.stream.transform(validarNombre);
   Stream<String> get apStream=> _apController.stream.transform(validarAp);
   Stream<String> get amStream=> _amController.stream.transform(validarAm);
   Stream<String> get rfStream=> _rfController.stream.transform(validarRFC);
-
+   Stream<String> get emailStream => _emailController.stream.transform(validarEmail);
 
 
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeAp => _apController.sink.add;
   Function(String) get changeAm => _amController.sink.add;
   Function(String) get changeR => _rfController.sink.add;
+  Function(String) get changEmail => _emailController.sink.add;
 
   
   String get nombre => _nameController.value;
   String get apellidoP => _apController.value;
   String get apellidoM => _amController.value;
   String get rfc => _rfController.value;
+  String get email => _emailController.value;
 
 
    //obtener el ultimo vakir 
@@ -174,6 +177,15 @@ class ClientBloc with Validators{
     return fotoUrl;
   }
 
+  void updateEmailLocal(String email) async {
+    _cargandoController.sink.add(true);
+    ClientModel client = _dbProvider.getClient(_storage.idClient);
+    client.correo = email;
+    await _dbProvider.updateClient(client);
+    print("%%% Email actualizado en la base local%%%");
+    _cargandoController.sink.add(false);
+  }
+
   void updateInfoCliente(ClientModel cliente) async{
     _cargandoController.sink.add(true);
     await _userProvider.updateDatosUser(cliente);
@@ -205,6 +217,13 @@ class ClientBloc with Validators{
     _cargandoController.sink.add(true);
     await _userProvider.updateRFC(cliente);
     print("+++RFC actualizado en la base remota+++");
+    _cargandoController.sink.add(false);
+  }
+
+  void updatEmailCliente(ClientModel cliente)async{
+    _cargandoController.sink.add(true);
+    await _userProvider.updateEmail(cliente);
+    print("+++ Email actualizado en la base remota+++");
     _cargandoController.sink.add(false);
   }
 
