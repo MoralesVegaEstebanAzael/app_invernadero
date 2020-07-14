@@ -55,6 +55,6 @@ class BottomNavBloc{
   }
 
   dispose() {
-    _navBarController?.close();
+    //_navBarController?.close();
   }
 }

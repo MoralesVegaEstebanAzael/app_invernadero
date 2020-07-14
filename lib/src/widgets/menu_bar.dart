@@ -13,7 +13,9 @@ import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/badge_bottom_icon.dart';
 import 'package:app_invernadero/src/widgets/badge_icon.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:provider/provider.dart';
 
@@ -53,6 +55,15 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
 
     
     
+  SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    FeatureDiscovery.discoverFeatures(
+      context,
+      const <String>{ // Feature ids for every feature that you want to showcase in order.
+        'pedidos_feature_id',
+        'notificaciones_feature_id'
+      },
+    ); 
+  });
 
   }
   
@@ -80,124 +91,146 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
     
     
     return Scaffold(
-      backgroundColor: Colors.white,
-      // body: IndexedStack(
-      //   children: pageList,
-      //   index: _bottomNavBarBloc.index(),   
-      // ),
-
-      body: StreamBuilder<NavBarItem>(
-          stream: _bottomNavBarBloc.itemStream,
-          initialData: _bottomNavBarBloc.defaultItem,
-          builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
-          
-            switch (snapshot.data) {
-              case NavBarItem.HOME:
-                return _homePage;
-              case NavBarItem.PEDIDOS:
-                return _pedidosPage;
-              case NavBarItem.PROFILE:
-                return _userProfilePage;
-              case NavBarItem.NOTIFICACIONES:
-                return _notificationsPage;
-              case NavBarItem.FAVORITOS:
-                return _favoritesPage;
-            }
-          },
-        ),
-      bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(),
-        notchMargin:10,
-        color: Colors.transparent,
-        elevation: 10.0,
-        clipBehavior: Clip.antiAlias,
-        child: Container(
-          height:_responsive.ip(7),
-          decoration: BoxDecoration(
-          borderRadius:BorderRadius.only(
-          topLeft:Radius.circular(25.0),
-          topRight: Radius.circular(25.0),
-          ),
-          color: Colors.white,
-        ),
-                child: ClipRRect(
-                   borderRadius: BorderRadius.only(topRight: Radius.circular(25.0), topLeft: Radius.circular(25.0)),
-                                  child: StreamBuilder(
-          stream: _bottomNavBarBloc.itemStream,
-          initialData: _bottomNavBarBloc.defaultItem,
-          builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
-            
-            return BottomNavigationBar(
-                  fixedColor: miTema.accentColor,
-                  unselectedItemColor: Colors.grey,
-                  currentIndex: snapshot.data.index,
-                  onTap: _bottomNavBarBloc.pickItem,//_onTap,
-                  items: [
-                    BottomNavigationBarItem(
-                      title: Text('Pedidos',style: TextStyle(
-                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
-                    ),),
-                      icon: Icon(LineIcons.mobile_phone,),
-                    ),
-
-                    BottomNavigationBarItem(
-                      title: Text('Notificaciones',style: TextStyle(
-                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
-                    ),),
-                      icon: StreamBuilder(
-                        stream: _notificacionesBloc.unreadNotificationsStream ,
-                        builder: (BuildContext context, AsyncSnapshot<List<NotificacionModel>> snapshot){
-                          if(snapshot.data!=null){
-                            return  BadgeBottomIcon(
-                              icon:Icon(LineIcons.bell),
-                              number:snapshot.data.length,
-                            );
-                          }
-                          return Icon(LineIcons.bell,);
-                        },
-                      ),//Icon(LineIcons.bell,),
-                    ),
-
-
-                    BottomNavigationBarItem(
-                      title: Container(),
-                      icon: Container(),
-                    ),
-                     BottomNavigationBarItem(
-                     title: Text('Favoritos',style: TextStyle(
-                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
-                    ),),
-                      icon: Icon(LineIcons.heart_o),
-                    ),
-
-                    BottomNavigationBarItem(
-                     title: Text('Yo',style: TextStyle(
-                      fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
-                    ),),
-                      icon: Icon(LineIcons.user),
-                    ),
-                  ],
-            );
-
-          },
-        ),
-                ),
-              ),
+        backgroundColor: Colors.white,
+        // body: IndexedStack(
+        //   children: pageList,
+        //   index: _bottomNavBarBloc.index(),   
+        // ),
+        
+        body: StreamBuilder<NavBarItem>(
+      stream: _bottomNavBarBloc.itemStream,
+      initialData: _bottomNavBarBloc.defaultItem,
+      builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
+      
+        switch (snapshot.data) {
+          case NavBarItem.HOME:
+            return _homePage;
+          case NavBarItem.PEDIDOS:
+            return _pedidosPage;
+          case NavBarItem.PROFILE:
+            return _userProfilePage;
+          case NavBarItem.NOTIFICACIONES:
+            return _notificationsPage;
+          case NavBarItem.FAVORITOS:
+            return _favoritesPage;
+        }
+      },
+    ),
+        bottomNavigationBar: BottomAppBar(
+    shape: CircularNotchedRectangle(),
+    notchMargin:10,
+    color: Colors.transparent,
+    elevation: 10.0,
+    clipBehavior: Clip.antiAlias,
+    child: Container(
+      height:_responsive.ip(7),
+      decoration: BoxDecoration(
+      borderRadius:BorderRadius.only(
+      topLeft:Radius.circular(25.0),
+      topRight: Radius.circular(25.0),
       ),
+      color: Colors.white,
+    ),
+            child: ClipRRect(
+               borderRadius: BorderRadius.only(topRight: Radius.circular(25.0), topLeft: Radius.circular(25.0)),
+                              child: StreamBuilder(
+      stream: _bottomNavBarBloc.itemStream,
+      initialData: _bottomNavBarBloc.defaultItem,
+      builder: (BuildContext context, AsyncSnapshot<NavBarItem> snapshot) {
+        
+        return BottomNavigationBar(
+              fixedColor: miTema.accentColor,
+              unselectedItemColor: Colors.grey,
+              currentIndex: snapshot.data.index,
+              onTap: _bottomNavBarBloc.pickItem,//_onTap,
+              items: [
+                BottomNavigationBarItem(
+                  title: Text('Pedidos',style: TextStyle(
+                  fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                ),),
+                  
+                  icon: DescribedFeatureOverlay(
+                    featureId: 'pedidos_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(LineIcons.mobile_phone,color:Colors.white), // The widget that will be displayed as the tap target.
+                    title: Text('Pedidos'),
+                    description: Text('Toca el icono para ver tus pedidos.'),
+                    backgroundColor: Colors.orange[300],// Theme.of(context).primaryColor,
+                    targetColor: miTema.accentColor,
+                    textColor: Colors.white,
+                    child: Icon(LineIcons.mobile_phone)
+                  ),
+                  // icon: Icon(LineIcons.mobile_phone,),
 
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: miTema.accentColor,
-          onPressed: () {
-            //indice=2;
-            _bottomNavBarBloc.pickItem(2);
-            // setState(() {
-              
-            // });
-          },
-          child: Icon(Icons.store),
+                
+                ),
+
+                BottomNavigationBarItem(
+                  title: Text('Notificaciones',style: TextStyle(
+                  fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                ),),
+                  icon: StreamBuilder(
+                    stream: _notificacionesBloc.unreadNotificationsStream ,
+                    builder: (BuildContext context, AsyncSnapshot<List<NotificacionModel>> snapshot){
+                      if(snapshot.data!=null){
+                        return  BadgeBottomIcon(
+                          icon:Icon(LineIcons.bell),
+                          number:snapshot.data.length,
+                        );
+                      }
+                      return DescribedFeatureOverlay(
+                    featureId: 'notificaciones_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(Icons.add), // The widget that will be displayed as the tap target.
+                    title: Text('Add item'),
+                    description: Text('Tap the plus icon to add an item to your list.'),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    targetColor: Colors.white,
+                    textColor: Colors.white,
+                    child: Icon(LineIcons.bell)
+                  );
+                    },
+                  ),//Icon(LineIcons.bell,),
+                ),
+
+
+                BottomNavigationBarItem(
+                  title: Container(),
+                  icon: Container(),
+                ),
+                 BottomNavigationBarItem(
+                 title: Text('Favoritos',style: TextStyle(
+                  fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                ),),
+                  icon: Icon(LineIcons.heart_o),
+                ),
+
+                BottomNavigationBarItem(
+                 title: Text('Yo',style: TextStyle(
+                  fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
+                ),),
+                  icon: Icon(LineIcons.user),
+                ),
+              ],
+        );
+
+      },
+    ),
+            ),
+          ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
+
+        floatingActionButton: FloatingActionButton(
+      backgroundColor: miTema.accentColor,
+      onPressed: () {
+        //indice=2;
+        _bottomNavBarBloc.pickItem(2);
+        // setState(() {
+          
+        // });
+      },
+      child:Icon(Icons.store),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      );
   }
 
   @override

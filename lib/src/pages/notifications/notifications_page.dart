@@ -137,7 +137,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   print("${notificacion.createdAt}");
     return Container(   
         decoration: BoxDecoration(
-          color:  (flag) ? Colors.red : Colors.white,
+          color:  (flag) ? Colors.green[50] : Colors.white,
           border: Border(
           bottom: BorderSide(width: 1, color: Color.fromRGBO(228, 228, 228, 1)),
         ),),
@@ -147,7 +147,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           children: <Widget>[
             ListTile( 
               leading: _leading(notificacion.data['tipo']),
-              title: Text('${notificacion.data['titulo']}', style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700, fontSize: 16.0,color: Colors.black45)),
+              // title: Text('${notificacion.data['tipo']}', style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700, fontSize: 16.0,color: Colors.black45)),
               subtitle: Text('${notificacion.data['mensaje']}', style: TextStyle(fontFamily:'Quicksand', fontWeight: FontWeight.w600)),           
               //trailing: Text(timeago.format(myDatetime, locale: 'es'), style: TextStyle(fontFamily:'Quicksand',fontStyle: FontStyle.italic ,fontWeight: FontWeight.w900, fontSize: 9.0, color: Colors.grey)),
               // trailing: Column(

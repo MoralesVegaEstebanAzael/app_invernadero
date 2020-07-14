@@ -473,6 +473,9 @@ class DBProvider{
   }
 
   insertPedido(PedidoModel pedido)async{
+
+
+
     print("Guardando pedidooooo");
     await pedidoBox.put(pedido.pedido.id, pedido);
     print("longitud de box pedido ${pedidoBox.length}");

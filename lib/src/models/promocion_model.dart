@@ -26,7 +26,7 @@ class PromocionModel {
     String urlImagen;
     DateTime inicio;
     DateTime fin;
-    int valor;
+    double valor;
     String estado;
 
     factory PromocionModel.fromJson(Map<String, dynamic> json) => PromocionModel(
@@ -36,7 +36,7 @@ class PromocionModel {
         urlImagen: json["url_imagen"],
         inicio: DateTime.parse(json["inicio"]),
         fin: DateTime.parse(json["fin"]),
-        valor: json["valor"],
+        valor: json["valor"].toDouble(),
         estado: json["estado"],
     );
 

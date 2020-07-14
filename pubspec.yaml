@@ -56,6 +56,8 @@ dependencies:
   firebase_messaging: ^6.0.16
   intl: 
   lite_rolling_switch: ^0.1.1
+  feature_discovery: ^0.10.0
+  highlighter_coachmark: ^0.0.3
 
 dev_dependencies:
   flutter_test:

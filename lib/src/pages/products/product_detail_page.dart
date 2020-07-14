@@ -258,7 +258,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   fontSize: responsive.ip(2.7),fontFamily: 'Quicksand',fontWeight: FontWeight.w900),
               ),
             SizedBox(height: responsive.ip(2)),
-            Text(
+            Text( 
             "Especificaciones: ${producto.equiKilos} ${AppConfig.uni_medida} | Existencias: " ,
               style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w700,color:Colors.grey,
               fontSize: responsive.ip(1.7)

@@ -230,13 +230,19 @@ class _ProfilePageState extends State<ProfilePage> {
   } 
 
   _notifications(){
+
+
     setState(() {
           _blockCheck=!_blockCheck;
           _blockCheck?
         _switch = LineIcons.toggle_on
         :
-        _switch = LineIcons.toggle_off;
+        _disableNotification();
         });
+  }
+
+  _disableNotification(){
+    _showDialog();
   }
 
   _logOut()async{
@@ -254,6 +260,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if(info['ok']){
       //inicio de sesión
       Navigator.pushReplacementNamed(context, 'login_phone');
+     //Navigator.pop(context);
     }else{
       print("ERROR LOGOUT");
     }
@@ -327,6 +334,45 @@ class _ProfilePageState extends State<ProfilePage> {
        
     }
     
+  }
+
+   void _showDialog() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Notificaciones",
+            style: TextStyle(fontFamily: 'Quicksand',fontWeight: FontWeight.w900),),
+          content: new Text("¿Estas seguro de desactivar las notificaciones?",
+            style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w500),
+          ),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Aceptar",style: TextStyle(color:miTema.accentColor),),
+              onPressed: () {
+                 _switch = LineIcons.toggle_off;
+                 
+                Navigator.of(context).pop();
+
+                setState(() {
+                  
+                });
+              },
+            ),
+
+            new FlatButton(
+              child: new Text("Cancelar",style: TextStyle(color:miTema.accentColor)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
  
 }
