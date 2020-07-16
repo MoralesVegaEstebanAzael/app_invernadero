@@ -20,7 +20,7 @@ class DetallePedidoAdapter extends TypeAdapter<Detalle> {
       idPedido: fields[0] as int,
       nombreProducto: fields[1] as String,
       cantidadPedido: fields[2] as double,
-      cantidadSurtida: fields[3] as int,
+      cantidadSurtida: fields[3] as double,
       idProducto: fields[4] as int,
       unidadM: fields[5] as String,
       precioUnitario: fields[6] as double,

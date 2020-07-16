@@ -58,6 +58,7 @@ dependencies:
   lite_rolling_switch: ^0.1.1
   feature_discovery: ^0.10.0
   highlighter_coachmark: ^0.0.3
+  timeline_tile: ^0.1.2
 
 dev_dependencies:
   flutter_test:

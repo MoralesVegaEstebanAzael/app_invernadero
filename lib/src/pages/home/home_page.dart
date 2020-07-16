@@ -6,6 +6,7 @@ import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/promociones_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/models/oferta_model.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/pages/products/products_horizontal.dart';
@@ -22,10 +23,14 @@ import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/badge_icon.dart';
 import 'package:app_invernadero/src/widgets/empty_product_slider.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/my_slider.dart';
 import 'package:app_invernadero/src/widgets/products_empty.dart';
+import 'package:app_invernadero/src/widgets/slider_ofertas.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:line_icons/line_icons.dart';
@@ -48,18 +53,31 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   // Stream<List<PromocionModel>> promocionesStream;
   int _current=0;
   
+  TextStyle _titleStyle = TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w600);
+  TextStyle _subtitleStyle =  TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w700);
+
   
   // Box _productsBox;
   FavoritosBloc _favoritosBloc;
   
   Stream<List<ProductoModel>> productsStream;
-  Stream<List<PromocionModel>> promocionesStream;
+  // Stream<List<PromocionModel>> promocionesStream;
 
+  Stream<List<Oferta>> ofertasStream;
   
   @override
   void initState()  {
     super.initState();
     _controller = AnimationController(vsync: this);
+
+    //  SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    //     FeatureDiscovery.discoverFeatures(
+    //       context,
+    //       const <String>{ // Feature ids for every feature that you want to showcase in order.
+    //         'shopping_cart_feature_id',
+    //       },
+    //     ); 
+    //   });
    // _shoppingCartBloc.shoppingCartFetch();
   }
   
@@ -85,7 +103,10 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
 
       productsStream = prov.Provider.of<ProductoService>(context).productsStream;
-      promocionesStream = prov.Provider.of<PromocionService>(context).promocionStream;
+      //promocionesStream = prov.Provider.of<PromocionService>(context).promocionStream;
+      ofertasStream = prov.Provider.of<PromocionService>(context).ofertaStream;
+
+
       // _productsBox = _productoBloc.box();
 
 
@@ -111,7 +132,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     // prov.Provider.of<LocalService>(context);
    // _shoppingCartBloc.countItems();
 
-   
+    
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -124,7 +146,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               physics: AlwaysScrollableScrollPhysics(),
               child: Column(  
                 children: <Widget>[
-                _sliderPage(),
+                _ofertas(),
+
                 GestureDetector(
                   onTap: ()=>showSearch(
                             context: context, delegate: DataSearch()),
@@ -189,32 +212,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     );
   }
   
-  //promociones
-  Widget _sliderPage() {
-    
-    // if(promocionesList.isNotEmpty){
-    //   return  _crearItem(promocionesList,context); 
-    // }else {
-    //   return Container(
-    //     width:_responsive.widht,
-    //     height:_responsive.ip(20),
-    //     decoration: BoxDecoration(
-    //       color:MyColors.PlaceholderBackground,
-    //       borderRadius:BorderRadius.circular(15),
-    //     ),  
-    //     margin: EdgeInsets.only(left: 15,right: 15,top: 10),
-    //     // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
-    //   );  
-    // }
-   
+  //ofertas
+  _ofertas(){
     return StreamBuilder(
-      stream:  promocionesStream,
-      builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
-        print("slider");
-        print(snapshot.data);
+      stream: ofertasStream ,
+      builder: (BuildContext context, AsyncSnapshot snapshot){
         if(snapshot.data!=null&&  snapshot.data.isNotEmpty){
-          List<PromocionModel> list = snapshot.data;
-          return  _crearItem(list,context); 
+          List<Oferta> list = snapshot.data;
+          //return _createItems(list, _responsive);
+        
+          return SliderOfertas(ofertas:list);
+
+        // return MySlider(ofertas:list);
         }else {
           return Container(
             width:_responsive.widht,
@@ -227,14 +236,179 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
           );  
         }
-      },
+      }
     );
   }
+  //promociones
+  // Widget _sliderPage() {
+    
+  //   // if(promocionesList.isNotEmpty){
+  //   //   return  _crearItem(promocionesList,context); 
+  //   // }else {
+  //   //   return Container(
+  //   //     width:_responsive.widht,
+  //   //     height:_responsive.ip(20),
+  //   //     decoration: BoxDecoration(
+  //   //       color:MyColors.PlaceholderBackground,
+  //   //       borderRadius:BorderRadius.circular(15),
+  //   //     ),  
+  //   //     margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+  //   //     // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
+  //   //   );  
+  //   // }
+   
+  //   return StreamBuilder(
+  //     stream:  promocionesStream,
+  //     builder: (BuildContext context, AsyncSnapshot<List<PromocionModel>> snapshot){
+  //       print("slider");
+  //       print(snapshot.data);
+  //       if(snapshot.data!=null&&  snapshot.data.isNotEmpty){
+  //         List<PromocionModel> list = snapshot.data;
+  //         return  _crearItem(list,context); 
+  //       }else {
+  //         return Container(
+  //           width:_responsive.widht,
+  //           height:_responsive.ip(20),
+  //           decoration: BoxDecoration(
+  //             color:MyColors.PlaceholderBackground,
+  //             borderRadius:BorderRadius.circular(15),
+  //           ),  
+  //           margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+  //           // child:  Image(image: AssetImage('assets/placeholder_promocion.gif')),
+  //         );  
+  //       }
+  //     },
+  //   );
+  // }
   
-  Widget _crearItem(List<PromocionModel> list,BuildContext context){
-    final promocion = list;
-    //if(promocion.length>0){
-      return Container(
+  // Widget _crearItem(List<PromocionModel> list,BuildContext context){
+  //   final promocion = list;
+  //   //if(promocion.length>0){
+  //     return Container(
+  //       decoration: BoxDecoration(
+  //         color:miTema.primaryColor,
+  //         borderRadius:BorderRadius.circular(15),
+  //       ),
+  //       margin: EdgeInsets.only(left: 15,right: 15,top: 10),
+  //       child: Column(
+  //       children: <Widget>[
+  //         CarouselSlider.builder(
+  //           itemCount: promocion.length, 
+  //           itemBuilder: (ctx, index) {
+  //             return Stack(
+  //               children: <Widget>[
+  //                 Positioned(
+  //                   right: 0,
+  //                   bottom: 0,
+  //                   child: Image.network(promocion[index].urlImagen, fit: BoxFit.cover, width: _responsive.ip(19),)
+  //                 ),
+  //                 Positioned(
+  //                   top: _responsive.ip(2),
+  //                   left: _responsive.ip(2),
+  //                   child: Container(
+  //                     width: _responsive.wp(30),
+  //                     child: Column(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: <Widget>[                        
+  //                         Text("Producto",
+  //                           style: TextStyle(
+  //                             color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,
+  //                             fontSize:_responsive.ip(2)
+  //                           ),
+  //                         ),
+  //                         SizedBox(height:_responsive.ip(1)),
+  //                         Text(promocion[index].descripcion,
+  //                           textWidthBasis: TextWidthBasis.longestLine,
+  //                           style: TextStyle(
+  //                             color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w300,
+  //                             fontSize:_responsive.ip(2)
+  //                           ),
+  //                         ),
+  //                         SizedBox(height:_responsive.ip(1)),
+  //                         Container(
+  //                           width: _responsive.ip(13),
+  //                           child: _button()
+  //                         ),
+  //                         //_button()
+  //                       ],
+  //                     ),
+  //                   )),
+
+                    
+                
+  //               ],
+
+                
+  //             );
+  //             }, 
+  //           options: CarouselOptions(
+  //           height: _responsive.ip(20),
+  //          // aspectRatio: 16/9,
+  //           // onPageChanged: (index, reason) {
+  //           // setState(() {
+  //           //   _current = index;
+  //           // });},
+  //            viewportFraction: 1.0,
+             
+  //             enlargeCenterPage: true,
+  //           autoPlay: true,
+  //         ),),
+  //         Row( //indicadores
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: promocion.map((p) {
+  //             int index = promocion.indexOf(p);
+  //             return Container(
+  //               width: 8.0,
+  //               height: 8.0,
+  //               margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+  //               decoration: BoxDecoration(
+  //                 shape: BoxShape.circle,
+  //                 color: _current == index
+  //                   ? Color.fromRGBO(255, 255,255, 0.9)
+  //                   : Color.fromRGBO(255, 255, 255, 0.4),
+  //               ),
+  //             );
+  //           }).toList()),
+  //       ],
+  //       ),
+  //     );
+  //   // }else{
+  //   //   print("Ha ocurrido un error");
+  //   //   return Container();
+  //   // }
+  // }
+
+  
+  // _button(){
+  //   return CupertinoButton(
+  //     padding: EdgeInsets.zero,
+  //     child: Container(
+  //     padding: EdgeInsets.symmetric(horizontal:_responsive.ip(1.5),vertical:_responsive.ip(1.3)),
+  //     decoration: BoxDecoration(
+  //       color: miTema.accentColor,
+  //       borderRadius: BorderRadius.circular(30),
+  //       boxShadow: [BoxShadow(
+  //               color:Colors.black26,
+  //               blurRadius: 5
+  //       )]
+  //     ),
+  //     child: Row(
+  //       children: <Widget>[
+  //         Text("COMPRAR",
+  //           style: TextStyle(
+  //             fontFamily: 'Quiksand',
+  //             color:Colors.white,letterSpacing: 1,
+  //             fontSize: _responsive.ip(1.5)),),
+  //         SizedBox(width:5),
+  //         //Icon(LineIcons.check,color:Colors.white,size: _responsive.ip(2),)
+  //       ],
+  //     ),
+  //     ),
+  //     onPressed:  ()=>print("Comprar"));
+  // }
+
+   _createItems(List<Oferta> ofertas,Responsive _responsive){
+    return Container(
         decoration: BoxDecoration(
           color:miTema.primaryColor,
           borderRadius:BorderRadius.circular(15),
@@ -243,14 +417,14 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: Column(
         children: <Widget>[
           CarouselSlider.builder(
-            itemCount: promocion.length, 
+            itemCount: ofertas.length, 
             itemBuilder: (ctx, index) {
               return Stack(
                 children: <Widget>[
                   Positioned(
                     right: 0,
                     bottom: 0,
-                    child: Image.network(promocion[index].urlImagen, fit: BoxFit.cover, width: _responsive.ip(19),)
+                    child: Image.network(ofertas[index].urlImagen, fit: BoxFit.cover, width: _responsive.ip(19),)
                   ),
                   Positioned(
                     top: _responsive.ip(2),
@@ -267,7 +441,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                             ),
                           ),
                           SizedBox(height:_responsive.ip(1)),
-                          Text(promocion[index].descripcion,
+                          Text(ofertas[index].descripcion,
                             textWidthBasis: TextWidthBasis.longestLine,
                             style: TextStyle(
                               color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w300,
@@ -277,18 +451,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                           SizedBox(height:_responsive.ip(1)),
                           Container(
                             width: _responsive.ip(13),
-                            child: _button()
+                            child: _button(_responsive)
                           ),
                           //_button()
                         ],
                       ),
                     )),
-
-                    
-                
-                ],
-
-                
+                ], 
               );
               }, 
             options: CarouselOptions(
@@ -297,16 +466,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             // onPageChanged: (index, reason) {
             // setState(() {
             //   _current = index;
+            //   print("object");
             // });},
-             viewportFraction: 1.0,
+            viewportFraction: 1.0,
              
-              enlargeCenterPage: true,
+            enlargeCenterPage: true,
             autoPlay: true,
           ),),
           Row( //indicadores
             mainAxisAlignment: MainAxisAlignment.center,
-            children: promocion.map((p) {
-              int index = promocion.indexOf(p);
+            children: ofertas.map((p) {
+              int index = ofertas.indexOf(p);
               return Container(
                 width: 8.0,
                 height: 8.0,
@@ -322,14 +492,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         ],
         ),
       );
-    // }else{
-    //   print("Ha ocurrido un error");
-    //   return Container();
-    // }
   }
 
-  
-  _button(){
+  _button(Responsive _responsive){
     return CupertinoButton(
       padding: EdgeInsets.zero,
       child: Container(
@@ -413,25 +578,39 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         // IconAction(icon:LineIcons.shopping_cart,
         //   onPressed:()=> Navigator.pushNamed(context, 'shopping_cart'),
         // )
-        StreamBuilder(
-          stream: _shoppingCartBloc.count ,
-          builder: (BuildContext context, AsyncSnapshot snapshot){
-            if(snapshot.hasData){
-              int number = snapshot.data;
-              return BadgeIcon(
-                iconButton:  new IconButton(icon: new Icon(LineIcons.shopping_cart,
-                color: MyColors.BlackAccent,),
-                  onPressed: null,
-              ),
-              number: number,
-              onTap:() =>_func()
-         
-        , 
-              );
-            }
-            return Container();
-          },
-        ),
+        DescribedFeatureOverlay(
+                    featureId: 'shopping_cart_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(LineIcons.shopping_cart), // The widget that will be displayed as the tap target.
+                    title: Text('Carrito de compras',style: _titleStyle),
+                    description: Text('Agrega productos al carrito de compras.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+                      
+                    textColor: Colors.grey[800],
+                    child: StreamBuilder(
+                        stream: _shoppingCartBloc.count ,
+                        builder: (BuildContext context, AsyncSnapshot snapshot){
+                          if(snapshot.hasData){
+                            int number = snapshot.data;
+                            return BadgeIcon(
+                              iconButton:  new IconButton(icon: new Icon(LineIcons.shopping_cart,
+                              color: MyColors.BlackAccent,),
+                                onPressed: null,
+                            ),
+                            number: number,
+                            onTap:() =>_func()
+                      
+                      , 
+                            );
+                          }
+                          return Container();
+                        },
+                      ),
+                  ),
+        
        // _cartItems()
       ],
     );

@@ -10,6 +10,7 @@ import 'package:app_invernadero/src/pages/user/user_profile_page.dart';
 import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
+import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/badge_bottom_icon.dart';
 import 'package:app_invernadero/src/widgets/badge_icon.dart';
@@ -38,7 +39,8 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
 
   List<Widget> pageList = List<Widget>();
 
-
+  TextStyle _titleStyle = TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w600);
+  TextStyle _subtitleStyle =  TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w700);
 
   @override
   void initState() {
@@ -60,7 +62,11 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
       context,
       const <String>{ // Feature ids for every feature that you want to showcase in order.
         'pedidos_feature_id',
-        'notificaciones_feature_id'
+        'notificaciones_feature_id',
+        'favoritos_feature_id',
+        'user_feature_id',
+        'home_feature_id',
+        'shopping_cart_feature_id',
       },
     ); 
   });
@@ -148,15 +154,19 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
                   title: Text('Pedidos',style: TextStyle(
                   fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
                 ),),
-                  
+
                   icon: DescribedFeatureOverlay(
                     featureId: 'pedidos_feature_id', // Unique id that identifies this overlay.
-                    tapTarget: const Icon(LineIcons.mobile_phone,color:Colors.white), // The widget that will be displayed as the tap target.
-                    title: Text('Pedidos'),
-                    description: Text('Toca el icono para ver tus pedidos.'),
-                    backgroundColor: Colors.orange[300],// Theme.of(context).primaryColor,
-                    targetColor: miTema.accentColor,
-                    textColor: Colors.white,
+                    tapTarget: const Icon(LineIcons.mobile_phone), // The widget that will be displayed as the tap target.
+                    title: Text('Pedidos',style: _titleStyle),
+                    description: Text('Toca el icono para ver tus pedidos.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+                    
+                    textColor: Colors.grey[800],
                     child: Icon(LineIcons.mobile_phone)
                   ),
                   // icon: Icon(LineIcons.mobile_phone,),
@@ -177,14 +187,18 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
                           number:snapshot.data.length,
                         );
                       }
-                      return DescribedFeatureOverlay(
+                      return   DescribedFeatureOverlay(
                     featureId: 'notificaciones_feature_id', // Unique id that identifies this overlay.
-                    tapTarget: const Icon(Icons.add), // The widget that will be displayed as the tap target.
-                    title: Text('Add item'),
-                    description: Text('Tap the plus icon to add an item to your list.'),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    targetColor: Colors.white,
-                    textColor: Colors.white,
+                    tapTarget: const Icon(LineIcons.bell), // The widget that will be displayed as the tap target.
+                    title: Text('Notificaciones',style: _titleStyle),
+                    description: Text('Toca el icono para ver tus notificaciones.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+                    
+                    textColor: Colors.grey[800],
                     child: Icon(LineIcons.bell)
                   );
                     },
@@ -200,14 +214,40 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
                  title: Text('Favoritos',style: TextStyle(
                   fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
                 ),),
-                  icon: Icon(LineIcons.heart_o),
+                  icon: DescribedFeatureOverlay(
+                    featureId: 'favoritos_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(LineIcons.heart_o), // The widget that will be displayed as the tap target.
+                    title: Text('Favoritos',style: _titleStyle),
+                    description: Text('Agrega productos a tu lista de favoritos.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+                    
+                    textColor: Colors.grey[800],
+                    child: Icon(LineIcons.heart_o)
+                  ),
                 ),
 
                 BottomNavigationBarItem(
                  title: Text('Yo',style: TextStyle(
                   fontFamily:'Quicksand',fontSize:_responsive.ip(1),fontWeight: FontWeight.w900
                 ),),
-                  icon: Icon(LineIcons.user),
+                  icon: DescribedFeatureOverlay(
+                    featureId: 'user_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(LineIcons.user), // The widget that will be displayed as the tap target.
+                    title: Text('Cuenta',style: _titleStyle),
+                    description: Text('Configura tu cuenta.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+                    
+                    textColor: Colors.grey[800],
+                    child: Icon(LineIcons.user)
+                  ),
                 ),
               ],
         );
@@ -227,7 +267,22 @@ class _BottomNavBarAppState extends State<BottomNavBarApp> with AutomaticKeepAli
           
         // });
       },
-      child:Icon(Icons.store),
+      child: DescribedFeatureOverlay(
+                    featureId: 'home_feature_id', // Unique id that identifies this overlay.
+                    tapTarget: const Icon(Icons.store), // The widget that will be displayed as the tap target.
+                    title: Text('Inicio',style: _titleStyle),
+                    description: Text('Descubre productos.',
+                      style: _subtitleStyle
+                    ),
+                    backgroundColor: MyColors.YellowDiscovery,// Theme.of(context).primaryColor,
+                  
+                    targetColor:Colors.white,
+
+                    textColor: Colors.grey[800],
+                    child: Icon(Icons.store)
+                  )
+      
+      // Icon(Icons.store),
     ),
     floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       );

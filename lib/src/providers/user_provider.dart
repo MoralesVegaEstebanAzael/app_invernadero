@@ -4,6 +4,7 @@ import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart'; 
 import 'package:app_invernadero/src/models/userModel.dart'; 
 import 'package:app_invernadero/src/providers/db_provider.dart';
+import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:app_invernadero/src/providers/push_notifications_provider.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http_parser/http_parser.dart';
@@ -29,6 +30,7 @@ class UserProvider{
   final _storage = SecureStorage();  
   DBProvider _dbProvider = DBProvider();
   final fcm = PushNotificationsProvider();
+  PedidoProvider pedidoProvider = PedidoProvider();
 
   Future<Map<String,dynamic>> buscarUsuario({@required String celular})async{
       await _storage.write('celular', celular);
@@ -84,11 +86,15 @@ class UserProvider{
         _storage.idClient = client.id;
         _storage.sesion = true;
         
-        //create new firebase cloud messaging token
+
+        //create new firebase cloud messaging token local
         await fcm.refreshToken();  
         final fcmToken = await fcm.getFCMToken();
         // save new fcm token
         await this.fcmToken(fcmToken: fcmToken);
+        
+        //obtener pedidos de la bd remota
+        await pedidoProvider.getPedidos();
 
        //  return {'ok':false};
       return {'ok':true, 'celular' : decodedResp};
@@ -555,6 +561,25 @@ class UserProvider{
       body: {
         "celular":cliente.celular,
         "rfc":cliente.rfc,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+   Future<bool> updateEmail(ClientModel cliente) async{
+    final url = "${AppConfig.base_url}/api/client/updateEmail"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: { 
+        "email":cliente.correo,  
       });
 
     final decodeData = json.decode(response.body);

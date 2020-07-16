@@ -15,32 +15,54 @@ part 'pedido_model.g.dart';
 @HiveType(
   typeId: AppConfig.hive_type_17 ,adapterName: AppConfig.hive_adapter_17)
 
-
 class PedidoModel {
   @HiveField(0)
-  Pedido pedido;
-  @HiveField(1)
-  Map<String, Detalle> detalles;
-  
-  PedidoModel({
-        this.pedido,
-        this.detalles,
+    Map<String, Pedido> pedidos;
+
+    PedidoModel({
+        this.pedidos,
     });
 
-    
-
     factory PedidoModel.fromJson(Map<String, dynamic> json) => PedidoModel(
-        pedido: Pedido.fromJson(json["pedido"]),
-        detalles: Map.from(json["detalles"]).map((k, v) => MapEntry<String, Detalle>(k, Detalle.fromJson(v))),
+        pedidos: Map.from(json["pedidos"]).map((k, v) => MapEntry<String, Pedido>(k, Pedido.fromJson(v))),
     );
 
     Map<String, dynamic> toJson() => {
-        "pedido": pedido.toJson(),
-        "detalles": Map.from(detalles).map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+        "pedidos": Map.from(pedidos).map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
     };
 
+    PedidoModel pedidoModelFromJson(String str) => PedidoModel.fromJson(json.decode(str));
 
-  PedidoModel pedidoModelFromJson(String str) => PedidoModel.fromJson(json.decode(str));
-  String pedidoModelToJson(PedidoModel data) => json.encode(data.toJson());
+    String pedidoModelToJson(PedidoModel data) => json.encode(data.toJson());
 }
+
+
+
+// class PedidoModel {
+//   @HiveField(0)
+//   Pedido pedido;
+//   @HiveField(1)
+//   Map<String, Detalle> detalles;
+  
+//   PedidoModel({
+//         this.pedido,
+//         this.detalles,
+//     });
+
+    
+
+//     factory PedidoModel.fromJson(Map<String, dynamic> json) => PedidoModel(
+//         pedido: Pedido.fromJson(json["pedido"]),
+//         detalles: Map.from(json["detalles"]).map((k, v) => MapEntry<String, Detalle>(k, Detalle.fromJson(v))),
+//     );
+
+//     Map<String, dynamic> toJson() => {
+//         "pedido": pedido.toJson(),
+//         "detalles": Map.from(detalles).map((k, v) => MapEntry<String, dynamic>(k, v.toJson())),
+//     };
+
+
+//   PedidoModel pedidoModelFromJson(String str) => PedidoModel.fromJson(json.decode(str));
+//   String pedidoModelToJson(PedidoModel data) => json.encode(data.toJson());
+// }
 

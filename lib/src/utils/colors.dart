@@ -8,5 +8,13 @@ class MyColors{
 
 
   static const GreenAccent = Color.fromRGBO(5, 164, 80, 1);
- 
+
+  static const RedDiscovery = Color.fromRGBO(239, 68, 85, 1);
+  
+  static const OrangeDiscovery = Color.fromRGBO(254, 182, 38, 1);
+
+  static const GreenDiscovery = Color.fromRGBO(154, 231, 175, 1);
+
+  static const YellowDiscovery = Color.fromRGBO(252, 223, 94, 1);
+
 }

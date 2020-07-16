@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
+import 'package:app_invernadero/src/models/pedido/pedido.dart';
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/models/promocion_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
@@ -53,22 +54,47 @@ class PedidoProvider{
     print("*****************HACIENDO PEDIDO******************");
     print(response.body);
 
-    if(response.body.contains("pedido") && response.body.contains("idPedido")){
+    if(response.body.contains("pedido") && response.body.contains("id")){
       // final Map<dynamic,dynamic> decodeData = json.decode(response.body)['pedido'];
       // final List<ProductoModel> productos = List();
       print("Pedido realizado con exito");
 
       PedidoModel pedido = PedidoModel.fromJson(json.decode(response.body));
       
-      _dbProvider.insertPedido(pedido);
-      
-      
-      
-          await  _notificationService.getNotifications();
-          await  _notificationService.loadNotifi();
+      //insert only order(new order) into hive
+      _dbProvider.insertPedido(pedido.pedidos[0]);
+      await  _notificationService.getNotifications();
+      await  _notificationService.loadNotifi();
       return true;
     }
-    return false;}
+    return false;  
+  }
+
+
+  Future<List<Pedido>> getPedidos()async{
+    final url = "${AppConfig.base_url}/api/client/pedidos"; 
+    final token = await _storage.read('token');
+
+     Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Content-Type" : "application/json",
+      "Accept": "application/json",}; 
+
+    final response = await http.get(
+      url, 
+      headers: headers,); 
+    
+    print("*****************MOSTRANDO PEDIDOS DESPUES DEL LOGIN******************");
+    print(response.body);
+
+    if(response.body.contains('pedidos') && response.body.contains('id')){
+      PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
+      //insert all orders into hive
+      _dbProvider.insertPedidos(pedidos.pedidos);
+    }else{
+      return[];
+    }
+  }
 }
 
 

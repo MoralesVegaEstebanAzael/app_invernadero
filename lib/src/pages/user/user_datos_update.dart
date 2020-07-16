@@ -69,6 +69,10 @@ class _DetalleDatosUpdateState extends State<DetalleDatosUpdate> {
         case 'rfc':
           return _rfc();
         break;
+
+        case 'email':
+          return _email();
+        break;  
        default:
      }
   } 
@@ -167,6 +171,30 @@ class _DetalleDatosUpdateState extends State<DetalleDatosUpdate> {
     );
   }
 
+    _email(){ 
+    return StreamBuilder(
+      stream: clientBloc.emailStream, 
+      builder: (BuildContext context, AsyncSnapshot snapshot){
+        return TextFormField(  
+          initialValue: cliente.correo,
+          textCapitalization: TextCapitalization.sentences,
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+              focusedBorder:  UnderlineInputBorder(      
+                              borderSide: BorderSide(color:Color(0xffdddddd))),
+              enabledBorder: UnderlineInputBorder(      
+                              borderSide: BorderSide(color:Color(0xffdddddd)),),
+              hintStyle: TextStyle(color:Colors.grey), 
+              labelText: 'Email *',
+              labelStyle: _style,
+              errorText: snapshot.error
+          ), 
+          onChanged: clientBloc.changEmail, 
+        );
+      },
+    ); 
+  }
+
   Widget _crearBoton(String opcion){
    Stream stream ; 
    if(opcion == 'nombre'){
@@ -177,6 +205,8 @@ class _DetalleDatosUpdateState extends State<DetalleDatosUpdate> {
      stream = clientBloc.amStream;
    }else if(opcion == 'rfc'){
      stream= clientBloc.rfStream;
+   }else if(opcion == 'email'){
+     stream = clientBloc.emailStream;
    }
 
     return  StreamBuilder(
@@ -217,6 +247,12 @@ class _DetalleDatosUpdateState extends State<DetalleDatosUpdate> {
           clientBloc.updateRFCliente(cliente);
           Navigator.pop(context);
         break;
+
+        case 'email':
+          clientBloc.updateEmailLocal(clientBloc.email);
+          clientBloc.updatEmailCliente(cliente);
+          Navigator.pop(context);
+        break;  
        default:
      } 
    

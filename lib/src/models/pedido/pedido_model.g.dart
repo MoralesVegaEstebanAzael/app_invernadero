@@ -17,18 +17,15 @@ class PedidoModelAdapter extends TypeAdapter<PedidoModel> {
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PedidoModel(
-      pedido: fields[0] as Pedido,
-      detalles: (fields[1] as Map)?.cast<String, Detalle>(),
+      pedidos: (fields[0] as Map)?.cast<String, Pedido>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, PedidoModel obj) {
     writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.pedido)
       ..writeByte(1)
-      ..write(obj.detalles);
+      ..writeByte(0)
+      ..write(obj.pedidos);
   }
 }

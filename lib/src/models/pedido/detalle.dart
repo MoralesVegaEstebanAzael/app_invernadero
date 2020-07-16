@@ -14,8 +14,8 @@ class Detalle {
     String nombreProducto;
     @HiveField(2)
     double cantidadPedido;
-    @HiveField(3)  
-    int cantidadSurtida;
+    @HiveField(3)
+    double cantidadSurtida;
     @HiveField(4)
     int idProducto;
     @HiveField(5)
@@ -24,7 +24,7 @@ class Detalle {
     double precioUnitario;
     @HiveField(7)
     double subtotal;
-    
+
     Detalle({
         this.idPedido,
         this.nombreProducto,
@@ -42,7 +42,7 @@ class Detalle {
         idPedido: json["idPedido"],
         nombreProducto: json["nombreProducto"],
         cantidadPedido: json["cantidadPedido"].toDouble(),
-        cantidadSurtida: json["cantidadSurtida"],
+        cantidadSurtida: json["cantidadSurtida"].toDouble(),
         idProducto: json["idProducto"],
         unidadM: json["unidadM"],
         precioUnitario: json["precioUnitario"].toDouble(),

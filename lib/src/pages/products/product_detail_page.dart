@@ -174,6 +174,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       return SingleChildScrollView(
         
           child: Container(
+            color: Colors.white,
             height: responsive.height,
             child: Column(
                crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +196,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   
     _background() {
       return AspectRatio(
-        aspectRatio: 16/12,
+        aspectRatio: 16/10,
             child: Container(
               color:miTema.accentColor,
               child: Stack(children: <Widget>[
@@ -342,6 +343,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   _switch(){
     return Container(
       // color: Colors.red,
+      color: Colors.white,
       padding: EdgeInsets.only(left:30,right:30),
       width: double.infinity,
       height: responsive.ip(5),
@@ -364,6 +366,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 // Text("Menudeo"),
                 Text("Precio de mayoreo \$${producto.precioMay} Mx",
                   style:TextStyle(
+                    fontSize: responsive.ip(1.5),
                     color:Colors.grey,
                     fontFamily:'Quicksand',
                     fontWeight:FontWeight.w800
@@ -413,7 +416,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
         colorOff:  Colors.redAccent[400],
         iconOn: FontAwesomeIcons.boxOpen,
         iconOff: FontAwesomeIcons.weight,
-        textSize: 16.0,
+        textSize: 14.0,
         onTap: (){
           setState(() {
             
