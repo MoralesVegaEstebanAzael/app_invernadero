@@ -50,11 +50,11 @@ class Pedido {
         idCliente: json["id_cliente"],
         fechaSolicitud: DateTime.parse(json["fechaSolicitud"]),
         estatus: json["estatus"],
-        total: json["total"].toDouble(),
+        total: json["total"]==null?0.0:json["total"].toDouble(),
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         idVenta: json["idVenta"] == null ? null : json["idVenta"],
-        totalPagado: json["totalPagado"].toDouble(),
+        totalPagado: json["totalPagado"]==null?0.0: json["totalPagado"].toDouble(),
         detalles: List<Detalle>.from(json["detalles"].map((x) => Detalle.fromJson(x))),
     );
 

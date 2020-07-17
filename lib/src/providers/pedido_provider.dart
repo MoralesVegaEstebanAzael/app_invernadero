@@ -21,7 +21,7 @@ import 'package:http/http.dart' as http;
 class PedidoProvider{
   final _storage = SecureStorage();  
   final _dbProvider = DBProvider();
-    //NotificationService _notificationService = NotificationService();
+    // NotificationService _notificationService = NotificationService();
 
   Future<bool> pedido(List<ItemShoppingCartModel> listItems)async{
     final url = "${AppConfig.base_url}/api/client/pedido_create"; 
@@ -54,7 +54,7 @@ class PedidoProvider{
     print("*****************HACIENDO PEDIDO******************");
     print(response.body);
 
-    if(response.body.contains("pedido") && response.body.contains("id")){
+    if(response.body.contains("pedidos") && response.body.contains("id")){
       // final Map<dynamic,dynamic> decodeData = json.decode(response.body)['pedido'];
       // final List<ProductoModel> productos = List();
       print("Pedido realizado con exito");
@@ -62,7 +62,9 @@ class PedidoProvider{
       PedidoModel pedido = PedidoModel.fromJson(json.decode(response.body));
       
       //insert only order(new order) into hive
-      _dbProvider.insertPedido(pedido.pedidos[0]);
+
+
+      _dbProvider.insertPedido(pedido.pedidos.values.toList()[0]);
       // await  _notificationService.getNotifications();
       // await  _notificationService.loadNotifi();
       return true;

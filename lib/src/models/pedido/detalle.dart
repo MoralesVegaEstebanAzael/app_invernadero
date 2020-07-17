@@ -41,12 +41,12 @@ class Detalle {
     factory Detalle.fromJson(Map<String, dynamic> json) => Detalle(
         idPedido: json["idPedido"],
         nombreProducto: json["nombreProducto"],
-        cantidadPedido: json["cantidadPedido"].toDouble(),
-        cantidadSurtida: json["cantidadSurtida"].toDouble(),
+        cantidadPedido: json["cantidadPedido"]==null?0.0: json["cantidadPedido"].toDouble(),
+        cantidadSurtida: json["cantidadSurtida"]==null?0.0 :json["cantidadSurtida"].toDouble(),
         idProducto: json["idProducto"],
         unidadM: json["unidadM"],
-        precioUnitario: json["precioUnitario"].toDouble(),
-        subtotal: json["subtotal"].toDouble(),
+        precioUnitario: json["precioUnitario"]==null?0.0:json["precioUnitario"].toDouble(),
+        subtotal: json["subtotal"]==null?0.0:json["subtotal"].toDouble(),
     );
 
     Map<String, dynamic> toJson() => {
