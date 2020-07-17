@@ -32,7 +32,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
     if(pedidoAux != null){
       _pedido = pedidoAux;
     }
-    
+
     _pedidosBloc.cargarDetalles(_pedido.pedido.id);
   }
   
@@ -63,7 +63,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
              padding: EdgeInsets.all(10),
              child: Row( 
                children: <Widget>[
-                 Text('Order # ${_pedido.pedido.id}', style: _styleTitle,)
+                // Text('Order # ${_pedido.pedido.id}', style: _styleTitle,)
                ],
              ),
            ),

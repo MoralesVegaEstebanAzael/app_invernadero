@@ -21,7 +21,7 @@ import 'package:http/http.dart' as http;
 class PedidoProvider{
   final _storage = SecureStorage();  
   final _dbProvider = DBProvider();
-    NotificationService _notificationService = NotificationService();
+    //NotificationService _notificationService = NotificationService();
 
   Future<bool> pedido(List<ItemShoppingCartModel> listItems)async{
     final url = "${AppConfig.base_url}/api/client/pedido_create"; 
@@ -63,8 +63,8 @@ class PedidoProvider{
       
       //insert only order(new order) into hive
       _dbProvider.insertPedido(pedido.pedidos[0]);
-      await  _notificationService.getNotifications();
-      await  _notificationService.loadNotifi();
+      // await  _notificationService.getNotifications();
+      // await  _notificationService.loadNotifi();
       return true;
     }
     return false;  

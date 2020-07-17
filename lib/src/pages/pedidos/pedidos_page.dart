@@ -1,7 +1,6 @@
 import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
-import 'package:app_invernadero/src/models/pedido/pedido.dart';
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -174,7 +173,8 @@ class _PedidosPageState extends State<PedidosPage> {
   }
 
 
- Widget _itemView(Pedido pedido){
+ Widget _itemView(PedidoModel pedido){
+  
     TextStyle _styleTitle = TextStyle(color: MyColors.BlackAccent,fontFamily: 'Quicksand',fontWeight: FontWeight.w700,fontSize: _responsive.ip(2));
     TextStyle _styleSubTitle = TextStyle(fontFamily: 'Quicksand',color: Colors.grey,fontSize: _responsive.ip(1.5));
     TextStyle _style = TextStyle(color: Colors.green,  fontFamily: 'Quicksand',fontSize: _responsive.ip(1.5));
@@ -212,16 +212,16 @@ class _PedidosPageState extends State<PedidosPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Pedido # ${pedido.id}', style: _styleTitle),
+                  Text('Pedido # ${pedido.pedido.id}', style: _styleTitle),
                   SizedBox(height: 5,),
-                  Text('${pedido.createdAt}', style: _styleSubTitle,), 
+                  Text('${pedido.pedido.createdAt}', style: _styleSubTitle,), 
                  //Text(new DateFormat.EEEE('es').add_MMMMd().format(pedido.pedido.createdAt) + " a las: "+new DateFormat.jm().format(pedido.pedido.createdAt),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
                  SizedBox(height: 15),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Icon(Icons.timelapse, color: Colors.green,),
-                      Expanded(child: Text('Estatus: ${pedido.estatus}', style: _style,)),
+                      Expanded(child: Text('Estatus: ${pedido.pedido.estatus}', style: _style,)),
                      // Icon(LineIcons.heart_o,color: Colors.grey)
                     ],
                   ),
@@ -232,7 +232,7 @@ class _PedidosPageState extends State<PedidosPage> {
             Column( 
               children: <Widget>[
                 Text('Total:', style: _styleTitle,),
-                Text('\$ ${pedido.total}', style: _styleSubTitle,)
+                Text('\$ ${pedido.pedido.total}', style: _styleSubTitle,)
               ],
             )  
           ],
