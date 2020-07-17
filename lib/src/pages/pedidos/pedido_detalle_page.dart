@@ -1,6 +1,7 @@
 import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
-import 'package:app_invernadero/src/models/pedido/detalle.dart'; 
+import 'package:app_invernadero/src/models/pedido/detalle.dart';
+import 'package:app_invernadero/src/models/pedido/pedido.dart'; 
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -18,7 +19,7 @@ class PedidoDetalle extends StatefulWidget {
 
 class _PedidoDetalleState extends State<PedidoDetalle> {
   Responsive _responsive;
-  PedidoModel _pedido;
+  Pedido _pedido;
   PedidosBloc _pedidosBloc;
 
   @override
@@ -28,12 +29,12 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
     _responsive = Responsive.of(context);
     _pedidosBloc = Provider.pedidoBloc(context);
 
-    PedidoModel pedidoAux = ModalRoute.of(context).settings.arguments;
+    Pedido pedidoAux = ModalRoute.of(context).settings.arguments;
     if(pedidoAux != null){
       _pedido = pedidoAux;
     }
     
-    _pedidosBloc.cargarDetalles(_pedido.pedido.id);
+    _pedidosBloc.cargarDetalles(_pedido.id);
   }
   
   @override
@@ -44,7 +45,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
       body: _pedidoDetalle()
     );
   }
-
+ 
   Widget _pedidoDetalle(){
   TextStyle _styleTitle = TextStyle(color: MyColors.BlackAccent,fontFamily: 'Quicksand',fontWeight: FontWeight.w700,fontSize: _responsive.ip(2));
      return Container(
@@ -63,7 +64,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
              padding: EdgeInsets.all(10),
              child: Row( 
                children: <Widget>[
-                 Text('Order # ${_pedido.pedido.id}', style: _styleTitle,)
+                 Text('Pedido # ${_pedido.id}', style: _styleTitle,)
                ],
              ),
            ),
@@ -127,7 +128,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
     return Container(
       height: _responsive.ip(25),
       child: StreamBuilder(
-        stream: _pedidosBloc.deatlleStream , 
+        stream: _pedidosBloc.detalleStream , 
         builder: (BuildContext context, AsyncSnapshot snapshot){
           if(snapshot.hasData && snapshot.data!=null){ 
             return  ListView.builder(

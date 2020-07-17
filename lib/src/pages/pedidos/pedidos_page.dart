@@ -119,7 +119,7 @@ class _PedidosPageState extends State<PedidosPage> {
           return ListView.builder(
              itemCount: snapshot.data.length,
              itemBuilder: (context, i) {
-               PedidoModel noti = snapshot.data[i];   
+               Pedido noti = snapshot.data[i];   
                   return _itemView(noti);
              }
           ); 
@@ -183,7 +183,7 @@ class _PedidosPageState extends State<PedidosPage> {
        onTap: ()=> Navigator.pushNamed(context, 'pedidoDetalle', arguments: pedido),
        child:  Container(
       // margin: EdgeInsets.all(10.0),
-        padding: const EdgeInsets.symmetric(vertical:15,horizontal: 15), 
+        padding: const EdgeInsets.symmetric(vertical:8,horizontal: 15), 
         decoration: BoxDecoration( 
           border: Border(
               bottom: BorderSide(width: 1, color: Color.fromRGBO(228, 228, 228, 1)),
@@ -214,9 +214,9 @@ class _PedidosPageState extends State<PedidosPage> {
                 children: <Widget>[
                   Text('Pedido # ${pedido.id}', style: _styleTitle),
                   SizedBox(height: 5,),
-                  Text('${pedido.createdAt}', style: _styleSubTitle,), 
-                 //Text(new DateFormat.EEEE('es').add_MMMMd().format(pedido.pedido.createdAt) + " a las: "+new DateFormat.jm().format(pedido.pedido.createdAt),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
-                 SizedBox(height: 15),
+                 // Text('${pedido.createdAt}', style: _styleSubTitle,), 
+                 Text(new DateFormat.EEEE('es').add_MMMMd().format(pedido.createdAt) + " a las: "+new DateFormat.jm().format(pedido.createdAt),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
+                 SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[

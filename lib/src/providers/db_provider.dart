@@ -477,15 +477,16 @@ class DBProvider{
     print("longitud de box pedido ${pedidoBox.length}");
   }
 
-  Future<List<PedidoModel>> pedidosList()async{
+  Future<List<Pedido>> pedidosList()async{
     Map map =  pedidoBox.toMap();
-    List<PedidoModel> pedidos =  map.values.toList().cast();
+    List<Pedido> pedidos =  map.values.toList().cast();
     return pedidos;
   }
 
   bool  pedidosIsEmpty(){
     return pedidoBox.isEmpty;
   }
+  
   List getDetailsP(){
     Map mapa =  pedidoBox.toMap();
     List favData = List();
@@ -495,22 +496,18 @@ class DBProvider{
     return favData;
   }
 
-  List<Detalle> getDetalles(int idPedido){
-    // Map mapa =  pedidoBox.toMap();
-    List<Detalle> lista = List();
-    Pedido p = pedidoBox.get(idPedido);
+  List<Detalle> getDetalles(int idPedido){ 
+    List<Detalle> lista = List(); 
+   // Pedido p = pedidoBox.get(idPedido); 
+   // print(p); 
 
-    return p.detalles;
-    // mapa.forEach((k,v){
-    //   PedidoModel pedido = v;
-    //   if(pedido.pedido.id == idPedido){  
-    //       pedido.detalles.forEach((k,v){
-    //         Detalle det = pedido.detalles[k]; 
-    //           print(det.nombreProducto); 
-    //           lista.add(det);
-    //       });
-    //   }
-    // });
+    pedidoBox.toMap().forEach((k,v){
+      Pedido pedido =v;
+      if(pedido.id == idPedido){
+        lista = pedido.detalles.where((detalle) => detalle.idPedido == pedido.id).toList(); 
+      }
+    });  
+     return lista;
 
   }
 

@@ -1,6 +1,7 @@
 
 
 import 'package:app_invernadero/src/models/pedido/detalle.dart';
+import 'package:app_invernadero/src/models/pedido/pedido.dart';
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,13 +17,13 @@ class PedidosBloc {
 
   final _dbProvider = new DBProvider();
 
-  final _pedidosController = new BehaviorSubject<List<PedidoModel>>();
+  final _pedidosController = new BehaviorSubject<List<Pedido>>();
   final _cargandoController = new BehaviorSubject<bool>(); 
   final _detalleController = new BehaviorSubject<List<Detalle>>();
 
-  Stream<List<PedidoModel>> get pedidoStream => _pedidosController.stream;
+  Stream<List<Pedido>> get pedidoStream => _pedidosController.stream;
   Stream<bool> get cargando => _cargandoController.stream;
-  Stream<List<Detalle>> get deatlleStream => _detalleController.stream;
+  Stream<List<Detalle>> get detalleStream => _detalleController.stream;
 
   void cargarPedidos() async{
     final pedidos = await _dbProvider.pedidosList();
