@@ -208,11 +208,11 @@ Widget _linea(){
                 alignment: TimelineAlign.left,
                 isFirst: true,
                 topLineStyle: LineStyle(
-                  color: Colors.white
+                  color: Colors.grey
                 ),
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  color: Colors.white,
+                  color: Colors.grey,
                   indicatorY: 0.2, 
                 ), 
                 rightChild:  Container(
@@ -224,7 +224,7 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
                             Icon(LineIcons.check, color: Colors.white,)
                             
                           
@@ -254,12 +254,12 @@ Widget _linea(){
              TimelineTile(
                 alignment: TimelineAlign.left, 
                 topLineStyle: LineStyle(
-                color: Colors.white
+                color: Colors.grey
                 ),
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  color: Colors.white,
-                  indicatorY: 0.3,  
+                  color: Colors.grey,
+                  indicatorY: 0.2,  
                 ), 
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
@@ -270,7 +270,7 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
                             Icon(LineIcons.clipboard, color: Colors.white,)
                           ],
                         ),
@@ -302,11 +302,11 @@ Widget _linea(){
                 isLast: true,
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  color: Colors.white,
-                  indicatorY: 0.4,  
+                  color: Colors.grey,
+                  indicatorY: 0.2,  
                 ), 
                 topLineStyle: LineStyle(
-                color: Colors.white
+                color: Colors.grey
                 ),
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
@@ -317,7 +317,7 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
                             Icon(LineIcons.home, color: Colors.white,)
                           ],
                         ),
