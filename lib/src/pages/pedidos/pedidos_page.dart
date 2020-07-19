@@ -1,3 +1,4 @@
+import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
@@ -46,6 +47,7 @@ class _PedidosPageState extends State<PedidosPage> {
   Widget build(BuildContext context) {
     _shoppingCartBloc.countItems();
     return Scaffold( 
+      backgroundColor: Colors.white,
       appBar: _appBar(),
       body: GestureDetector(
         onTap: (){
@@ -227,8 +229,9 @@ class _PedidosPageState extends State<PedidosPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Icon(Icons.timelapse, color: Colors.green,),
-                      Expanded(child: Text('Estatus: ${pedido.estatus}', style: _style,)),
+                      Icon(Icons.timelapse, color: _statusColor(pedido.estatus)),
+                      Expanded(child: Text('Estatus: ${pedido.estatus}', 
+                      style: TextStyle(fontFamily:'Quicksand',color:_statusColor(pedido.estatus)))),
                      // Icon(LineIcons.heart_o,color: Colors.grey)
                     ],
                   ),
@@ -248,6 +251,30 @@ class _PedidosPageState extends State<PedidosPage> {
        );
      
     
+  }
+
+  Color _statusColor(String status){
+    Color _color;
+    switch(status){
+      case AppConfig.pedidoStatusNuevo:
+        _color = Colors.green[200];
+        break;
+      case AppConfig.pedidoStatusRechazado:
+        _color = Colors.redAccent;
+        break;
+      case AppConfig.pedidoStatusAceptado:
+        _color = Colors.green[400];
+        break;
+      case AppConfig.pedidoStatusEntregado:
+        _color = Colors.green;
+        break;
+      default:
+        _color = Colors.grey;
+      break;
+    }
+    // TextStyle _style = TextStyle(fontFamily: 'Quicksand',color:_color);
+    // return _style;
+    return _color;
   }
  
 }

@@ -62,9 +62,7 @@ class PedidoProvider{
       PedidoModel pedido = PedidoModel.fromJson(json.decode(response.body));
       
       //insert only order(new order) into hive
-
-
-      _dbProvider.insertPedido(pedido.pedidos.values.toList()[0]);
+       _dbProvider.insertPedido(pedido.pedidos.values.toList()[0]);
       // await  _notificationService.getNotifications();
       // await  _notificationService.loadNotifi();
       return true;
@@ -73,7 +71,7 @@ class PedidoProvider{
   }
 
 
-  Future<List<Pedido>> getPedidos()async{
+  Future<bool> getPedidos()async{
     final url = "${AppConfig.base_url}/api/client/pedidos"; 
     final token = await _storage.read('token');
 
@@ -86,17 +84,54 @@ class PedidoProvider{
       url, 
       headers: headers,); 
     
-    print("*****************MOSTRANDO PEDIDOS DESPUES DEL LOGIN******************");
-    print(response.body);
-
-    if(response.body.contains('pedidos') && response.body.contains('id')){
+    print("*****************GUARDANDO PEDIDOS DESPUES DEL LOGIN******************");
+    print("imprimiendo respuesta: "+response.body);
+    
+    if(response.body.contains('message')){
+      return false;
+    }
+    if(response.body.contains('pedidos')){
+      print("ENCONTRANDO PEDIDOS");
+      
       PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
       //insert all orders into hive
       _dbProvider.insertPedidos(pedidos.pedidos);
+      return true;
     }else{
-      return[];
+      return false;
     }
   }
+
+
+  Future<Pedido> findPedido(int idPedido)async{
+    final url = "${AppConfig.base_url}/api/client/find_order?id_pedido=$idPedido"; 
+    final token = await _storage.read('token');
+
+     Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Content-Type" : "application/json",
+      "Accept": "application/json",}; 
+
+    final response = await http.get(
+      url, 
+      headers: headers,
+      ); 
+    
+    print("*****************BUSCANDO PEDIDO******************");
+    print("imprimiendo respuesta: "+response.body);
+    
+    if(response.body.contains('message')){
+      return null;
+    }
+    if(response.body.contains('pedidos')){
+      PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
+      Pedido p = pedidos.pedidos.values.toList()[0];
+      return p;
+    }else{
+      return null;
+    }
+  }
+
 }
 
 

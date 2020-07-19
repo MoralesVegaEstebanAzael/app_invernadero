@@ -8,6 +8,7 @@ import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
 import 'package:app_invernadero/src/models/pedido/detalle.dart';
 import 'package:app_invernadero/src/models/pedido/pedido.dart';
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
+import 'package:app_invernadero/src/models/pedido/status.dart';
 import 'package:app_invernadero/src/models/producto_model.dart';
 import 'package:app_invernadero/src/models/notification_model.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,6 +26,17 @@ class DBProvider{
 
   Box pedidoBox;
 
+   deleteAllBox(){
+    favoriteBox.clear();
+    itemsShoppingBox.clear();
+    dataBaseBox.clear();
+    clientBox.clear();
+    favoriteBox.clear();
+    productBox.clear();
+    notificationBox.clear();
+    featuresBox.clear();
+    pedidoBox.clear();
+  }
 
   List<FavoriteModel> _favoritesList;
 
@@ -52,8 +64,10 @@ class DBProvider{
     Hive.registerAdapter(PropertiesAdapter());
     Hive.registerAdapter(PedidoAdapter());
     Hive.registerAdapter(DetallePedidoAdapter());
+    Hive.registerAdapter(StatusAdapter());
     Hive.registerAdapter(PedidoModelAdapter());
 
+   
     //shoppingCartBox= await Hive.openBox("shoppingCart");
     dataBaseBox = await Hive.openBox("db");
 
@@ -69,6 +83,7 @@ class DBProvider{
 
     pedidoBox = await Hive.openBox("pedido");
 
+    
     return true;
   }
   
@@ -216,6 +231,7 @@ class DBProvider{
     favoriteBox.clear();
   }
   
+ 
 
   List getFavorites(){
     Map mapa =  favoriteBox.toMap();
@@ -468,7 +484,7 @@ class DBProvider{
   //***PEDIDOS - DETALLES****//
 
   insertPedidos(Map<String, Pedido> entries)async{
-    await pedidoBox.putAll(entries);
+    await pedidoBox.putAll(entries);  
   }
 
   insertPedido(Pedido pedido)async{
@@ -477,16 +493,24 @@ class DBProvider{
     print("longitud de box pedido ${pedidoBox.length}");
   }
 
+  updatePedido(Pedido pedido)async{
+    await pedidoBox.put(pedido.id, pedido);
+  }
+
   Future<List<Pedido>> pedidosList()async{
     Map map =  pedidoBox.toMap();
     List<Pedido> pedidos =  map.values.toList().cast();
+    pedidos.sort((b, a) => a.createdAt.compareTo(b.createdAt));
+    print("pedidos length: ${pedidos.length}");
     return pedidos;
   }
+  
 
   bool  pedidosIsEmpty(){
     return pedidoBox.isEmpty;
   }
   
+
   List getDetailsP(){
     Map mapa =  pedidoBox.toMap();
     List favData = List();
@@ -509,6 +533,10 @@ class DBProvider{
     });  
      return lista;
 
+
+
   }
+
+  
 
 }

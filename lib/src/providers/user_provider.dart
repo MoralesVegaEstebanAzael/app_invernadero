@@ -94,8 +94,8 @@ class UserProvider{
         await this.fcmToken(fcmToken: fcmToken);
         
         //obtener pedidos de la bd remota
-        await pedidoProvider.getPedidos();
-
+        final res = await pedidoProvider.getPedidos();
+        res?print("todo bien"):print("Hubo un problema al recuperar los pedidos");
        //  return {'ok':false};
       return {'ok':true, 'celular' : decodedResp};
       }else{
@@ -187,14 +187,20 @@ class UserProvider{
        
         
         //delete fcm token
+
         fcm.deleteToken();
         //set state ->> fcm token 
         final fcmT = await fcm.getFCMToken();
         
         await this.deleteFcmToken(fcmToken: fcmT);
-        await _storage.delete('token');
-        _storage.sesion = false;
         
+        
+        _dbProvider.deleteAllBox();
+
+
+        await _storage.delete('token'); 
+        _storage.sesion = false;
+
         return {'ok':true, 'celular' : decodedResp};
       }else{
         return {'ok':false, 'mensaje' : decodedResp['message']};
@@ -401,6 +407,9 @@ class UserProvider{
     print("MARK AS READ****");
     print(response.body);
 
+    if(response.body.contains("message")){
+      return [];
+    }
 
     if(response.body.contains("notifications") && response.body.contains("id")){
       final Map<dynamic,dynamic> decodeData = json.decode(response.body)['notifications'];

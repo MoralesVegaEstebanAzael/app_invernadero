@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
+import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:app_invernadero/src/services/notifications_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -32,10 +34,12 @@ class PushNotificationsProvider{
 
   initNotifications(){
     NotificationService _notificationService = NotificationService();
+    PedidosBloc pedidosBloc = PedidosBloc();
+
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
       onMessage: ( info ) async {
-
+        //**APLICACION ABIERTA */
         print("====ON MESSAGE===");
         print(info);
         await  _notificationService.getNotifications();
@@ -43,7 +47,9 @@ class PushNotificationsProvider{
        //print(info['data']);
         await  _notificationService.loadNotifi();
         // print(info);
-
+          final idPedido = info['data']['id_pedido'];
+          if(idPedido!=null)
+            pedidosBloc.updatePedido(idPedido);
         // String argument='no-data';
         // if(Platform.isAndroid){ 
         //   argument = info['data']['comida']??'no-data';
@@ -58,7 +64,6 @@ class PushNotificationsProvider{
         print("====ON LAUNCH===");
 
         //await  _notificationService.getNotifications();
-        
         print(info);
 
 
@@ -75,7 +80,7 @@ class PushNotificationsProvider{
       //
       onResume: ( info ) async {
 
-        //
+        //APP DESTRUIDA Y EN SEGUNDO PLANO AL DARLE CLICK
         print("====ON RESUME===");
         print(info);
 
@@ -83,6 +88,14 @@ class PushNotificationsProvider{
         if(tipo=='pedido'){
           await  _notificationService.getNotifications();
           await  _notificationService.loadNotifi();
+
+          String idPedido = info['data']['id_pedido'];
+          if(idPedido!=null)
+            pedidosBloc.updatePedido(int.parse(idPedido));
+          
+          
+          ///update pedido only
+          
         }
       }
     );

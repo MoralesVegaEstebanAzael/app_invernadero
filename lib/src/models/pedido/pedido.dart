@@ -1,5 +1,6 @@
 import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/pedido/detalle.dart';
+import 'package:app_invernadero/src/models/pedido/status.dart';
 import 'package:hive/hive.dart';
 part 'pedido.g.dart';
 
@@ -28,7 +29,8 @@ class Pedido {
     double totalPagado;
     @HiveField(9)
     List<Detalle> detalles;
-
+    @HiveField(10)
+    List<Status> status;
 
     Pedido({
         this.id,
@@ -41,6 +43,7 @@ class Pedido {
         this.idVenta,
         this.totalPagado,
         this.detalles,
+        this.status
     });
 
    
@@ -56,8 +59,10 @@ class Pedido {
         idVenta: json["idVenta"] == null ? null : json["idVenta"],
         totalPagado: json["totalPagado"]==null?0.0: json["totalPagado"].toDouble(),
         detalles: List<Detalle>.from(json["detalles"].map((x) => Detalle.fromJson(x))),
+        status: List<Status>.from(json["status"].map((x) => Status.fromJson(x))),
+        
     );
-
+    
     Map<String, dynamic> toJson() => {
         "id": id,
         "id_cliente": idCliente,
@@ -69,6 +74,7 @@ class Pedido {
         "idVenta": idVenta == null ? null : idVenta,
         "totalPagado": totalPagado,
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
+        "status": List<dynamic>.from(status.map((x) => x.toJson())),
     };
 }
 

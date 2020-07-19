@@ -1,12 +1,15 @@
+import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/pedido/detalle.dart';
 import 'package:app_invernadero/src/models/pedido/pedido.dart'; 
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
+import 'package:app_invernadero/src/models/pedido/status.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:app_invernadero/src/widgets/my_appbar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart'; 
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -45,7 +48,10 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
       body: _pedidoDetalle()
     );
   }
- 
+
+
+  
+
   Widget _pedidoDetalle(){
   TextStyle _styleTitle = TextStyle(color: MyColors.BlackAccent,fontFamily: 'Quicksand',fontWeight: FontWeight.w700,fontSize: _responsive.ip(2));
      return Container(
@@ -116,8 +122,14 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
               ],
             )
           ),
+          // _timeLine()
           SingleChildScrollView(
-            child: _linea(),
+            child: Stack(
+              children:<Widget>[
+                _linea(),
+                Positioned.fill(child: _linea2(),)
+              ]
+            ),
           ), 
          ],
        ),
@@ -183,6 +195,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
    
 
 Widget _linea(){
+  
    return  Container(
      padding: const EdgeInsets.all(10),
      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
@@ -195,11 +208,11 @@ Widget _linea(){
                 alignment: TimelineAlign.left,
                 isFirst: true,
                 topLineStyle: LineStyle(
-                  color: MyColors.GreenAccent
+                  color: Colors.white
                 ),
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  color: MyColors.GreenAccent,
+                  color: Colors.white,
                   indicatorY: 0.2, 
                 ), 
                 rightChild:  Container(
@@ -211,8 +224,10 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.green[100],size: 50,), 
-                            Icon(LineIcons.check, color: Colors.white70,)
+                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(LineIcons.check, color: Colors.white,)
+                            
+                          
                           ],
                         ),
                       ),  
@@ -220,13 +235,13 @@ Widget _linea(){
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                              Text(
-                          "Pedido confirmado",
-                          style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
+                          "pedido nuevo",
+                          style: TextStyle(color:Colors.white ,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
                           ),
                         ), 
                         Text(
-                          "20-Dec-2029",
-                           style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
+                          "2020-07-18 17:18:58.000",
+                           style: TextStyle(color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
                         ), 
                           ],
                         )
@@ -239,11 +254,11 @@ Widget _linea(){
              TimelineTile(
                 alignment: TimelineAlign.left, 
                 topLineStyle: LineStyle(
-                  //color: MyColors.GreenAccent
+                color: Colors.white
                 ),
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  //color: MyColors.GreenAccent,
+                  color: Colors.white,
                   indicatorY: 0.3,  
                 ), 
                 rightChild:  Container(
@@ -255,8 +270,8 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
-                            Icon(LineIcons.clipboard, color: Colors.white70,)
+                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(LineIcons.clipboard, color: Colors.white,)
                           ],
                         ),
                       ),  
@@ -264,13 +279,13 @@ Widget _linea(){
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                              Text(
-                          "Preparando pedido",
-                          style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
+                          "pedido aceptado",
+                          style: TextStyle(color: Colors.white, fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
                           ),
                         ), 
                         Text(
-                          "20-Dec-2029",
-                           style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
+                          "2020-07-18 17:18:58.000",
+                           style: TextStyle(color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
                         ), 
                           ],
                         )
@@ -280,59 +295,19 @@ Widget _linea(){
                   ),
                 ),
               ), 
-               TimelineTile(
-                alignment: TimelineAlign.left, 
-                topLineStyle: LineStyle(
-                  //color: MyColors.GreenAccent
-                ),
-                indicatorStyle: const IndicatorStyle(
-                  width: 20,
-                  //color: MyColors.GreenAccent,
-                  indicatorY: 0.3,  
-                ), 
-                rightChild:  Container(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
-                      children: [
-                        Container(
-                        child:  Stack(       
-                          alignment: Alignment.center,           
-                          children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
-                            Icon(LineIcons.truck, color: Colors.white70,)
-                          ],
-                        ),
-                      ),  
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                             Text(
-                          "Pedido en camino",
-                          style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
-                          ),
-                        ), 
-                        Text(
-                          "20-Dec-2029",
-                           style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
-                        ), 
-                          ],
-                        )
-                       
-
-                      ],  
-                  ),
-                ),
-              ), 
-               
+             
              TimelineTile(
+                
                 alignment: TimelineAlign.left, 
                 isLast: true,
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
-                  //color: MyColors.GreenAccent,
+                  color: Colors.white,
                   indicatorY: 0.4,  
                 ), 
+                topLineStyle: LineStyle(
+                color: Colors.white
+                ),
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Row(
@@ -342,8 +317,8 @@ Widget _linea(){
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
-                            Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
-                            Icon(LineIcons.home, color: Colors.white70,)
+                            Icon(Icons.brightness_1,color:Colors.white,size: 50,), 
+                            Icon(LineIcons.home, color: Colors.white,)
                           ],
                         ),
                       ),  
@@ -351,13 +326,13 @@ Widget _linea(){
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                              Text(
-                          "Pedido entregado",
-                          style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
+                          "pedido entregado",
+                          style: TextStyle(color: Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
                           ),
                         ), 
                         Text(
-                          "20-Dec-2029",
-                           style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
+                          "2020-07-18 17:18:58.000",
+                           style: TextStyle(color:Colors.white, fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
                         ), 
                           ],
                         )
@@ -371,6 +346,117 @@ Widget _linea(){
             ], 
         ),
    );
+  }
+   
+
+  _timeLine(){
+    return  Container(
+      padding: const EdgeInsets.all(10),
+      height: 400,
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      child: ListView.builder(
+        itemCount: _pedido.status.length,
+        itemBuilder: (BuildContext context,int index){
+          Status status = _pedido.status[index];
+          return Expanded(child: _element(status));
+        }
+        ),
+    );
+   }
+
+
+  _element(Status status){
+    return TimelineTile(
+      alignment: TimelineAlign.left,
+      isFirst: status.estatus==AppConfig.pedidoStatusNuevo? true:false,
+      isLast: status.estatus==AppConfig.pedidoStatusEntregado?true:false,
+      topLineStyle: LineStyle(
+        color: MyColors.GreenAccent
+      ),
+      indicatorStyle: const IndicatorStyle(
+        width: 20,
+        color: MyColors.GreenAccent,
+        indicatorY: 0.2, 
+      ), 
+      rightChild:  Container(
+        padding: const EdgeInsets.only(bottom: 15),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+            children: [
+              Container(
+              child:  Stack(       
+                alignment: Alignment.center,           
+                children: <Widget>[
+                  Icon(Icons.brightness_1,color:Colors.green[400],size: 50,), 
+                  Icon(_iconStatus(status.estatus), color: Colors.white70,)
+                ],
+              ),
+            ),  
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                    Text(
+                "pedido ${status.estatus.toLowerCase()}",
+                style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w100,fontSize: _responsive.ip(1.8), 
+                ),
+              ), 
+              Text(
+                status.createdAt.toString(),
+                  style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
+              ), 
+                ],
+              )
+              
+
+            ],  
+        ),
+      ),
+    );
+  }
+
+  _iconStatus(String status){
+    switch(status){
+      case AppConfig.pedidoStatusNuevo:
+        return LineIcons.check;
+      case AppConfig.pedidoStatusAceptado:
+        return  LineIcons.clipboard;
+      case AppConfig.pedidoStatusRechazado:
+        return  LineIcons.close;
+      case AppConfig.pedidoStatusEntregado:
+        return  LineIcons.home;
+    }
+  }
+
+
+  Widget _linea2(){
+  
+    return Container(
+        padding: const EdgeInsets.all(10),
+     margin: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+      child: new Column(
+  mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        // new Padding(
+        //     padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        //     child: new TextField(
+        //       decoration: new InputDecoration(
+        //           hintText: "Type in here!"
+        //       ),
+        //     )
+        // ),
+        new Expanded(child: ListView.builder(
+        
+        itemCount: _pedido.status.length,
+        itemBuilder: (BuildContext context,int index){
+          Status status = _pedido.status[index];
+          return _element(status);
+        }
+        ))
+      ],
+   ),
+    );
   }
    
 }

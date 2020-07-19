@@ -71,12 +71,30 @@ class AppConfig{
   static const int hive_type_17 =17;
   static const String hive_adapter_17 = "PedidoModelAdapter";
 
+  
+  static const int hive_type_18=18;
+  static const String hive_adapter_18 = "DateStatusOrderModelAdapter";
 
+  static const int hive_type_19=19;
+  static const String hive_adapter_19 = "StatusAdapter";
+
+
+  
   //** MAPBOX */
   static const String mapbox_api_token='pk.eyJ1IjoiYXphZWxtb3JhbGVzcyIsImEiOiJjazhqNmdwZ3UwMGN3M2VxYnNkNWp2cW85In0.QrGCrwp63Tf0kU2ceIjIww';
 
 
-  static const List<String> type_notifications= ['pedido','promocion','producto'];                               
+  static const List<String> type_notifications= ['pedido','promocion','producto'];       
+
+
+
+
+  static const String pedidoStatusRechazado = 'Rechazado';
+  static const String pedidoStatusAceptado = 'Aceptado'; 
+  static const String pedidoStatusNuevo = 'Nuevo';
+  static const String pedidoStatusEntregado = 'Entregado';   
+
+
 }
 
 //physics : BouncingScrollPhysics

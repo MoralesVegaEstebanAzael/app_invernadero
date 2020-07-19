@@ -45,8 +45,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
     super.initState();
     initializeDateFormatting();
   }
-
-
+  
+  
   @override
   void didChangeDependencies(){ 
     responsive = Responsive.of(context); 
@@ -65,6 +65,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) { 
     return Scaffold( 
+      backgroundColor: Colors.white,
       appBar: _appBar(), 
       body: GestureDetector(
         onTap: (){
