@@ -531,10 +531,19 @@ class DBProvider{
         lista = pedido.detalles.where((detalle) => detalle.idPedido == pedido.id).toList(); 
       }
     });  
-     return lista;
+     return lista; 
+  }
 
+  List<Status> getStatus(int idPedido){
+    List<Status> estatus = List();
 
-
+    pedidoBox.toMap().forEach((k,v){
+      Pedido pedido =v;
+      if(pedido.id == idPedido){
+        estatus = pedido.status.where((status) => status.idPedido == pedido.id).toList();  
+      }
+    });
+    return estatus;
   }
 
   

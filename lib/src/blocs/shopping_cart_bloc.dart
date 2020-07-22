@@ -200,11 +200,11 @@ class ShoppingCartBloc{
     return false;
   }
   
-  Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items )async{
+  Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items , String tipoEntrega)async{
     if(information()){ //verificar que el usuario tenga sus datos
       print("haciendo pedido");
       PedidoProvider pp = PedidoProvider();
-      bool f = await pp.pedido(items);
+      bool f = await pp.pedido(items, tipoEntrega);
       if(f)
         return {'ok':1, 'message' : 'Pedido realizado'};
       return {'ok':0,'message' : 'Ha ocurrido un problema con la peticioón'};

@@ -10,6 +10,7 @@ import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:app_invernadero/src/widgets/my_appbar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart'; 
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -38,6 +39,11 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
     }
     
     _pedidosBloc.cargarDetalles(_pedido.id);
+
+    print("#################33");
+    print(_pedido.estatus);
+    print("pedidos estatus");
+    _pedidosBloc.status(_pedido.id);
   }
   
   @override
@@ -127,7 +133,7 @@ class _PedidoDetalleState extends State<PedidoDetalle> {
             child: Stack(
               children:<Widget>[
                 _linea(),
-                Positioned.fill(child: _linea2(),)
+                Positioned.fill(child: _linea2() )
               ]
             ),
           ), 
@@ -218,7 +224,7 @@ Widget _linea(){
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
                       children: [
                         Container(
                         child:  Stack(       
@@ -259,12 +265,12 @@ Widget _linea(){
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
                   color: Colors.grey,
-                  indicatorY: 0.2,  
+                  indicatorY: 0.4,  
                 ), 
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
                       children: [
                         Container(
                         child:  Stack(       
@@ -287,7 +293,7 @@ Widget _linea(){
                           "2020-07-18 17:18:58.000",
                            style: TextStyle(color:Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
                         ), 
-                          ],
+                          ], 
                         )
                        
 
@@ -303,7 +309,7 @@ Widget _linea(){
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
                   color: Colors.grey,
-                  indicatorY: 0.2,  
+                  indicatorY: 0.4,  
                 ), 
                 topLineStyle: LineStyle(
                 color: Colors.grey
@@ -311,7 +317,7 @@ Widget _linea(){
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
                       children: [
                         Container(
                         child:  Stack(       
@@ -380,15 +386,15 @@ Widget _linea(){
         indicatorY: 0.2, 
       ), 
       rightChild:  Container(
-        padding: const EdgeInsets.only(bottom: 15),
+        padding: const EdgeInsets.only(bottom: 15, left: 2),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
+            mainAxisAlignment: MainAxisAlignment.spaceAround, 
             children: [
               Container(
               child:  Stack(       
                 alignment: Alignment.center,           
                 children: <Widget>[
-                  Icon(Icons.brightness_1,color:Colors.green[400],size: 50,), 
+                  Icon(Icons.brightness_1,color:Colors.green[400],size: 52,), 
                   Icon(_iconStatus(status.estatus), color: Colors.white70,)
                 ],
               ),
@@ -402,7 +408,8 @@ Widget _linea(){
                 ),
               ), 
               Text(
-                status.createdAt.toString(),
+                 new DateFormat.EEEE('es').add_M().format(status.createdAt) + " a las: "+new DateFormat.jm().format(status.createdAt), 
+                // status.createdAt.toString(),
                   style: TextStyle(fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.5),)
               ), 
                 ],

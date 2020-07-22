@@ -28,8 +28,10 @@ class Pedido {
     @HiveField(8)
     double totalPagado;
     @HiveField(9)
-    List<Detalle> detalles;
+    String tipoEntrega;
     @HiveField(10)
+    List<Detalle> detalles;
+    @HiveField(11)
     List<Status> status;
 
     Pedido({
@@ -42,6 +44,7 @@ class Pedido {
         this.updatedAt,
         this.idVenta,
         this.totalPagado,
+        this.tipoEntrega,
         this.detalles,
         this.status
     });
@@ -58,6 +61,7 @@ class Pedido {
         updatedAt: DateTime.parse(json["updated_at"]),
         idVenta: json["idVenta"] == null ? null : json["idVenta"],
         totalPagado: json["totalPagado"]==null?0.0: json["totalPagado"].toDouble(),
+        tipoEntrega: json['tipo_entrega'],
         detalles: List<Detalle>.from(json["detalles"].map((x) => Detalle.fromJson(x))),
         status: List<Status>.from(json["status"].map((x) => Status.fromJson(x))),
         
@@ -73,6 +77,7 @@ class Pedido {
         "updated_at": updatedAt.toIso8601String(),
         "idVenta": idVenta == null ? null : idVenta,
         "totalPagado": totalPagado,
+        "tipo_entrega": tipoEntrega,
         "detalles": List<dynamic>.from(detalles.map((x) => x.toJson())),
         "status": List<dynamic>.from(status.map((x) => x.toJson())),
     };
