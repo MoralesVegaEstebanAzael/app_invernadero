@@ -1,8 +1,7 @@
-
-
 import 'package:app_invernadero/src/models/pedido/detalle.dart';
 import 'package:app_invernadero/src/models/pedido/pedido.dart';
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
+import 'package:app_invernadero/src/models/pedido/status.dart';
 import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:rxdart/rxdart.dart';
@@ -28,6 +27,9 @@ class PedidosBloc {
   Stream<bool> get cargando => _cargandoController.stream;
   Stream<List<Detalle>> get detalleStream => _detalleController.stream;
 
+  final _statusController = new BehaviorSubject<List<Status>>();
+  Stream<List<Status>> get statusStream => _statusController.stream;
+
   void cargarPedidos() async{
     final pedidos = await _dbProvider.pedidosList();
     _pedidosController.sink.add(pedidos);
@@ -40,6 +42,11 @@ class PedidosBloc {
       await _dbProvider.updatePedido(pedido); //update local
       await cargarPedidos();
     }
+  }
+
+  void status(int idPedido) async {
+    final status = await _dbProvider.getStatus(idPedido);
+    _statusController.sink.add(status);
   }
 
 
@@ -56,5 +63,6 @@ class PedidosBloc {
     _pedidosController.close();
     _cargandoController.close();
     _detalleController.close();
+    _statusController.close();
   }
 }

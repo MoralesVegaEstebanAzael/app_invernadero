@@ -23,13 +23,16 @@ class PedidoProvider{
   final _dbProvider = DBProvider();
     // NotificationService _notificationService = NotificationService();
 
-  Future<bool> pedido(List<ItemShoppingCartModel> listItems)async{
+  Future<bool> pedido(List<ItemShoppingCartModel> listItems, String tipoEntrega)async{
     final url = "${AppConfig.base_url}/api/client/pedido_create"; 
     final token = await _storage.read('token');
     List<int> list = await _dbProvider.getItemsSCid(); //ids
     List<double> cantidades = await _dbProvider.getItemsSCcantidades(); // cantidades
     List<String> unidades = await _dbProvider.getItemsSCmedidas(); //unidades caja kilo
-
+    
+    print(list);
+    print(cantidades);
+    print(unidades);
 
 
     if(list==null || list.isEmpty){
@@ -47,10 +50,12 @@ class PedidoProvider{
         {
         "productos" :list ,
         "cantidades":cantidades,
-        "unidades":unidades
+        "unidades":unidades, 
+        "tipoEntrega": tipoEntrega
         }
         )
     );
+    print('--------------${tipoEntrega}');
     print("*****************HACIENDO PEDIDO******************");
     print(response.body);
 
@@ -131,7 +136,9 @@ class PedidoProvider{
     if(response.body.contains('pedidos')){
       PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
       Pedido p = pedidos.pedidos.values.toList()[0];
-      flag=false;
+      print("2222222222222222222222222222222222");
+      print(p.status);
+      print("2222222222222222222222222222222222");
       return p;
     }else{
       return null;

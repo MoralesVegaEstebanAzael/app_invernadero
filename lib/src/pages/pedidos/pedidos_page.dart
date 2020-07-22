@@ -257,13 +257,13 @@ class _PedidosPageState extends State<PedidosPage> {
     Color _color;
     switch(status){
       case AppConfig.pedidoStatusNuevo:
-        _color = Colors.green[200];
+        _color = Colors.green[400]; 
         break;
       case AppConfig.pedidoStatusRechazado:
         _color = Colors.redAccent;
         break;
       case AppConfig.pedidoStatusAceptado:
-        _color = Colors.green[400];
+        _color = Colors.orange[800];
         break;
       case AppConfig.pedidoStatusEntregado:
         _color = Colors.green;

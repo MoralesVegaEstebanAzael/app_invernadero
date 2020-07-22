@@ -31,6 +31,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
   bool _isLoading=false;
+  String tipo_entrega;
 
 
 
@@ -221,7 +222,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 )),
             ),
             
-            GestureDetector(
+            GestureDetector( 
               onTap: ()=>_handleRadioValueChange(1),
                           child: Container(
                 child: Row(
@@ -236,8 +237,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         color: Colors.grey,
                         fontFamily:'Quicksand',
                         fontWeight:FontWeight.w900,
-                      ),
+                      ), 
                     ),
+                    
                   ],
                 ),
               ),
@@ -287,6 +289,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   stream: _clientBloc.dirStream ,
                   builder: (BuildContext context, AsyncSnapshot snapshot){
                     if(snapshot.hasData){
+                      tipo_entrega = snapshot.data;
+                      print("-------------------- direccion : ${tipo_entrega}" );
                       return Text(
                         snapshot.data);
                     }
@@ -409,7 +413,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     setState(() {
        _isLoading=true;
     });
-    Map response = await _shoppingCartBloc.sendPedido(itemsFinal);
+    Map response = await _shoppingCartBloc.sendPedido(itemsFinal, tipo_entrega);
     setState(() {
       _isLoading=false;
     });
@@ -449,5 +453,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
     setState(() {
       _radioValue = value;
     });
+
+    (value == 1) ? tipo_entrega='Recoger': '';
+    print("-------- ${tipo_entrega}");
   }
 }
