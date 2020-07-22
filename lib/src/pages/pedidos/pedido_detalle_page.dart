@@ -5,11 +5,14 @@ import 'package:app_invernadero/src/models/pedido/detalle.dart';
 import 'package:app_invernadero/src/models/pedido/pedido.dart'; 
 import 'package:app_invernadero/src/models/pedido/pedido_model.dart';
 import 'package:app_invernadero/src/models/pedido/status.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:flutter/material.dart';
 import 'package:app_invernadero/src/widgets/my_appbar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:line_icons/line_icons.dart'; 
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -459,4 +462,13 @@ Widget _linea(){
     );
   }
    
+   _test(int key){
+     DBProvider db = DBProvider();
+     Box box = db.pedidoBox;
+      
+     return WatchBoxBuilder(
+       box: box, builder: (BuildContext context,box){
+
+       });
+   }
 }

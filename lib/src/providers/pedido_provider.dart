@@ -102,8 +102,13 @@ class PedidoProvider{
     }
   }
 
-
+  bool flag=false;
   Future<Pedido> findPedido(int idPedido)async{
+
+    if(flag)return null;
+      flag=true;
+
+    
     final url = "${AppConfig.base_url}/api/client/find_order?id_pedido=$idPedido"; 
     final token = await _storage.read('token');
 
@@ -126,6 +131,7 @@ class PedidoProvider{
     if(response.body.contains('pedidos')){
       PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
       Pedido p = pedidos.pedidos.values.toList()[0];
+      flag=false;
       return p;
     }else{
       return null;

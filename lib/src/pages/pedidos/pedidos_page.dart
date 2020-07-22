@@ -110,7 +110,7 @@ class _PedidosPageState extends State<PedidosPage> {
     );
   }
 
-   _func(){
+  _func(){
      Navigator.of(context).push(
               new MaterialPageRoute(
                   builder:(BuildContext context) =>

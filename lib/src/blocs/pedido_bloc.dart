@@ -36,8 +36,10 @@ class PedidosBloc {
   //update pedido from remote db
   void updatePedido(int id)async{
     final pedido = await pedidoProvider.findPedido(id);
-    _dbProvider.updatePedido(pedido); //update local
-    cargarPedidos();
+    if(pedido!=null){
+      await _dbProvider.updatePedido(pedido); //update local
+      await cargarPedidos();
+    }
   }
 
 

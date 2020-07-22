@@ -47,9 +47,10 @@ class PushNotificationsProvider{
        //print(info['data']);
         await  _notificationService.loadNotifi();
         // print(info);
-          final idPedido = info['data']['id_pedido'];
+          String idPedido = info['data']['id_pedido'];
+           
           if(idPedido!=null)
-            pedidosBloc.updatePedido(idPedido);
+            pedidosBloc.updatePedido(int.parse(idPedido));
         // String argument='no-data';
         // if(Platform.isAndroid){ 
         //   argument = info['data']['comida']??'no-data';

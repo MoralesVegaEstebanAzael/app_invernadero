@@ -492,9 +492,22 @@ class DBProvider{
     await pedidoBox.put(pedido.id, pedido);
     print("longitud de box pedido ${pedidoBox.length}");
   }
-
+  bool flag=false;
   updatePedido(Pedido pedido)async{
-    await pedidoBox.put(pedido.id, pedido);
+    //  if(flag)return null;
+    //   flag=true;
+    if(pedido!=null){
+      await pedidoBox.put(pedido.id, pedido);
+      flag=false;
+    }
+  }
+
+  deleteInsertPedido(Pedido pedido)async{
+    Pedido p = await pedidoBox.get(pedido.id);
+    if(p!=null){
+      await pedidoBox.delete(pedido.id);
+      await pedidoBox.put(pedido.id, pedido);
+    }
   }
 
   Future<List<Pedido>> pedidosList()async{
