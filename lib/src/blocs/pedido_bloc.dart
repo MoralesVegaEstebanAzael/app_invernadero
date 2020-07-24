@@ -32,6 +32,9 @@ class PedidosBloc {
 
   void cargarPedidos() async{
     final pedidos = await _dbProvider.pedidosList();
+    pedidos.forEach((v){
+      print(v.id);
+    });
     _pedidosController.sink.add(pedidos);
   }
 
@@ -39,11 +42,19 @@ class PedidosBloc {
   void updatePedido(int id)async{
     final pedido = await pedidoProvider.findPedido(id);
     if(pedido!=null){
-      await _dbProvider.updatePedido(pedido); //update local
+      print("Actualizando.....");
+     // await _dbProvider.updatePedido(pedido); //update local
       await cargarPedidos();
+    }else{
+      print("A ocurrido un problema al buscar el pedido");
     }
   }
 
+  void putPedido(Pedido p)async{
+    await  _dbProvider.updateOrder(p);
+    cargarPedidos();
+  }
+  
   void status(int idPedido) async {
     final status = await _dbProvider.getStatus(idPedido);
     _statusController.sink.add(status);

@@ -436,9 +436,14 @@ class DBProvider{
   }
   
   void markAsRead(NotificacionModel notificacionModel){
+    print("Actualizandooo notificacion marcando como leida...");
     NotificacionModel notification = notificationBox.get(notificacionModel.id);
-    notification.readAt = notification.readAt;
-    notificationBox.put(notification.id, notification);
+    if(notification!=null)
+      notification.readAt = notification.readAt;
+
+    notificacionModel.data = notification.data;
+    
+    notificationBox.put(notification.id, notificacionModel);
   }
 
 
@@ -487,28 +492,35 @@ class DBProvider{
     await pedidoBox.putAll(entries);  
   }
 
-  insertPedido(Pedido pedido)async{
-    print("Guardando pedidooooo");
-    await pedidoBox.put(pedido.id, pedido);
-    print("longitud de box pedido ${pedidoBox.length}");
-  }
-  bool flag=false;
-  updatePedido(Pedido pedido)async{
-    //  if(flag)return null;
-    //   flag=true;
-    if(pedido!=null){
-      await pedidoBox.put(pedido.id, pedido);
-      flag=false;
-    }
+  insertAllOrders(List<Pedido> orders){
+    orders.forEach((f){
+      Pedido p =f;
+       pedidoBox.put(p.id, p);
+    });
   }
 
-  deleteInsertPedido(Pedido pedido)async{
-    Pedido p = await pedidoBox.get(pedido.id);
+  insertPedido(Pedido pedido)async{
+    print("ENTRANDO....longitud de box pedido ${pedidoBox.length}");
+    print("*************Guardando pedidooooo********************");
+    // 
+    Pedido p = pedidoBox.get(pedido.id);
+
+
     if(p!=null){
-      await pedidoBox.delete(pedido.id);
+      print("EXISTENTEEEE.....***");
+      pedido.id=p.id;
+      await pedidoBox.delete(p.id);
+      await pedidoBox.put(p.id, pedido);
+    }else{
+      print("NUEVOOOOOO*****");
       await pedidoBox.put(pedido.id, pedido);
     }
+    print("SALIENDO.......longitud de box pedido ${pedidoBox.length}");
   }
+
+  
+
+  
 
   Future<List<Pedido>> pedidosList()async{
     Map map =  pedidoBox.toMap();
@@ -559,6 +571,9 @@ class DBProvider{
     return estatus;
   }
 
+  Future updateOrder(Pedido p)async{
+    await pedidoBox.put(p.id, p);
+  }
   
 
 }

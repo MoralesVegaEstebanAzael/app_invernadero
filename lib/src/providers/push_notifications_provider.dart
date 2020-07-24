@@ -1,11 +1,15 @@
 
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_invernadero/src/blocs/pedido_bloc.dart';
+import 'package:app_invernadero/src/models/pedido/pedido.dart';
+import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:app_invernadero/src/services/notifications_service.dart';
+import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class PushNotificationsProvider{
@@ -16,7 +20,8 @@ class PushNotificationsProvider{
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final _messageStreamController = StreamController<String>.broadcast();
   Stream<String> get message => _messageStreamController.stream;
-  
+  static bool isNotified=false;
+
   getToken(){
     //send token server
     
@@ -35,22 +40,43 @@ class PushNotificationsProvider{
   initNotifications(){
     NotificationService _notificationService = NotificationService();
     PedidosBloc pedidosBloc = PedidosBloc();
+    SecureStorage secureStorage = SecureStorage();
 
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
       onMessage: ( info ) async {
         //**APLICACION ABIERTA */
+        if(isNotified)
+          return;
+        isNotified = true;
         print("====ON MESSAGE===");
         print(info);
+
+        print("iddd de notificacion");
+        print(info['data']['google.message_id']);
+
+        String notificationId = secureStorage.notificationId;
+
+        
         await  _notificationService.getNotifications();
         
        //print(info['data']);
         await  _notificationService.loadNotifi();
         // print(info);
           String idPedido = info['data']['id_pedido'];
-           
-          if(idPedido!=null)
-            pedidosBloc.updatePedido(int.parse(idPedido));
+          
+          print("**********>>>> IMPRIMIENDO PEDIDO DE PUSH <<<<<********");
+          print(info['data']['pedido']);
+
+          Pedido pedido = Pedido.fromJson(json.decode(info['data']['pedido']));
+        
+          if(pedido.id!=null){
+            pedidosBloc.putPedido(pedido);
+          }
+          // if(idPedido!=null){
+          //   print("sincronizando pedido.. ON MESSAGE");
+          //   pedidosBloc.updatePedido(int.parse(idPedido));
+          // }
         // String argument='no-data';
         // if(Platform.isAndroid){ 
         //   argument = info['data']['comida']??'no-data';
@@ -58,7 +84,7 @@ class PushNotificationsProvider{
 
         // _messageStreamController.sink.add(argument);
 
-        
+        isNotified=false;
       },
       onLaunch: ( info ) async {
         /**SEGUNDO PLANO */
@@ -85,18 +111,22 @@ class PushNotificationsProvider{
         print("====ON RESUME===");
         print(info);
 
-        final tipo = info['data']['tipo'];
-        if(tipo=='pedido'){
-          await  _notificationService.getNotifications();
-          await  _notificationService.loadNotifi();
+        String notificationId = secureStorage.notificationId;
 
-          String idPedido = info['data']['id_pedido'];
-          if(idPedido!=null)
-            pedidosBloc.updatePedido(int.parse(idPedido));
-          
-          
-          ///update pedido only
-          
+        if(notificationId!=info['data']['google.message_id']){
+          final tipo = info['data']['tipo'];
+          if(tipo=='pedido'){
+            await  _notificationService.getNotifications();
+            await  _notificationService.loadNotifi();
+
+            String idPedido = info['data']['id_pedido'];
+            if(idPedido!=null){
+              print("sincronizando pedido.. ON RESUME");
+              pedidosBloc.updatePedido(int.parse(idPedido));
+            } 
+          }
+        }else{
+          print("ya no mas bugs con FCM");
         }
       }
     );

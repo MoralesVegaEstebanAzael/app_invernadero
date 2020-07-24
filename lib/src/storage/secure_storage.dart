@@ -70,6 +70,13 @@ class SecureStorage{
     _prefs.setString('id_feature', idFeature);
   }
   
+  get notificationId{
+    return _prefs.getString('notification_id')??'';
+  }
+  set notificationId(String notificationId){
+    _prefs.setString('notification_id', notificationId);
+  }
+
   get route{
     return _prefs.getString('route')??'intro';
   }

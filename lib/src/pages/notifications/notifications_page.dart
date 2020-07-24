@@ -135,10 +135,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   DateTime myDatetime = DateTime.parse(notificacion.createdAt);  
   
-  print("${notificacion.createdAt}");
+  print("id: ${notificacion.id} notifi read: ${notificacion.readAt}");
     return Container(   
         decoration: BoxDecoration(
-          color:  (flag) ? Colors.green[50] : Colors.white,
+          color:  (flag) ? Colors.red[50] : Colors.white,
           border: Border(
           bottom: BorderSide(width: 1, color: Color.fromRGBO(228, 228, 228, 1)),
         ),),

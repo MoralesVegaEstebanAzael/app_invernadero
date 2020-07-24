@@ -107,11 +107,12 @@ class ShoppingCartBloc{
   void decItems(ItemShoppingCartModel item)async{
     if(agotado(item.producto.id))
       return;
+    
     if(item.cantidad>1)
       item.cantidad--;
     double subtotal = item.cantidad * item.producto.precioMen;
     item.subtotal = subtotal;
-
+    
     await db.updateItemSC(item);
     cargarArtic();
   }

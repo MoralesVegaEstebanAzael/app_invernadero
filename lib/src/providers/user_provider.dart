@@ -356,7 +356,7 @@ class UserProvider{
       url, 
       headers: headers,);
 
-    print(response.body);
+    print(response.body); 
     
     if(response.body.contains('error')){
       return [];
@@ -386,7 +386,7 @@ class UserProvider{
     return [];
   }
 
-   Future<List<NotificacionModel>> markAsReadNotifications(List<NotificacionModel> list) async{ 
+   Future<List<NotificacionModel>> markAsReadNotifications(List<String> list) async{ 
     final url = "${AppConfig.base_url}/api/client/notifications_mark_as_read"; 
     final token = await _storage.read('token');
     

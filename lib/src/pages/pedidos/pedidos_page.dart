@@ -224,7 +224,8 @@ class _PedidosPageState extends State<PedidosPage> {
                   Text('Pedido # ${pedido.id}', style: _styleTitle),
                   SizedBox(height: 5,),
                  // Text('${pedido.createdAt}', style: _styleSubTitle,), 
-                 Text(new DateFormat.EEEE('es').add_MMMMd().format(pedido.createdAt) + " a las: "+new DateFormat.jm().format(pedido.createdAt),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
+                 //Text(new DateFormat.EEEE('es').add_MMMMd().format(pedido.createdAt) + " a las: "+new DateFormat.jm().format(pedido.createdAt),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
+                 Text("Entrega estimada, "+new DateFormat.EEEE('es').add_MMMMd().format(pedido.fechaSolicitud),style: TextStyle(fontFamily:'Quicksand',fontWeight: FontWeight.w900, fontSize: _responsive.ip(1.6), color: Colors.grey)),
                  SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

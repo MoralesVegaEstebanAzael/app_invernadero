@@ -29,6 +29,8 @@ class NotificacionesBloc{
 
   List<NotificacionModel> unreadNotificationsList= List();
 
+  List<String> unreadListStr = List();
+
   void cargarNotificaciones() async{
     final notifications = await _dbProvider.notificationsList(); 
     _notificacionesController.sink.add(notifications);
@@ -40,9 +42,16 @@ class NotificacionesBloc{
     if(notificationsList.isNotEmpty && notificationsList!=null){
       _unreadNotificationController.sink.add(notificationsList);
       unreadNotificationsList = notificationsList;
+      objToStr(notificationsList);
     }
   }
 
+  void objToStr(List<NotificacionModel> notificationsList){
+    notificationsList.forEach((f){
+      String id = f.id;
+      unreadListStr.add(id);
+    });
+  }
   void deleteNotification(NotificacionModel notification)async{
     print("Delete ${notification.readAt}");
     if(notification.readAt!=null){
@@ -54,10 +63,10 @@ class NotificacionesBloc{
   
   void markAsReadNotifications() async {
     //update notificaciones local
-    if(unreadNotificationsList.length>0 && unreadNotificationsList!=null){
-      await _userProvider.markAsReadNotifications(unreadNotificationsList);
+    if(unreadListStr.length>0 && unreadListStr!=null){
+      await _userProvider.markAsReadNotifications(unreadListStr);
       _unreadNotificationController.add(null);
-      unreadNotificationsList.clear();
+      unreadListStr.clear();
     }
   }
 

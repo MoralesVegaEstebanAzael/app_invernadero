@@ -57,12 +57,10 @@ class PedidoProvider{
     );
     print('--------------${tipoEntrega}');
     print("*****************HACIENDO PEDIDO******************");
-    print(response.body);
+    print(response.body + "\nESTATUS: " + response.statusCode.toString());
 
     if(response.body.contains("pedidos") && response.body.contains("id")){
-      // final Map<dynamic,dynamic> decodeData = json.decode(response.body)['pedido'];
-      // final List<ProductoModel> productos = List();
-      print("Pedido realizado con exito");
+    
 
       PedidoModel pedido = PedidoModel.fromJson(json.decode(response.body));
       
@@ -97,10 +95,13 @@ class PedidoProvider{
     }
     if(response.body.contains('pedidos')){
       print("ENCONTRANDO PEDIDOS");
-      
+
       PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
       //insert all orders into hive
-      _dbProvider.insertPedidos(pedidos.pedidos);
+      //_dbProvider.insertPedidos(pedidos.pedidos);
+      
+      List<Pedido> pList = pedidos.pedidos.values.toList().cast();
+      _dbProvider.insertAllOrders(pList);
       return true;
     }else{
       return false;
@@ -110,10 +111,10 @@ class PedidoProvider{
   bool flag=false;
   Future<Pedido> findPedido(int idPedido)async{
 
-    if(flag)return null;
-      flag=true;
-
-    
+    // if(flag)return null;
+    //   flag=true;
+    try {
+          print("find pedidooo****************");
     final url = "${AppConfig.base_url}/api/client/find_order?id_pedido=$idPedido"; 
     final token = await _storage.read('token');
 
@@ -136,13 +137,21 @@ class PedidoProvider{
     if(response.body.contains('pedidos')){
       PedidoModel pedidos = PedidoModel.fromJson(json.decode(response.body));
       Pedido p = pedidos.pedidos.values.toList()[0];
-      print("2222222222222222222222222222222222");
       print(p.status);
-      print("2222222222222222222222222222222222");
       return p;
     }else{
       return null;
     }
+      } on Exception catch(e) {
+      
+          print("EXCEPTION: ${e.toString()}");
+      return null;
+      } catch(e) {
+      print("EXCEPTION: ${e.toString()}");
+      return null;
+      }
+
+  
   }
 
 }
