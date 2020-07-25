@@ -1,6 +1,6 @@
 class AppConfig{
  // static const base_url = 'http://yurtapp.herokuapp.com';
-
+  static const all_topic = 'all';
   static const base_url = 'http://ssinvernadero.herokuapp.com';  
   // static const base_url = 'https://sainvernadero.herokuapp.com';  
   static const mapbox_base_url= 'https://api.mapbox.com/geocoding/v5/mapbox.places';

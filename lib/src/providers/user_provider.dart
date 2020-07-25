@@ -88,11 +88,10 @@ class UserProvider{
         
 
         //create new firebase cloud messaging token local
-        await fcm.refreshToken();  
-        final fcmToken = await fcm.getFCMToken();
+        //await fcm.refreshToken();   
         
         await fcm.subscribeToTopic(celular);
-        
+        await fcm.subscribeToTopic(AppConfig.all_topic);
         // save new fcm token
         //await this.fcmToken(fcmToken: fcmToken);
         
