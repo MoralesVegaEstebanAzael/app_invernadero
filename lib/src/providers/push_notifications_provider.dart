@@ -22,6 +22,11 @@ class PushNotificationsProvider{
   Stream<String> get message => _messageStreamController.stream;
   static bool isNotified=false;
 
+
+
+  
+
+
   getToken(){
     //send token server
     
@@ -44,17 +49,19 @@ class PushNotificationsProvider{
   unsubscribeFromTopic(String topic){
     _firebaseMessaging.unsubscribeFromTopic(topic);
   }
-
+ 
+  
   initNotifications(){
-    NotificationService _notificationService = NotificationService();
+   
+   
     PedidosBloc pedidosBloc = PedidosBloc();
-    SecureStorage secureStorage = SecureStorage();
-
+    NotificationService _notificationService = NotificationService();
     
 
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
       onMessage: ( info ) async {
+       
         //**APLICACION ABIERTA */
         if(isNotified)
           return;
@@ -62,85 +69,53 @@ class PushNotificationsProvider{
         print("====ON MESSAGE===");
         print(info);
 
-        print("iddd de notificacion");
-        print(info['data']['google.message_id']);
+        await refreshNotification(_notificationService);
 
-        String notificationId = secureStorage.notificationId;
-
+        if(info['data']['tipo']=='pedido'){ //push notification order type
+          notifyOrder(info,pedidosBloc);
+        }
         
-        await  _notificationService.getNotifications();
-        
-       //print(info['data']);
-        await  _notificationService.loadNotifi();
-        // print(info);
-          String idPedido = info['data']['id_pedido'];
-          
-          print("**********>>>> IMPRIMIENDO PEDIDO DE PUSH <<<<<********");
-          print(info['data']['pedido']);
-
-          Pedido pedido = Pedido.fromJson(json.decode(info['data']['pedido']));
-        
-          if(pedido.id!=null){
-            pedidosBloc.putPedido(pedido);
-          }
-          // if(idPedido!=null){
-          //   print("sincronizando pedido.. ON MESSAGE");
-          //   pedidosBloc.updatePedido(int.parse(idPedido));
-          // }
-        // String argument='no-data';
-        // if(Platform.isAndroid){ 
-        //   argument = info['data']['comida']??'no-data';
-        // }
-
-        // _messageStreamController.sink.add(argument);
-
         isNotified=false;
       },
       onLaunch: ( info ) async {
         /**SEGUNDO PLANO */
         print("====ON LAUNCH===");
-
-        //await  _notificationService.getNotifications();
         print(info);
-
-
-
-        //await  _notificationService.loadNotifi();
-        //NotificationService _notificationService = NotificationService();
-
-        //await _notificationService.getNotifications();
-
-        // print(info);
-        // final notif = info['data']['argument'];
-        // print(notif);
       },
       //
       onResume: ( info ) async {
+        
+        if(isNotified) //bug fcm
+          return;
+        isNotified = true;
 
         //APP DESTRUIDA Y EN SEGUNDO PLANO AL DARLE CLICK
         print("====ON RESUME===");
         print(info);
 
-        String notificationId = secureStorage.notificationId;
+        await refreshNotification(_notificationService);
 
-        if(notificationId!=info['data']['google.message_id']){
-          final tipo = info['data']['tipo'];
-          if(tipo=='pedido'){
-            await  _notificationService.getNotifications();
-            await  _notificationService.loadNotifi();
-
-            String idPedido = info['data']['id_pedido'];
-            if(idPedido!=null){
-              print("sincronizando pedido.. ON RESUME");
-              pedidosBloc.updatePedido(int.parse(idPedido));
-            } 
-          }
-        }else{
-          print("ya no mas bugs con FCM");
+        if(info['data']['tipo']=='pedido'){ //push notification order type
+          notifyOrder(info,pedidosBloc);
         }
+       
+        isNotified=false;
+
       }
     );
 
+  }
+
+  notifyOrder(Map<String,dynamic> info,PedidosBloc pedidosBloc){
+    Pedido pedido = Pedido.fromJson(json.decode(info['data']['pedido']));
+    if(pedido.id!=null){
+      pedidosBloc.putPedido(pedido);
+    }
+  }
+
+  refreshNotification(NotificationService notificationService)async{
+    await  notificationService.getNotifications();
+    await  notificationService.loadNotifi();
   }
 
   refreshToken(){
@@ -169,16 +144,3 @@ class PushNotificationsProvider{
     
   }
 }
-
-//ePtmOnHaU6c:APA91bEwBMsVJTfM-SVfZIBJIlrCByCbsqCi4vhD_NnprDnmrQg0hPeEvgCTZfLp4IfQJ7fJdV6dz7fyTcmhMOXE3tmeXgW8Xl4qQXdQQpJyeQ9q-5nc0ghvIFdU1yrkx-6GUho7jF-y
-
-
-//ePtmOnHaU6c:APA91bEwBMsVJTfM-SVfZIBJIlrCByCbsqCi4vhD_NnprDnmrQg0hPeEvgCTZfLp4IfQJ7fJdV6dz7fyTcmhMOXE3tmeXgW8Xl4qQXdQQpJyeQ9q-5nc0ghvIFdU1yrkx-6GUho7jF-y
-
-
-//eCIXI_RLbgw:APA91bG8J-P2jPBvQ6oOG-pnDnLJwCsbOghfQ0_66U7LF-4gKlLIGeD0quDkKZQ-H8Yp8TwezEZ0i1Cv649iKdkMhSxKX0aYQlbwXKHjMqajDqnNIAjlD6yqvyCnzmpkcfb7LRCqc4u4
-
-
-
-
-//eCIXI_RLbgw:APA91bG8J-P2jPBvQ6oOG-pnDnLJwCsbOghfQ0_66U7LF-4gKlLIGeD0quDkKZQ-H8Yp8TwezEZ0i1Cv649iKdkMhSxKX0aYQlbwXKHjMqajDqnNIAjlD6yqvyCnzmpkcfb7LRCqc4u4
