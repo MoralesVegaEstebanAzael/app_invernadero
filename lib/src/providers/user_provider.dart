@@ -90,8 +90,11 @@ class UserProvider{
         //create new firebase cloud messaging token local
         await fcm.refreshToken();  
         final fcmToken = await fcm.getFCMToken();
+        
+        await fcm.subscribeToTopic(celular);
+        
         // save new fcm token
-        await this.fcmToken(fcmToken: fcmToken);
+        //await this.fcmToken(fcmToken: fcmToken);
         
         //obtener pedidos de la bd remota
         final res = await pedidoProvider.getPedidos();
@@ -190,9 +193,10 @@ class UserProvider{
 
         fcm.deleteToken();
         //set state ->> fcm token 
-        final fcmT = await fcm.getFCMToken();
+        //final fcmT = await fcm.getFCMToken();
         
-        await this.deleteFcmToken(fcmToken: fcmT);
+        // await()
+        //await this.deleteFcmToken(fcmToken: fcmT);
         
         
         _dbProvider.deleteAllBox();

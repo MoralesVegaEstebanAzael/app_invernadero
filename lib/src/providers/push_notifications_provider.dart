@@ -35,12 +35,22 @@ class PushNotificationsProvider{
     final token = await _firebaseMessaging.getToken();
     return token;
   }
+  
+  subscribeToTopic(String topic){
+    print("*********SUBCRIBIENDOSE A TOPIC $topic *********");
+    _firebaseMessaging.subscribeToTopic(topic);
+  }
 
+  unsubscribeFromTopic(String topic){
+    _firebaseMessaging.unsubscribeFromTopic(topic);
+  }
 
   initNotifications(){
     NotificationService _notificationService = NotificationService();
     PedidosBloc pedidosBloc = PedidosBloc();
     SecureStorage secureStorage = SecureStorage();
+
+    
 
     _firebaseMessaging.requestNotificationPermissions();
     _firebaseMessaging.configure(
