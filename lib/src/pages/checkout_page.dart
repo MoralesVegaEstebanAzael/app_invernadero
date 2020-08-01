@@ -3,6 +3,7 @@ import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
+import 'package:app_invernadero/src/pages/paypal/paypalPayment.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -400,11 +401,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ],
                   ),
                   ),
-                  onPressed: (_radioValue!=-1)? ()=>_confirmar():null),
+                  onPressed: (_radioValue!=-1)? ()=>_pagoPaypal():null),
             ]
           ),
         )
     );
+  }
+
+  void _pagoPaypal(){
+   Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => PaypalPayment(
+                              onFinish: (number) async {
+
+                                // payment done
+                                print('order id: '+number);
+
+                              },
+                            ),
+                          ),
+      );
   }
 
   

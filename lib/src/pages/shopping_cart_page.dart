@@ -195,7 +195,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                         ),
 
                          Expanded(
-                                    child: StreamBuilder( 
+                               child: StreamBuilder( 
                               stream: _shoppingCartBloc.total ,
                               initialData: 0 ,
                               builder: (BuildContext context, AsyncSnapshot snapshot){
@@ -310,7 +310,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           ),
         ),
         Container(
-          width: responsive.ip(10),
+          width: responsive.ip(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -325,7 +325,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               //   setState(() {});
               _shoppingCartBloc.delItem(item);
              }),
-            SizedBox(height:responsive.ip(2)),
+            //SizedBox(height:responsive.ip(1)),
             Text("\$ ${item.subtotal} MX",
               style: TextStyle(
                 fontFamily: 'Quicksand',
