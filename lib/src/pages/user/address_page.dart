@@ -90,7 +90,7 @@ class _AddressPageState extends State<AddressPage> {
     return GestureDetector(
       onTap: ()=>_setSelection(feature),
           child: Container(
-        padding: EdgeInsets.all(8),
+        padding: EdgeInsets.all(7),
         margin: EdgeInsets.symmetric(horizontal:8),
         width: _responsive.widht,
         height: _responsive.ip(8),
@@ -102,7 +102,7 @@ class _AddressPageState extends State<AddressPage> {
               children:<Widget>[
                 Icon(LineIcons.location_arrow,color: Colors.grey,),
                 Container(
-                  width: _responsive.wp(80),
+                  width: _responsive.wp(78),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,

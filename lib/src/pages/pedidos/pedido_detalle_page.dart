@@ -223,9 +223,9 @@ Widget _linea(){
                   indicatorY: 0.2, 
                 ), 
                 rightChild:  Container(
-                  padding: const EdgeInsets.only(bottom: 15),
+                  padding: const EdgeInsets.only(bottom: 17),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
                       children: [
                         Container(
                         child:  Stack(       
@@ -266,12 +266,12 @@ Widget _linea(){
                 indicatorStyle: const IndicatorStyle(
                   width: 20,
                   color: Colors.grey,
-                  indicatorY: 0.4,  
+                  indicatorY: 0.2,  
                 ), 
                 rightChild:  Container(
-                  padding: const EdgeInsets.only(bottom: 15),
+                  padding: const EdgeInsets.only(bottom: 14),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
                       children: [
                         Container(
                         child:  Stack(       
@@ -318,14 +318,14 @@ Widget _linea(){
                 rightChild:  Container(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround, 
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, 
                       children: [
                         Container(
                         child:  Stack(       
                           alignment: Alignment.center,           
                           children: <Widget>[
                             Icon(Icons.brightness_1,color:Colors.grey,size: 50,), 
-                            Icon(LineIcons.home, color: Colors.white,)
+                            //Icon(LineIcons.hom e, color: Colors.white,)
                           ],
                         ),
                       ),  
@@ -333,7 +333,7 @@ Widget _linea(){
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                              Text(
-                          "pedido entregado",
+                          "  entregado",
                           style: TextStyle(color: Colors.white,fontFamily:'Quicksand',fontWeight:FontWeight.w900,fontSize: _responsive.ip(1.8), 
                           ),
                         ), 
