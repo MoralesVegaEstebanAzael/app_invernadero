@@ -59,7 +59,11 @@ dependencies:
   feature_discovery: ^0.10.0
   highlighter_coachmark: ^0.0.3
   timeline_tile: ^0.1.2
-
+  toggle_switch: ^0.1.5
+  vector_math: ^2.0.8
+  circular_menu :
+  fl_radial_menu: ^0.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

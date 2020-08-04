@@ -1,3 +1,4 @@
+import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/favorite_model.dart';
 import 'package:app_invernadero/src/models/feature/context_model.dart';
@@ -251,7 +252,7 @@ class DBProvider{
       // _item.subtotal += item.cantidad*item.producto.precioMen;
       if(item.unidad== _item.unidad){ //
 
-        if(item.unidad){ //actualizar por cajas
+        if(item.unidad==AppConfig.uniMedidaCaja){ //actualizar por cajas
           _item.cantidad += item.cantidad;
           _item.subtotal += item.subtotal;
 
@@ -348,7 +349,7 @@ class DBProvider{
       await itemsShoppingBox.toMap().values.toList().forEach((f){
       ItemShoppingCartModel item = f;
 
-      item.unidad //por cajas
+      item.unidad==AppConfig.uniMedidaCaja //por cajas
       ?
       cantidadesList.add(double.parse(item.cantidad.toString()))
       :
@@ -363,11 +364,14 @@ class DBProvider{
     await itemsShoppingBox.toMap().values.toList().forEach((f){
       ItemShoppingCartModel item = f;
       
-      item.unidad
-      ?
-      medidasList.add("caja")
-      :
-      medidasList.add("kilo");
+      if(item.unidad==AppConfig.uniMedidaCaja){
+        medidasList.add("caja");
+      }else if(item.unidad==AppConfig.uniMedidaKilo){
+         medidasList.add("kilo");
+      }else if(item.unidad==AppConfig.uniMedidaTonelada){
+         medidasList.add("tonelada");
+      }
+     
     });
     return medidasList;
   }

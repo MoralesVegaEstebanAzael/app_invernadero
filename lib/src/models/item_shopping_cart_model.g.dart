@@ -20,7 +20,7 @@ class ItemShoppingCartAdapter extends TypeAdapter<ItemShoppingCartModel> {
       producto: fields[0] as ProductoModel,
       cantidad: fields[1] as int,
       subtotal: fields[2] as double,
-      unidad: fields[3] as bool,
+      unidad: fields[3] as String,
       kilos: fields[4] as double,
     );
   }

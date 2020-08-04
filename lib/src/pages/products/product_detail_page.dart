@@ -1,6 +1,7 @@
 
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
+import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
@@ -10,9 +11,10 @@ import 'package:app_invernadero/src/providers/db_provider.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
-import 'package:app_invernadero/src/widgets/custom_dropdown.dart';
-import 'package:app_invernadero/src/widgets/custom_slider.dart';
-import 'package:app_invernadero/src/widgets/icon_action.dart';
+import 'package:app_invernadero/src/widgets/alert_dialog_select.dart';
+import 'package:app_invernadero/src/widgets/input_text.dart';
+import 'package:fl_radial_menu/fl_radial_menu.dart' as radialm;
+import 'package:fl_radial_menu/fl_radial_menu.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,10 +25,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 
 
 import '../../../app_config.dart';
+  import 'dart:math' show pi;
 
 class ProductDetailPage extends StatefulWidget {
   
@@ -44,11 +48,23 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     int unidades=1;
     FavoritosBloc favoritosBloc;
     bool _unidad=true;
-    double _kilos=1;
+    double _kilos=10;
+    double _toneladas=1;
+
+    int currentIndex = 0;
+    PageController _pageController;
+    List<RadialMenuItem> items;
+
+    ProductoBloc productoBloc;
+    int _radioValue=-1;
+
+    String unidadM = AppConfig.uniMedidaCaja;
+    String unidad=AppConfig.uniMedidaCaja;
 
 
     @override
     void initState() {
+       _pageController = PageController();
       FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
       _dbProvider = DBProvider();
       _bottomNavBarBloc = BottomNavBloc();
@@ -62,6 +78,22 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       favoritosBloc = Provider.favoritosBloc(context);
       _shoppingCartBloc = Provider.shoppingCartBloc(context);
       super.didChangeDependencies();
+      productoBloc = Provider.productoBloc(context);
+
+      items = [
+    radialm.RadialMenuItem(Padding(padding:EdgeInsets.all(5),child: Icon(FontAwesomeIcons.box, color: Colors.white)), Colors.red,
+        (){
+          productoBloc.setIconAction(FontAwesomeIcons.box);
+        }),
+    radialm.RadialMenuItem(Icon(FontAwesomeIcons.weight, color: Colors.white), Colors.green,
+        (){
+           productoBloc.setIconAction(FontAwesomeIcons.weight);
+        }),
+    radialm.RadialMenuItem(Icon(FontAwesomeIcons.weightHanging, color: Colors.white), Colors.blue,
+        () {
+          productoBloc.setIconAction(FontAwesomeIcons.weightHanging);        }),
+  ];
+
     }
     @override
     void dispose() {
@@ -73,6 +105,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     Widget build(BuildContext context) {
       _shoppingCartBloc.countItems();
       return  Scaffold(
+        
         body: Container(
           width: double.infinity,
           height: double.infinity,
@@ -179,10 +212,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             child: Column(
                crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-              
+                
               _background(),
               _encabezado(),
               _switch(),
+              
               SizedBox(height:responsive.ip(1)),
               _control()
               // _descripcion(),
@@ -345,15 +379,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       // color: Colors.red,
       color: Colors.white,
       padding: EdgeInsets.only(left:30,right:30),
-      width: double.infinity,
+     
       height: responsive.ip(5),
+      // child: //_dropDown(),
       child: Row(
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        // mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children:<Widget>[
           _dropDown(),
-          
-          Expanded(child: Container()),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.end,
@@ -378,11 +412,36 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
+
   _control(){
     return Container(
       padding: EdgeInsets.only(left:30,right:30),
       width: double.infinity,
-      child: _unidad? Row(
+      child: StreamBuilder(
+        stream: productoBloc.uniMedidaStream ,
+        builder: (BuildContext context, AsyncSnapshot snapshot){
+          if(snapshot.hasData){
+            List<dynamic> list = snapshot.data;
+           unidad = list[0];
+
+            if(unidad==AppConfig.uniMedidaKilo){
+              return _slider();
+            }else if(unidad==AppConfig.uniMedidaTonelada){
+              return _inputNumber();
+            }
+            return _controlButton();
+
+          }else{
+            return _controlButton();
+          }
+        },
+      ),
+    );
+    
+  } 
+  
+  _controlButton(){
+    return Row(
             // mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
@@ -396,24 +455,48 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             IconButton(icon: Icon(LineIcons.plus_circle,size: responsive.ip(3.5)), onPressed: (){setState(() {
               unidades++;
             });}),
-          ],)
-          :
-         _slider()
-          ,
-    );
+          ],);
   }
+  
+    
     _dropDown(){
+      return _uniIndicator();
+    //  return Container(
+    //    height: 500,
+    //    width: double.infinity,
+    //    child: radialm.RadialMenu(items, fanout: Fanout.bottomRight),
+      
+    //  );
 
-      // return Container(
-      //   height: 50,
-      //   width: 100,
-      //   child: CustomDropdown(text: "Unidad"));
+    //   return ToggleSwitch(
+    //   minWidth: 90.0,
+    //   minHeight: 70.0,
+    //   initialLabelIndex: 2,
+    //   cornerRadius: 20.0,
+    //   activeFgColor: Colors.grey,
+    //   inactiveBgColor: Colors.white,
+    //   inactiveFgColor: Colors.grey[500],
+    //   labels: ['Cajas', 'Kg', 'Toneladas'],
+    //   icons: [
+    //     FontAwesomeIcons.boxOpen,
+    //     FontAwesomeIcons.weight,
+    //     FontAwesomeIcons.weightHanging
+    //   ],
+    //   iconSize: 20,
+    //   activeBgColors: [Colors.greenAccent, Colors.pink, Colors.purple],
+    //   onToggle: (index) {
+    //     print('switched to: $index');
+    //   },
+    // );
+
       return LiteRollingSwitch(
         value: _unidad,
         textOn: 'Caja',
         textOff: 'Kg',
+        text3:'tres',
         colorOn: miTema.accentColor,//Colors.greenAccent[700],
         colorOff:  Colors.redAccent[400],
+        color3:Colors.yellow,
         iconOn: FontAwesomeIcons.boxOpen,
         iconOff: FontAwesomeIcons.weight,
         textSize: 14.0,
@@ -423,60 +506,111 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           });
         },
         onChanged: (bool state) {
-          _unidad=state;
-          //Use it to manage the different states
-          print('Current State of SWITCH IS: $state');
 
           
+          _unidad=state;
+
         },
       );
 
-    //   return Theme(
-    //     data: Theme.of(context).copyWith(
-    //             canvasColor:Colors.grey[300],
-    //           ),
-    //           child: Container(
-    //       padding: EdgeInsets.only(left: 10,right: 10),
-    //       decoration: BoxDecoration(
-    //        color: Colors.grey[300],
-    //         borderRadius:BorderRadius.circular(15),
-    //        border: Border.all(
-    //          width: 1,
-    //          color: Colors.grey
-    //        ),
-    //       ),
-    //       child: DropdownButton<String>(
-    //       value: dropdownValue,
-          
-    //       icon: Container(
-    //         margin: EdgeInsets.only(left:5),
-    //         child: Icon(LineIcons.angle_down,color: Colors.grey,)),
-    //         iconSize: 20,
-    //         elevation: 0,
-    //         style: TextStyle(color: miTema.accentColor),
-    //         underline: Container(
-    //           height: 0,
-    //           color: miTema.primaryColor,
-    //         ),
-    //       onChanged: (String newValue) {
-    //         setState(() {
-    //           dropdownValue = newValue;
-    //         });
-    //       },
-    //       items: <String>['Kilogramos', 'Caja']
-    //           .map<DropdownMenuItem<String>>((String value) {
-    //         return DropdownMenuItem<String>(
-    //           value: value,
-    //           child: Text(value,style: TextStyle(color:Colors.black54,
-    //             fontFamily:'Quicksand',fontWeight:FontWeight.w700
-    //           ),),
-              
-    //         );
-    //       }).toList(),
-    // )
-    //     ),
-    //   );
+    
     }
+
+
+  _uniIndicator(){
+    return GestureDetector(
+      onTap: (){
+        showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialogSelect(unidad: unidad,);
+      });
+
+
+      },
+          child: StreamBuilder(
+            stream: productoBloc.uniMedidaStream ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              if(snapshot.hasData){
+
+              
+              List<dynamic> list = snapshot.data;
+              
+              unidadM = list[0];
+
+              return   Container(
+              width: responsive.ip(15),
+              decoration: BoxDecoration(
+                color: miTema.accentColor,
+                borderRadius: BorderRadius.circular(20)
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:<Widget>[
+                  Container(
+                    margin: EdgeInsets.only(left:10),
+                    child: Text(
+                
+                
+                 list[0].toString()==AppConfig.uniMedidaKilo?'Kg':list[0].toString(),
+              style:TextStyle(
+                fontSize: responsive.ip(2),
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.w900,
+
+                color: Colors.white))),
+            
+            Stack(
+              alignment: Alignment.center,
+              children:<Widget>[
+                Icon(Icons.brightness_1,color: Colors.white,size: responsive.ip(5),),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(list[1],color: miTema.accentColor),
+                )
+              ]
+            )
+          ]
+        ),
+      );
+              }else{
+                return   Container(
+        width: responsive.ip(15),
+        decoration: BoxDecoration(
+          color: miTema.accentColor,
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children:<Widget>[
+            Container(
+              margin: EdgeInsets.only(left:10),
+              child: Text( "unidad",
+              style:TextStyle(
+                fontSize: responsive.ip(2),
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.w900,
+
+                color: Colors.white))),
+            
+            Stack(
+              alignment: Alignment.center,
+              children:<Widget>[
+                Icon(Icons.brightness_1,color: Colors.white,size: responsive.ip(5),),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(FontAwesomeIcons.ruler,color: miTema.accentColor),
+                )
+              ]
+            )
+          ]
+        ),
+      );
+              }
+            },
+          ),
+    );
+  }
   _bottom(){
     return Align(
       alignment: Alignment.bottomCenter,
@@ -509,10 +643,14 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Expanded(child: 
            GestureDetector(
              onTap: (){
-                if(_unidad) //cajas
-                  _shoppingCartBloc.insertItem(producto,_unidad,unidades);
-                else
-                  _shoppingCartBloc.insertItem(producto,_unidad,_kilos);   
+                if(unidad==AppConfig.uniMedidaCaja) //cajas
+                  _shoppingCartBloc.insertItem(producto,unidadM,unidades);
+                else if(unidad==AppConfig.uniMedidaKilo){
+                 
+                  _shoppingCartBloc.insertItem(producto,unidadM,_kilos);   
+                }else if(unidad==AppConfig.uniMedidaTonelada){
+                  _shoppingCartBloc.insertItem(producto,unidadM,_toneladas);
+                }
                       setState(() {
                         
                       });
@@ -634,11 +772,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   
   
   _slider(){
-
-    // return SliderWidget(
-    //   min: 0,
-    //   max: 20
-    // );
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -664,15 +797,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   ),
   child: Slider(
     value: _kilos,
-    min: 0,
-    max: 20,
-    divisions: 40,
+    min: 10,
+    max: 19,
+    divisions: 9,
     label: '$_kilos',
     onChanged: (value) {
       setState(
         () {
           _kilos = value;
-        },
+
+          print("Agregando kilos..... $_kilos");
+        }
       );
     },
   ),
@@ -690,6 +825,36 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
     // return 
   }
+
+
+  _inputNumber(){
+
+    return StreamBuilder(
+      
+      stream: _shoppingCartBloc.toneladasStream,
+      builder: (BuildContext context,AsyncSnapshot snapshot){
+        if(snapshot.hasData)
+        _toneladas = double.parse(snapshot.data.toString());
+        else
+        _toneladas=1;
+
+        
+      return InputText(
+        inputType: TextInputType.number,
+        placeholder: 'Toneladas',
+        validator: (String text){
+        },
+        icon: FontAwesomeIcons.weightHanging,
+        onChange: _shoppingCartBloc.changeToneladas,
+        errorText: snapshot.error,
+        // inputFormatters: [maskTextInputFormatter], 
+        //               autocorrect: false, 
+      );
+    });   
+
+   
+  }
+  
    
   }
   

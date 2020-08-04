@@ -54,4 +54,11 @@ class Validators{
       rfcValid?sink.add(rfc):sink.addError("RFC invalido");
    }
  );
+
+
+ final validarToneladas=StreamTransformer<String,String>.fromHandlers(
+    handleData: (t,sink){
+      (t.length>1)?sink.add(t):sink.addError("Ingrese este campo");
+    }
+  );
 }

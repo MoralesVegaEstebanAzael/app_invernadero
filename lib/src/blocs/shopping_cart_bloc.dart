@@ -7,8 +7,10 @@ import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:app_invernadero/src/providers/producto_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:app_invernadero/src/blocs/validators.dart';
 
-class ShoppingCartBloc{
+
+class ShoppingCartBloc with Validators{
   static final ShoppingCartBloc _singleton = ShoppingCartBloc._internal();
   factory ShoppingCartBloc() {
     return _singleton;
@@ -26,6 +28,10 @@ class ShoppingCartBloc{
 
 
   final _totalFinalController = new BehaviorSubject<double>();
+
+  final _toneladasController = new BehaviorSubject<String>();
+
+
   Stream<double> get totalFinal =>_totalFinalController.stream;
 
   Stream<double> get total =>_totalController.stream;
@@ -34,17 +40,24 @@ class ShoppingCartBloc{
   Stream<List<ProductoModel>> get _scFecthStream => _shoppingCartFetchController.stream;
 
 
+  Stream<String> get toneladasStream => _toneladasController.stream.transform(validarToneladas);
+
   List<ProductoModel> scFetchList = new List();
   List<ItemShoppingCartModel> tempItems = List();
   
 
+  //insertar valores al stream
+  Function(String) get changeToneladas => _toneladasController.sink.add;
+
+  String get email =>_toneladasController.value;
 
 
-  void insertItem(ProductoModel p,bool unidades,dynamic cantidad){
+
+  void insertItem(ProductoModel p,String unidades,dynamic cantidad){
 
     if(p.cantExis>=0){
        ItemShoppingCartModel item;
-      if(unidades){ //comprando por cajas
+      if(unidades==AppConfig.uniMedidaCaja){ //comprando por cajas
         int c = int.parse(cantidad.toString());
         item = ItemShoppingCartModel(
                   producto: p,
@@ -53,13 +66,24 @@ class ShoppingCartBloc{
                   unidad: unidades,  
                 );      
       }else{
-        double kilos = double.parse(cantidad.toString());
-        item = ItemShoppingCartModel(
+        double c = double.parse(cantidad.toString());
+
+        if(unidades==AppConfig.uniMedidaKilo){
+            item = ItemShoppingCartModel(
                   producto: p,
-                  subtotal: kilos*p.precioMay,//<<-----comprando por kilos
+                  subtotal: c*p.precioMay,//<<-----comprando por kilos
                   unidad: unidades,  
-                  kilos: kilos
+                  kilos: c
                 );
+        }else if(unidades == AppConfig.uniMedidaTonelada){
+          item = ItemShoppingCartModel(
+                  producto: p,
+                  subtotal: c*AppConfig.tonelada*p.precioMay,//<<-----comprando por Toneladas
+                  unidad: unidades,  
+                  kilos: c
+                );
+        }
+      
       }
 
       db.insertItemSC(item);
@@ -94,7 +118,7 @@ class ShoppingCartBloc{
     // double subtotal = item.cantidad * item.producto.precioMen;
     // item.subtotal = subtotal;
 
-    if(item.unidad){//producto por caja
+    if(item.unidad==AppConfig.uniMedidaCaja){//producto por caja
       item.cantidad++;
       double subtotal = item.cantidad * item.producto.precioMen*AppConfig.cajaKilos;
       item.subtotal = subtotal;

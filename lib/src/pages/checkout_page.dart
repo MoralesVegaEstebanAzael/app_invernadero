@@ -179,11 +179,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
               )),
           Container(
             width: responsive.wp(20),
-            child: Text(item.unidad ?
-                  "Cajas: ${item.cantidad}"
-                  :
-                  "Kg: ${item.kilos}"
-                  )),
+            // child: Text(item.unidad ?
+            //       "Cajas: ${item.cantidad}"
+            //       :
+            //       "Kg: ${item.kilos}"
+            //       )
+                  
+                  child: Text("${item.unidad}"),
+                  ),
           Container(
               width: responsive.wp(25),
               child: Text("\$ ${item.subtotal} MX",textAlign: TextAlign.right,)),

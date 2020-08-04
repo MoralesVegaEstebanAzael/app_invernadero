@@ -1,3 +1,4 @@
+import 'package:app_invernadero/app_config.dart';
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
@@ -339,8 +340,11 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       );
   }
 
+  
   //add items or substract items
   Widget _controlButtons(int index,ItemShoppingCartModel item){
+    final myStyle = TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2));
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
@@ -363,13 +367,17 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         Container(
           
           width: responsive.ip(6),
-          child: Center(
-            
-            child: Text(
-              item.cantidad!=null? 
-              item.cantidad.toString() 
-              : 
-              item.kilos.toString()+"kg" ,style: TextStyle(fontWeight:FontWeight.bold,fontSize: responsive.ip(2)),))),
+          child: Center( 
+            child:( item.cantidad==null)
+            ?
+              (item.unidad==AppConfig.uniMedidaKilo)
+              ?
+              Text("${item.kilos} kg")
+              :
+              Text("${item.kilos} T")
+            :
+              Text("${item.cantidad} C")
+              )),
         
         SizedBox(width:responsive.ip(1)),
         GestureDetector(

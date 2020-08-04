@@ -13,10 +13,10 @@ class ItemShoppingCartModel{
   @HiveField(2)
   double subtotal;
   @HiveField(3)
-  bool unidad; //true-> cajas false->kilos
+  String unidad;
   @HiveField(4)
   double kilos;
-
+  
   ItemShoppingCartModel({
     this.producto,
     this.cantidad,

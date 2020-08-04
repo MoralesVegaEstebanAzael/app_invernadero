@@ -15,6 +15,11 @@ class AppConfig{
   static const int venta_mayoreo=10;
   static const String uni_medida= "Kg/Caja";
   static const int cajaKilos = 20;
+  static const int tonelada =1000;
+
+  static const String uniMedidaCaja = "Caja";
+  static const String uniMedidaTonelada = "Tonelada";
+  static const String uniMedidaKilo = "Kilogramo";
 
   /** serve heroku ps:exec -a yurtapp
    *  php artisan passport:keys
