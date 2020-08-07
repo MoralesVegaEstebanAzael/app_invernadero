@@ -124,7 +124,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
               
           ),
           Container(
-            width: responsive.ip(25),
+            width: responsive.ip(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,

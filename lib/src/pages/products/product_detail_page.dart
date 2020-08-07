@@ -1,5 +1,6 @@
 
 import 'package:app_invernadero/src/blocs/bottom_nav_bloc.dart';
+import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/favoritos_bloc.dart';
 import 'package:app_invernadero/src/blocs/producto_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
@@ -13,8 +14,6 @@ import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/alert_dialog_select.dart';
 import 'package:app_invernadero/src/widgets/input_text.dart';
-import 'package:fl_radial_menu/fl_radial_menu.dart' as radialm;
-import 'package:fl_radial_menu/fl_radial_menu.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +24,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 
 
@@ -41,6 +39,7 @@ class ProductDetailPage extends StatefulWidget {
 class _ProductDetailPageState extends State<ProductDetailPage> {
     ShoppingCartBloc _shoppingCartBloc;
     BottomNavBloc _bottomNavBarBloc;
+    
     Responsive responsive;
     ProductoModel producto; 
     DBProvider _dbProvider;
@@ -53,7 +52,6 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
     int currentIndex = 0;
     PageController _pageController;
-    List<RadialMenuItem> items;
 
     ProductoBloc productoBloc;
     int _radioValue=-1;
@@ -68,6 +66,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
       _dbProvider = DBProvider();
       _bottomNavBarBloc = BottomNavBloc();
+     
       super.initState();
     }
 
@@ -80,20 +79,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       super.didChangeDependencies();
       productoBloc = Provider.productoBloc(context);
 
-      items = [
-    radialm.RadialMenuItem(Padding(padding:EdgeInsets.all(5),child: Icon(FontAwesomeIcons.box, color: Colors.white)), Colors.red,
-        (){
-          productoBloc.setIconAction(FontAwesomeIcons.box);
-        }),
-    radialm.RadialMenuItem(Icon(FontAwesomeIcons.weight, color: Colors.white), Colors.green,
-        (){
-           productoBloc.setIconAction(FontAwesomeIcons.weight);
-        }),
-    radialm.RadialMenuItem(Icon(FontAwesomeIcons.weightHanging, color: Colors.white), Colors.blue,
-        () {
-          productoBloc.setIconAction(FontAwesomeIcons.weightHanging);        }),
-  ];
-
+  
     }
     @override
     void dispose() {
@@ -398,7 +384,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
 
                 ),
                 // Text("Menudeo"),
-                Text("Precio de mayoreo \$${producto.precioMay} Mx",
+                Text("Precio de mayoreos \$${producto.precioMay} Mx",
                   style:TextStyle(
                     fontSize: responsive.ip(1.5),
                     color:Colors.grey,

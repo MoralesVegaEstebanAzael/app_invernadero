@@ -256,7 +256,15 @@ class DBProvider{
           _item.cantidad += item.cantidad;
           _item.subtotal += item.subtotal;
 
-        }else{ //actualiza por kilos
+        }else if(item.unidad==AppConfig.uniMedidaKilo){ //actualiza por kilos
+        print("tratando de validar");
+          if((_item.kilos+=item.kilos)<=19){
+            _item.kilos += item.kilos;
+            _item.subtotal += item.subtotal;
+          }else{
+            print("Ya no puedes comprar por kilos compra por caja :)");
+          }
+        }else if(item.unidad==AppConfig.uniMedidaTonelada){
           _item.kilos += item.kilos;
           _item.subtotal += item.subtotal;
         }
@@ -489,6 +497,13 @@ class DBProvider{
     featuresBox.delete(feature.id);
   }
 
+
+  // Future<Feature> findFeature(String direccion){
+  //   List<Feature> list = await featuresBox.toMap().values.toList().cast();
+  //   list.forEach((f){
+  //     f.
+  //   });
+  // }
 
   //***PEDIDOS - DETALLES****//
 

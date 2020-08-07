@@ -62,7 +62,7 @@ class ShoppingCartBloc with Validators{
         item = ItemShoppingCartModel(
                   producto: p,
                   cantidad: c,
-                  subtotal: c*p.precioMen*AppConfig.cajaKilos,//<<----- kilos x caja
+                  subtotal: c*p.precioMay*AppConfig.cajaKilos,//<<----- kilos x caja
                   unidad: unidades,  
                 );      
       }else{
@@ -112,35 +112,70 @@ class ShoppingCartBloc with Validators{
   void incItems(ItemShoppingCartModel item)async{
     if(agotado(item.producto.id))
       return;
+      
+    switch(item.unidad){
+      case AppConfig.uniMedidaCaja:
+        item.cantidad++;
+        double subtotal = item.cantidad * item.producto.precioMay*AppConfig.cajaKilos;
+        item.subtotal = subtotal;
+      break;
 
-    
-    // item.cantidad++;
-    // double subtotal = item.cantidad * item.producto.precioMen;
-    // item.subtotal = subtotal;
-
-    if(item.unidad==AppConfig.uniMedidaCaja){//producto por caja
-      item.cantidad++;
-      double subtotal = item.cantidad * item.producto.precioMen*AppConfig.cajaKilos;
-      item.subtotal = subtotal;
-
-      await db.updateItemSC(item);
-      cargarArtic();
+      case AppConfig.uniMedidaKilo:
+        if(item.kilos<19){
+          item.kilos++;
+          double subtotal = item.kilos * item.producto.precioMen;
+          item.subtotal = subtotal;
+        }
+      break;
+      case AppConfig.uniMedidaTonelada:
+        item.kilos++;
+        double subtotal = item.kilos * item.producto.precioMay*AppConfig.tonelada;
+        item.subtotal = subtotal;
+      break;
     }
+
+
+    await db.updateItemSC(item);
+    cargarArtic();
   }
 
   void decItems(ItemShoppingCartModel item)async{
     if(agotado(item.producto.id))
       return;
     
-    if(item.cantidad>1)
-      item.cantidad--;
-    double subtotal = item.cantidad * item.producto.precioMen;
-    item.subtotal = subtotal;
+   
+    
+    switch(item.unidad){
+      case AppConfig.uniMedidaCaja:
+        if(item.cantidad>1)
+        item.cantidad--;
+        double subtotal = item.cantidad * item.producto.precioMay*AppConfig.cajaKilos;
+        item.subtotal = subtotal;
+      break;
+
+      case AppConfig.uniMedidaKilo:
+        if(item.kilos>1){
+          item.kilos--;
+          double subtotal = item.kilos * item.producto.precioMen;
+          item.subtotal = subtotal;
+        }
+      break;
+      case AppConfig.uniMedidaTonelada:
+        if(item.kilos>1)
+          item.kilos--;
+        double subtotal = item.kilos * item.producto.precioMay*AppConfig.tonelada;
+        item.subtotal = subtotal;
+      break;
+    }
+
+
+    await db.updateItemSC(item);
+    cargarArtic();
     
     await db.updateItemSC(item);
     cargarArtic();
   }
-
+  
   void delItem(ItemShoppingCartModel item)async{
     await db.deleteItemSC(item);
     cargarArtic();

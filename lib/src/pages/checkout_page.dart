@@ -2,7 +2,9 @@ import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/models/client_model.dart';
 import 'package:app_invernadero/src/models/item_shopping_cart_model.dart';
+import 'package:app_invernadero/src/pages/paypal/paypalPayment.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
 import 'package:app_invernadero/src/utils/colors.dart';
 import 'package:app_invernadero/src/utils/responsive.dart';
@@ -32,8 +34,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   //Stream<List<ShoppingCartModel>> _stream;
   bool _isLoading=false;
   String tipo_entrega;
-
-
+  Map<dynamic,dynamic> defaultCurrency = {"symbol": "MXN ", "decimalDigits": 2, "symbolBeforeTheNumber": true, "currency": "MXN"};
+  String total=""; 
 
   @override
   void initState() {
@@ -44,13 +46,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void didChangeDependencies() {
     responsive = Responsive.of(context);
-    // _featureBloc = Provider.featureBloc(context);
-   // _shoppingCartBloc = Provider.shoppingCartBloc(context);
-    // _shoppingCartBloc.loadItems();
-    // box = _shoppingCartBloc.box();
-
-   // _stream = _shoppingCartBloc.shoppingCartStream;
-    
     _clientBloc = Provider.clientBloc(context);
     _clientBloc.dirClient();
     super.didChangeDependencies();
@@ -62,7 +57,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
   @override
   Widget build(BuildContext context) {
-    print("Construyendi");
     return Scaffold(
       appBar: _appBar(),
       backgroundColor: Colors.white,
@@ -366,6 +360,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       stream: _shoppingCartBloc.totalFinal,
                       initialData: 0 ,
                       builder: (BuildContext context, AsyncSnapshot snapshot){
+                        total = snapshot.data.toString();
                         return
                Text( 
                           "\$ ${snapshot.data} MX",
@@ -403,11 +398,61 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ],
                   ),
                   ),
-                  onPressed: (_radioValue!=-1)? ()=>_confirmar():null),
+                  onPressed: (_radioValue!=-1)? ()=>_pagoPaypal():null),
             ]
           ),
         )
     );
+  }
+
+  void _pagoPaypal(){
+    ClientModel cliente = _clientBloc.cliente();
+
+    print("total $total");
+    print("nombre ${cliente.nombre} ${cliente.ap} ${cliente.am} ${cliente.direccion} ${cliente.celular}");
+
+    List<dynamic> list = _toList();
+    
+    
+    String totalAmount = total;
+    String subTotalAmount = total;
+    String shippingCost = '0';
+    int shippingDiscountCost = 0;
+    String userFirstName = cliente.nombre;
+    String userLastName = cliente.ap;
+    String addressCity = 'Delhi';
+    String addressStreet = 'Mathura Road';
+    String addressZipCode = '110014';
+    String addressCountry = 'Mexico';
+    String addressState = 'Oaxaca';
+    String addressPhoneNumber = cliente.celular;
+
+    Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => 
+                            PaypalPayment(
+                              onFinish: (number) async {
+                                print('order id: '+number);
+                              },
+                              list: list,
+                              totalAmount: totalAmount,
+                              subTotalAmount: subTotalAmount,
+                              shippingCost: shippingCost,
+                              shippingDiscountCost: shippingDiscountCost,
+                              userFirstName: userFirstName,
+                              userLastName: userLastName,
+                              addressCity: addressCity,
+                              addressStreet: addressStreet,
+                              addressZipCode: addressZipCode,
+                              addressCountry: addressCountry,
+                              addressState: addressState,
+                              addressPhoneNumber: addressPhoneNumber,
+
+                              tipoEntrega: tipo_entrega,
+                              itemFinal: itemsFinal,
+                            ),
+                          ),
+      );
   }
 
   
@@ -459,5 +504,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
     (value == 1) ? tipo_entrega='Recoger': '';
     print("-------- ${tipo_entrega}");
+  }
+
+  List<dynamic> _toList(){
+     List items = List();
+
+    itemsFinal.forEach((f){
+      print("mandando objetos....");
+      print("${f.producto.nombre}");
+      
+
+  String itemName = f.producto.nombre;
+  int quantity =f.cantidad!=null?f.cantidad:1;
+  double temp = f.subtotal/quantity;
+  String itemPrice = temp.toString();
+  
+       dynamic item = {
+      "name": itemName,
+      "quantity": quantity,
+      "price": itemPrice,
+      "currency": defaultCurrency["currency"]
+    };
+
+     print("mandando objetos...***.$item");
+      items.add(item);
+    });
+
+    return items;
   }
 }

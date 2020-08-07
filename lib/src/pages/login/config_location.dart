@@ -196,8 +196,9 @@ class _ConfigLocationState extends State<ConfigLocation> {
                         stream: _featureBloc.featureStream ,
                         builder: (BuildContext context, AsyncSnapshot snapshot){
                           if(snapshot.hasData){
+                            
                             feature = snapshot.data;
-
+                            Feature f =feature;
                             return  Container(
                               width: _responsive.wp(80),
                               child: Text(feature.placeName,

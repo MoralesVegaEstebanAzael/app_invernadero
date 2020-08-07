@@ -96,6 +96,7 @@ class ClientBloc with Validators{
     client.lng = feature.geometry.coordinates[0];
     client.direccion = feature.placeName;
     _storage.idFeature = feature.id; //direccion default
+
     updateClient(client);
     // insertAddress(address);
   }
@@ -111,6 +112,14 @@ class ClientBloc with Validators{
   void getClient(){
     ClientModel client =  _dbProvider.getClient(_storage.idClient);  
     _userControler.sink.add(client);
+    
+  } 
+
+  ClientModel cliente(){
+    ClientModel client =  _dbProvider.getClient(_storage.idClient);  
+    _userControler.sink.add(client);
+
+    return client;
   }
 
   void updateImagen(String url)async{
@@ -244,9 +253,7 @@ class ClientBloc with Validators{
   void dirClient(){
     ClientModel client = _dbProvider.getClient(_storage.idClient);
     _direcController.sink.add(client.direccion);
-
     Position position = Position(longitude:client.lng,latitude:client.lat);
-
     _addressPositionController.sink.add(position);
   }
 
