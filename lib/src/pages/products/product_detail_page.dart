@@ -65,7 +65,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
        _pageController = PageController();
       FlutterStatusbarcolor.setStatusBarColor(miTema.accentColor);
       _dbProvider = DBProvider();
-      _bottomNavBarBloc = BottomNavBloc();
+      _bottomNavBarBloc = BottomNavBloc();    
      
       super.initState();
     }
@@ -507,12 +507,10 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     return GestureDetector(
       onTap: (){
         showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialogSelect(unidad: unidad,);
-      });
-
-
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialogSelect(unidad: unidad,);
+        });
       },
           child: StreamBuilder(
             stream: productoBloc.uniMedidaStream ,

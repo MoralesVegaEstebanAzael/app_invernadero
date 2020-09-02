@@ -43,8 +43,11 @@ class NexmoSmsVerifyProvider{
       print(decodedResp);
       if(decodedResp.containsKey('request_id')){ 
         //inicializar Request ID & number
+        
         this.requestId = decodedResp['request_id'];
         this.number = decodedResp['number'];
+
+        print("ASIGNANDO VALORES A REQUEST ID & NUMBER ${this.requestId} ${this.number}");
         return {'ok':true, 'request_id' : decodedResp['request_id']};
       }else{
         return {'ok':false, 'message' : decodedResp['message']};

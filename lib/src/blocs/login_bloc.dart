@@ -13,7 +13,7 @@ class LoginBloc with Validators{
   final _telefonoController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
   final _nombreController = BehaviorSubject<String>();
-
+  
   final _userControler = BehaviorSubject<UserModel>();
   final _cargandoController =BehaviorSubject<bool>();
   final _userProvider = new UserProvider();

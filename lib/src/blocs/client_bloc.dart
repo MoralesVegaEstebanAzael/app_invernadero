@@ -121,7 +121,7 @@ class ClientBloc with Validators{
 
     return client;
   }
-
+  
   void updateImagen(String url)async{
     _cargandoController.sink.add(true);
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
