@@ -110,7 +110,7 @@ class UserProvider{
     
     final url = "${AppConfig.base_url}/api/client/update_password";
     final token = await _storage.read('token');
-
+    
 
     Map<String, String> headers = {
       HttpHeaders.authorizationHeader: "Bearer $token",
@@ -592,6 +592,27 @@ class UserProvider{
       headers: headers,
       body: { 
         "email":cliente.correo,  
+      });
+
+    final decodeData = json.decode(response.body);
+    print(decodeData);
+    return true;
+  }
+
+  Future<bool> updateAddress(String direccion,String lat,String lng)async{
+    final url = "${AppConfig.base_url}/api/client/direction"; 
+    final token = await _storage.read('token');
+    Map<String, String> headers = {
+      HttpHeaders.authorizationHeader: "Bearer $token",
+      "Accept": "application/json",}; 
+    
+    final response = await http.post(
+      url, 
+      headers: headers,
+      body: { 
+        "direccion":direccion,
+        "lat" : lat,
+        "lng" : lng  
       });
 
     final decodeData = json.decode(response.body);

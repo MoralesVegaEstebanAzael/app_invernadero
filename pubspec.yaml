@@ -61,6 +61,7 @@ dependencies:
   timeline_tile: ^0.1.2
   http_auth: ^0.3.0
   webview_flutter: ^0.3.22+1
+  firebase_auth: 
 
 dev_dependencies:
   flutter_test:

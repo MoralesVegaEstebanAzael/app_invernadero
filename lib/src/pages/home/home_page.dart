@@ -527,6 +527,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       brightness :Brightness.light,
       backgroundColor: Colors.white,
       elevation: 0.0,
+      leading: Icon(Icons.location_on,color: Colors.grey,),
       title: GestureDetector(
         onTap: (){
           String route = 'home';
@@ -537,26 +538,28 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         child: Row(
             children:<Widget>[
 
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.location_on,color: Colors.grey,size: _responsive.ip(2),),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: Icon(Icons.location_on,color: Colors.grey,size: _responsive.ip(2),),
+              // ),
               StreamBuilder(
                 stream: _clientBloc.dirStream,
                 builder: (BuildContext context, AsyncSnapshot snapshot){
                     
                   if(snapshot.hasData){
-                   return Container(
-                     width: _responsive.widht*.55,
-                     child: Text("${snapshot.data}",
-                      overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontFamily:'Quicksand',
-                          fontSize:_responsive.ip(1.5),
-                          fontWeight:FontWeight.w700
+                   return Flexible(
+                                        child: Container(
+                      //  width: _responsive.widht*.55,
+                       child: Text("${snapshot.data}",
+                        overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontFamily:'Quicksand',
+                            fontSize:_responsive.ip(1.5),
+                            fontWeight:FontWeight.w700
+                          ),
                         ),
-                      ),
+                     ),
                    );
                   }
                   return Container(); 

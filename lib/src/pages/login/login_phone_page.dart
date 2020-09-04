@@ -1,6 +1,7 @@
 import 'package:after_layout/after_layout.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/nexmo_sms_verify_provider.dart';
+import 'package:app_invernadero/src/providers/twilio_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -20,7 +21,6 @@ import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/input_text.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:line_icons/line_icons.dart';
 
 class LoginPhonePage extends StatefulWidget  {
   @override
@@ -35,10 +35,9 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   var textEditingController = TextEditingController();
   var maskTextInputFormatter = MaskTextInputFormatter(mask: "(###) ###-##-##", 
   filter: { "#": RegExp(r'[0-9]') });
-  NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
   User _user; 
   bool _isLoading=false;
-
+  TwilioProvider twilioProvider;
   
  
 
@@ -47,9 +46,8 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
   void initState() {
     super.initState();
     _prefs.route = 'login_phone'; //save route
-    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+    twilioProvider = TwilioProvider();
    // _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
-    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
     _user = User();
    
   }
@@ -193,9 +191,9 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
 
 
   sendCode(LoginBloc bloc)async{
-    final telefono = AppConfig.nexmo_country_code + bloc.telefono;
+    final telefono = "52" + bloc.telefono;
 
-    Map info = await _nexmoSmsVerifyProvider.sendCode(
+    Map info = await twilioProvider.sendCode(
         celular:telefono);
     
     if(info['ok']){ //mensaje enviado
@@ -213,7 +211,7 @@ class _LoginPhonePageState extends State<LoginPhonePage> with AfterLayoutMixin {
         _prefs.user= _user; //save user
         Navigator.pushNamed(context, 'pin_code');
     }else{
-      print("ERRROR AL ENVIAR EL MENSAJE: " + info['message']);
+     /// print("ERRROR AL ENVIAR EL MENSAJE: " + info['message']);
       
       Flushbar(
         backgroundColor: Colors.black45,

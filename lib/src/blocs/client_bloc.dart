@@ -91,6 +91,7 @@ class ClientBloc with Validators{
   
 
   void updateAddres(Feature feature){
+    print("ID CLIENTE ${_storage.idClient}");
     ClientModel client =  _dbProvider.getClient(_storage.idClient);
     client.lat = feature.geometry.coordinates[1];
     client.lng = feature.geometry.coordinates[0];

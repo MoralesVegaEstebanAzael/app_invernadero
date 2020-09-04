@@ -9,8 +9,10 @@ import 'package:rxdart/rxdart.dart';
 class LoginBloc with Validators{
   final _emailController = BehaviorSubject<String>();
 
+  final _codeController = BehaviorSubject<String>(); 
 
   final _telefonoController = BehaviorSubject<String>();
+  
   final _passwordController = BehaviorSubject<String>();
   final _nombreController = BehaviorSubject<String>();
   
@@ -40,8 +42,9 @@ class LoginBloc with Validators{
     _cargandoController.sink.add(false);
   }
   
+  Stream<String> get codeStream => _codeController.stream;
   //recuperar salida del stream
-  Stream<String> get emailStream=> _emailController.stream.transform(validarEmail);
+  Stream<String> get emailStream => _emailController.stream.transform(validarEmail);
   
   Stream<String> get telefonoStream=> _telefonoController.stream.transform(validarTelefono);  
   Stream<String> get passwordStream=> _passwordController.stream.transform(validarPassword);
@@ -57,11 +60,15 @@ class LoginBloc with Validators{
   Function(String) get changePassword => _passwordController.sink.add;
   Function(String) get changeNombre => _nombreController.sink.add;
 
+  Function(String) get changeCode => _codeController.sink.add;
 
   String get email =>_emailController.value;
   String get telefono =>_telefonoController.value.replaceAll(RegExp('[^0-9]'),'');
   String get password => _passwordController.value;
   String get name=>_nombreController.value;
+
+  String get code => _codeController.value;
+  
   void dispose(){
     _emailController?.close();
     _passwordController?.close();

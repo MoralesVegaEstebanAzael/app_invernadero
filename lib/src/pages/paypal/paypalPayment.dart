@@ -197,16 +197,15 @@ class PaypalPaymentState extends State<PaypalPayment> {
                     .then((id) {
                       widget.onFinish(id);
                      // Navigator.of(context).pop();
-                    print("Trarando de hacer ped");
-
-
+                      print("Tratando  de hacer pedido");
                   _shoppingCartBloc
                   .sendPedido(widget.itemFinal, widget.tipoEntrega)
                   .then((onValue){
                     Map response = onValue;
                     switch(response['ok']){
                       case 1:
-                        print("TOODO CON EXITO");
+                        print("TOODO CON EXITO pedido enviado al sistemmm");
+
                         _shoppingCartBloc.deleteAllSC();
                         
                         nav.pop();

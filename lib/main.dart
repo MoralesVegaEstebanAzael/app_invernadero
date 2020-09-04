@@ -17,6 +17,7 @@ import 'package:app_invernadero/src/pages/pedidos/pedidos_page.dart';
 import 'package:app_invernadero/src/pages/products/product_detail_page.dart';
 import 'package:app_invernadero/src/pages/shopping_cart_page.dart';
 import 'package:app_invernadero/src/pages/tabs_page.dart';
+import 'package:app_invernadero/src/pages/test_page.dart';
 import 'package:app_invernadero/src/pages/user/address_page.dart';
 import 'package:app_invernadero/src/pages/user/configuration_page.dart';
 
@@ -98,8 +99,9 @@ class MyApp extends StatelessWidget {
               
               title: 'App Invernadero',
               theme: miTema,
-              initialRoute:prefs.route,
+              initialRoute: prefs.route,
               routes: {
+                'test'                  : (BuildContext)=>TestApp(),
                 'intro'                 : (BuildContext)=>IntroScreen(),
                 'home'                  : (BuildContext)=>BottomNavBarApp(),///BottomNavigationMenu(),
                 'login_phone'           : (BuildContext)=>LoginPhonePage(),

@@ -404,12 +404,20 @@ class _CheckoutPageState extends State<CheckoutPage> {
         )
     );
   }
-
+  bool validaData(ClientModel c){
+    if(c.nombre==null || c.ap==null|| c.am==null)
+      return false;
+    return true;
+  }
   void _pagoPaypal(){
     ClientModel cliente = _clientBloc.cliente();
 
     print("total $total");
-    print("nombre ${cliente.nombre} ${cliente.ap} ${cliente.am} ${cliente.direccion} ${cliente.celular}");
+    if(validaData(cliente)){
+       print("nombre ${cliente.nombre} ${cliente.ap} ${cliente.am} ${cliente.direccion} ${cliente.celular}");
+
+
+
 
     List<dynamic> list = _toList();
     
@@ -453,7 +461,19 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             ),
                           ),
       );
+      
+    }else{
+       Flushbar(
+        message:  "Configura tus datos",
+        duration:  Duration(seconds: 2),              
+        )..show(context).then((f){
+           Navigator.pushNamed(context, 'configuracion');
+        });
+    }
+    
+   
   }
+
 
   
   void _confirmar()async{

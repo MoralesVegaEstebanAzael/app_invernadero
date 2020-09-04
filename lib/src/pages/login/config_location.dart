@@ -6,6 +6,8 @@ import 'package:app_invernadero/src/blocs/client_bloc.dart';
 import 'package:app_invernadero/src/blocs/feature_bloc.dart';
 import 'package:app_invernadero/src/blocs/provider.dart';
 import 'package:app_invernadero/src/models/feature_model.dart';
+import 'package:app_invernadero/src/models/user_model.dart';
+import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/search/mapbox_search.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -13,6 +15,7 @@ import 'package:app_invernadero/src/utils/responsive.dart';
 import 'package:app_invernadero/src/widgets/icon_action.dart';
 import 'package:app_invernadero/src/widgets/place_holder.dart';
 import 'package:app_invernadero/src/widgets/rounded_button.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -32,8 +35,8 @@ class _ConfigLocationState extends State<ConfigLocation> {
   Responsive _responsive;
   MapController  map;
   Feature feature;
-  
-
+  UserProvider userProvider = UserProvider();
+  String ubicacionName;
  String _route;
 
   @override
@@ -198,6 +201,7 @@ class _ConfigLocationState extends State<ConfigLocation> {
                           if(snapshot.hasData){
                             
                             feature = snapshot.data;
+                            ubicacionName = feature.placeName;
                             Feature f =feature;
                             return  Container(
                               width: _responsive.wp(80),
@@ -348,17 +352,33 @@ class _ConfigLocationState extends State<ConfigLocation> {
   }
 
   
-  _onTap(Position position){
+  _onTap(Position position)async{
     if(_featureBloc.positionStream!=null){
-    
-     
-      _clientBloc.updateAddres(feature);  
-      _featureBloc.insertFeature(feature);
       
-      if(_route=='home') //from home page
-        Navigator.pop(context);
-      else
-        Navigator.pushReplacementNamed(context, 'home');
+      final resp = await userProvider.updateAddress(
+        ubicacionName,
+        position.latitude.toString(),
+        position.longitude.toString()
+      );
+      if(resp){
+        _clientBloc.updateAddres(feature);  
+        _featureBloc.insertFeature(feature);
+        
+        Flushbar(
+        message:  "Información actualizada",
+        duration:  Duration(seconds: 2),              
+        )..show(context);
+
+        if(_route=='home') //from home page
+          Navigator.pop(context);
+        else
+          Navigator.pushReplacementNamed(context, 'home');
+      }else{
+        Flushbar(
+          message:  "ALgo ha salido mal",
+          duration:  Duration(seconds: 2),              
+        )..show(context);
+      }
     }
   }
   

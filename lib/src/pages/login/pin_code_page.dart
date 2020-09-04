@@ -1,7 +1,10 @@
 
+
+
 import 'package:after_layout/after_layout.dart';
 import 'package:app_invernadero/src/models/user_model.dart';
 import 'package:app_invernadero/src/providers/nexmo_sms_verify_provider.dart';
+import 'package:app_invernadero/src/providers/twilio_provider.dart';
 import 'package:app_invernadero/src/providers/user_provider.dart';
 import 'package:app_invernadero/src/storage/secure_storage.dart';
 import 'package:app_invernadero/src/theme/theme.dart';
@@ -20,7 +23,7 @@ import 'package:line_icons/line_icons.dart';
 // import 'package:nexmo_verify/nexmo_sms_verify.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../../app_config.dart';
+
 
 
 class PinCodePage extends StatefulWidget {
@@ -50,8 +53,9 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
     backgroundColor: miTema.accentColor,);
 
   // NexmoSmsVerificationUtil _nexmoSmsVerificationUtil;
-  NexmoSmsVerifyProvider _nexmoSmsVerifyProvider;
   _PinCodePageState();//this.mobileNumber);
+
+  TwilioProvider twilioProvider = TwilioProvider();
 
   @override
   void initState() {
@@ -59,13 +63,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
     
     _user = _prefs.user;
     startTimer();
-
-    // _nexmoSmsVerificationUtil = NexmoSmsVerificationUtil();
-    // _nexmoSmsVerificationUtil.initNexmo(AppConfig.nexmo_api_key,AppConfig.nexmo_secret_key);
-
-   // _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
-   // _nexmoSmsVerifyProvider.initNexmo(AppConfig.nexmo_api_key, AppConfig.nexmo_secret_key);
-    _nexmoSmsVerifyProvider = NexmoSmsVerifyProvider();
+    twilioProvider = TwilioProvider();
   }
 
   
@@ -194,7 +192,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
       setState(() {
         _isLoading=true;
       });
-    Map info = await _nexmoSmsVerifyProvider.verify(code: _pinCode);
+    Map info = await twilioProvider.verify(code: _pinCode);
     
     setState(() {
       _isLoading=false;
@@ -215,7 +213,7 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
         duration:  Duration(seconds:1),              
       )..show(context);
 
-
+          
         _user.registered = '1';
         _prefs.user = _user; //save new user
        // Scaffold.of(context).showSnackBar(snackBarSucces);
@@ -320,3 +318,8 @@ class _PinCodePageState extends State<PinCodePage> with AfterLayoutMixin{
 
   
 }
+
+
+
+
+
