@@ -1,9 +1,11 @@
+import 'package:app_invernadero/src/blocs/shopping_cart_bloc.dart';
+import 'package:app_invernadero/src/providers/pedido_provider.dart';
 import 'package:http/http.dart' as http; 
 import 'dart:convert' as convert;
 import 'package:http_auth/http_auth.dart';
 
 class PaypalServices {
-
+  ShoppingCartBloc shoppingCartBloc = new ShoppingCartBloc();
   String domain = "https://api.sandbox.paypal.com"; // para el modo sandbox
 //  String domain = "https://api.paypal.com"; // para el modo de producción
 
@@ -78,6 +80,11 @@ class PaypalServices {
       final body = convert.jsonDecode(response.body);
       if (response.statusCode == 200) {
         print("****Todo ha salido bien enviar pedido al sistema*******");
+        
+        sendPedido().then((v){
+            
+        });
+
         return body["id"];
       }
       return null;
@@ -85,4 +92,20 @@ class PaypalServices {
       rethrow;
     }
   }
+
+
+  Future<void> sendPedido()async{
+    print("*******ENVIANDO PEDIDODO");
+    PedidoProvider pp = PedidoProvider();
+      bool f = await pp.pedido(
+        shoppingCartBloc.listItemPaypalValue,
+        shoppingCartBloc.tipoEnvioValue,
+        shoppingCartBloc.tipoEntregaValue
+        );
+    if(f)print("*****devolvio true");
+    else print("****devolvio false");
+
+    print("******end pedido");
+  }
+ 
 }

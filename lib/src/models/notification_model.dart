@@ -7,7 +7,8 @@ import 'dart:convert';
 import 'package:app_invernadero/app_config.dart'; 
 import 'package:hive/hive.dart'; 
 part 'notification_model.g.dart';
-  
+
+
 @HiveType(
   typeId: AppConfig.hive_type_8, adapterName: AppConfig.hive_adapter_8)
 
@@ -64,9 +65,7 @@ class NotificacionModel {
         "updated_at": updatedAt,
     };
 
-    NotificacionModel notificacionModelFromJson(String str) => NotificacionModel.fromJson(json.decode(str));
-    
-    String notificacionModelToJson(NotificacionModel data) => json.encode(data.toJson());
 
-   
+    NotificacionModel notificacionModelFromJson(String str) => NotificacionModel.fromJson(json.decode(str));    
+    String notificacionModelToJson(NotificacionModel data) => json.encode(data.toJson());
 }

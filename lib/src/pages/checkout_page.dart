@@ -24,13 +24,14 @@ class CheckoutPage extends StatefulWidget {
 }
 
 class _CheckoutPageState extends State<CheckoutPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   Responsive responsive;
   // Box box;
   ShoppingCartBloc _shoppingCartBloc = ShoppingCartBloc();
   ClientBloc _clientBloc;
   // FeatureBloc _featureBloc;
   List<ItemShoppingCartModel> itemsFinal=List();
-  int _radioValue=-1;
+  int _radioValue=0;
   //Stream<List<ShoppingCartModel>> _stream;
   bool _isLoading=false;
   String tipo_entrega;
@@ -58,6 +59,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: _appBar(),
       backgroundColor: Colors.white,
       body: Stack(
@@ -289,7 +291,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       tipo_entrega = snapshot.data;
                       print("-------------------- direccion : ${tipo_entrega}" );
                       return Text(
-                        snapshot.data);
+                        snapshot.data,
+                        overflow: TextOverflow.ellipsis,
+                        );
                     }
                     return Container();
                   },
@@ -441,6 +445,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             PaypalPayment(
                               onFinish: (number) async {
                                 print('order id: '+number);
+                                _shoppingCartBloc.deleteAllSC();
+                                Flushbar(
+                                  message:  "Pedido enviado",
+                                  duration:  Duration(seconds: 1),              
+                                  )..show(_scaffoldKey.currentContext).then((f){
+                                    Navigator.pop(_scaffoldKey.currentContext); 
+                                    Navigator.pop(_scaffoldKey.currentContext);
+                                  });
+
+                               
+                               
+
                               },
                               list: list,
                               totalAmount: totalAmount,
@@ -455,7 +471,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               addressCountry: addressCountry,
                               addressState: addressState,
                               addressPhoneNumber: addressPhoneNumber,
-
+                              tipoEnvio:_radioValue,
                               tipoEntrega: tipo_entrega,
                               itemFinal: itemsFinal,
                             ),
@@ -476,45 +492,45 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
 
   
-  void _confirmar()async{
+  // void _confirmar()async{
    
-    setState(() {
-       _isLoading=true;
-    });
-    Map response = await _shoppingCartBloc.sendPedido(itemsFinal, tipo_entrega);
-    setState(() {
-      _isLoading=false;
-    });
-    switch(response['ok']){
-      case 1:
-        print("TOODO CON EXITO");
-        //
-        // Flushbar(
-        //       message:  "Tu pedido ha sido enviado.",
-        //       duration:  Duration(seconds: 2),              
-        //     )..show(context);
-        _shoppingCartBloc.deleteAllSC();
-        final nav = Navigator.of(context);
-        nav.pop();
-        nav.pop();
-      break;
-      case 0:
-       Flushbar(
-              message:  "Algo ha salido mal.",
-              duration:  Duration(seconds: 2),              
-            )..show(context);
-      break;
-      case 2:
-      print("CONFIGURAR DATOS");
-        // Navigator.pushNamed(context, 'detail');
-          Flushbar(
-              message:  "Configura tus datos",
-              duration:  Duration(seconds: 2),              
-            )..show(context);
-        Navigator.pushNamed(context, 'configuracion');
-      break;
-    }
-  }
+  //   setState(() {
+  //      _isLoading=true;
+  //   });
+  //   Map response = await _shoppingCartBloc.sendPedido(itemsFinal, tipo_entrega);
+  //   setState(() {
+  //     _isLoading=false;
+  //   });
+  //   switch(response['ok']){
+  //     case 1:
+  //       print("TOODO CON EXITO");
+  //       //
+  //       // Flushbar(
+  //       //       message:  "Tu pedido ha sido enviado.",
+  //       //       duration:  Duration(seconds: 2),              
+  //       //     )..show(context);
+  //       _shoppingCartBloc.deleteAllSC();
+  //       final nav = Navigator.of(context);
+  //       nav.pop();
+  //       nav.pop();
+  //     break;
+  //     case 0:
+  //      Flushbar(
+  //             message:  "Algo ha salido mal.",
+  //             duration:  Duration(seconds: 2),              
+  //           )..show(context);
+  //     break;
+  //     case 2:
+  //     print("CONFIGURAR DATOS");
+  //       // Navigator.pushNamed(context, 'detail');
+  //         Flushbar(
+  //             message:  "Configura tus datos",
+  //             duration:  Duration(seconds: 2),              
+  //           )..show(context);
+  //       Navigator.pushNamed(context, 'configuracion');
+  //     break;
+  //   }
+  // }
 
   
   void _handleRadioValueChange(int value) {

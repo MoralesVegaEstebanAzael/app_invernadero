@@ -51,8 +51,7 @@ import 'package:app_invernadero/src/blocs/provider.dart' as customProvider;
 void main() async{
   //var path = await getApplicationDocumentsDirectory();
   //Hive.init(path.path );
-  
-
+    
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = new SecureStorage();
   await prefs.initPrefs();

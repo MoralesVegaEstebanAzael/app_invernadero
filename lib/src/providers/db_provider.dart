@@ -27,7 +27,7 @@ class DBProvider{
 
   Box pedidoBox;
 
-   deleteAllBox(){
+  deleteAllBox(){
     favoriteBox.clear();
     itemsShoppingBox.clear();
     dataBaseBox.clear();
@@ -375,7 +375,7 @@ class DBProvider{
       if(item.unidad==AppConfig.uniMedidaCaja){
         medidasList.add("caja");
       }else if(item.unidad==AppConfig.uniMedidaKilo){
-         medidasList.add("kilo");
+         medidasList.add("kilogramo");
       }else if(item.unidad==AppConfig.uniMedidaTonelada){
          medidasList.add("tonelada");
       }
@@ -417,7 +417,7 @@ class DBProvider{
   insertProducts(Map<int, ProductoModel> entries)async{
     await productBox.putAll(entries);
   }
-
+  
   Box productosBox(){
     return productBox;
   }

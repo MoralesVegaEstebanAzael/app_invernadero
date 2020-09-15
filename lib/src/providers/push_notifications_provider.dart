@@ -63,6 +63,8 @@ class PushNotificationsProvider{
       onMessage: ( info ) async {
        
         //**APLICACION ABIERTA */
+
+        
         if(isNotified)
           return;
         isNotified = true;

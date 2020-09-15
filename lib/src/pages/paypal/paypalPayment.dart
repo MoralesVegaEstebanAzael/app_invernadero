@@ -22,11 +22,11 @@ class PaypalPayment extends StatefulWidget {
   final  String addressCountry;
   final  String addressState;
   final  String addressPhoneNumber;
-
+  final  int tipoEnvio;
   final String tipoEntrega;
   final List<ItemShoppingCartModel> itemFinal;
 
-  PaypalPayment({this.onFinish, this.totalAmount, this.subTotalAmount, this.shippingCost, this.shippingDiscountCost, this.userFirstName, this.userLastName, this.addressCity, this.addressStreet, this.addressZipCode, this.addressCountry, this.addressState, this.addressPhoneNumber, this.list, this.tipoEntrega, this.itemFinal});
+  PaypalPayment({this.onFinish, this.totalAmount, this.subTotalAmount, this.shippingCost, this.shippingDiscountCost, this.userFirstName, this.userLastName, this.addressCity, this.addressStreet, this.addressZipCode, this.addressCountry, this.addressState, this.addressPhoneNumber, this.list, this.tipoEntrega, this.itemFinal, this.tipoEnvio});
 
   @override
   State<StatefulWidget> createState() {
@@ -55,6 +55,11 @@ class PaypalPaymentState extends State<PaypalPayment> {
   void initState() {
     super.initState();
 
+    ShoppingCartBloc shoppingCartBloc = new ShoppingCartBloc();
+    shoppingCartBloc.onChangeItemsPayPal(widget.itemFinal);
+    shoppingCartBloc.onChangeTipoEntrega(widget.tipoEntrega);
+    shoppingCartBloc.onChangeTipoEnvioPayPal(widget.tipoEnvio);
+    
     Future.delayed(Duration.zero, () async {
       try {
         accessToken = await services.getAccessToken();
@@ -193,36 +198,12 @@ class PaypalPaymentState extends State<PaypalPayment> {
               final payerID = uri.queryParameters['PayerID'];
               if (payerID != null) {
                 services
-                    .executePayment(executeUrl, payerID, accessToken)
-                    .then((id) {
-                      widget.onFinish(id);
-                     // Navigator.of(context).pop();
-                      print("Tratando  de hacer pedido");
-                  _shoppingCartBloc
-                  .sendPedido(widget.itemFinal, widget.tipoEntrega)
-                  .then((onValue){
-                    Map response = onValue;
-                    switch(response['ok']){
-                      case 1:
-                        print("TOODO CON EXITO pedido enviado al sistemmm");
-
-                        _shoppingCartBloc.deleteAllSC();
-                        
-                        nav.pop();
-                        nav.pop();
-                      break;
-                      case 0:
-                      Flushbar(
-                              message:  "Algo ha salido mal.",
-                              duration:  Duration(seconds: 2),              
-                            )..show(context);
-                      break;
-                      default:
-                        print("algo ha sucedido y n se");
-                      
-
-                    }  
-                  });
+                  .executePayment(executeUrl, payerID, accessToken)
+                  .then((id) {
+                  
+                  widget.onFinish(id);
+                  //  Navigator.of(context).pop();
+                  
                 });
               } else {
                 Navigator.of(context).pop();

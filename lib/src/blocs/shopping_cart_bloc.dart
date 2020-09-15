@@ -25,15 +25,31 @@ class ShoppingCartBloc with Validators{
   final _countItemsController = new BehaviorSubject<int>();
   final _articController = new BehaviorSubject<List<ItemShoppingCartModel>>();
   final _shoppingCartFetchController = new BehaviorSubject<List<ProductoModel>>();
-
-
   final _totalFinalController = new BehaviorSubject<double>();
-
   final _toneladasController = new BehaviorSubject<String>();
+
+// List<ItemShoppingCartModel> items ,int tipoEnvio, String tipoEntrega
+  final _itemsPaypalController = new BehaviorSubject<List<ItemShoppingCartModel>>();
+  final _tipoEnvioPaypalController = new BehaviorSubject<int>();
+  final _tipoEntregaControllerPaypal = new BehaviorSubject<String>();
+
+
+  Stream<List<ItemShoppingCartModel>> get  itemsPaypalStream => _itemsPaypalController.stream;
+  Stream<int> get tipoEnvioPayPalStream => _tipoEnvioPaypalController.stream;
+  Stream<String> get tipoEntrega => _tipoEntregaControllerPaypal.stream;
+
+  Function(List<ItemShoppingCartModel>) get onChangeItemsPayPal => _itemsPaypalController.sink.add;
+  Function(int) get onChangeTipoEnvioPayPal => _tipoEnvioPaypalController.sink.add;
+  Function(String) get onChangeTipoEntrega => _tipoEntregaControllerPaypal.sink.add;
+
+  
+  List<ItemShoppingCartModel> get listItemPaypalValue => _itemsPaypalController.value;
+  int get tipoEnvioValue => _tipoEnvioPaypalController.value;
+  String get tipoEntregaValue => _tipoEntregaControllerPaypal.value;
+
 
 
   Stream<double> get totalFinal =>_totalFinalController.stream;
-
   Stream<double> get total =>_totalController.stream;
   Stream<int> get count => _countItemsController.stream;  
   Stream<List<ItemShoppingCartModel>> get artcStream => _articController.stream;
@@ -260,11 +276,11 @@ class ShoppingCartBloc with Validators{
     return false;
   }
   
-  Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items , String tipoEntrega)async{
+  Future<Map<String,dynamic>> sendPedido(List<ItemShoppingCartModel> items ,int tipoEnvio, String tipoEntrega)async{
     if(information()){ //verificar que el usuario tenga sus datos
       print("haciendo pedido");
       PedidoProvider pp = PedidoProvider();
-      bool f = await pp.pedido(items, tipoEntrega);
+      bool f = await pp.pedido(items,tipoEnvio, tipoEntrega);
       if(f)
         return {'ok':1, 'message' : 'Pedido realizado'};
       return {'ok':0,'message' : 'Ha ocurrido un problema con la peticioón'};

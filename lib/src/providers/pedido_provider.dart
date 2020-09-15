@@ -23,7 +23,9 @@ class PedidoProvider{
   final _dbProvider = DBProvider();
     // NotificationService _notificationService = NotificationService();
 
-  Future<bool> pedido(List<ItemShoppingCartModel> listItems, String tipoEntrega)async{
+  Future<bool> pedido(List<ItemShoppingCartModel> listItems,int tipoEnvio, String tipoEntrega)async{
+    print("callll pedido create");
+    
     final url = "${AppConfig.base_url}/api/client/pedido_create"; 
     final token = await _storage.read('token');
     List<int> list = await _dbProvider.getItemsSCid(); //ids
@@ -51,7 +53,8 @@ class PedidoProvider{
         "productos" :list ,
         "cantidades":cantidades,
         "unidades":unidades, 
-        "tipoEntrega": tipoEntrega
+        "tipo_envio" : tipoEnvio,
+        "tipo_entrega":tipoEnvio==0?'': tipoEntrega
         }
         )
     );
