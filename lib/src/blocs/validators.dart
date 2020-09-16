@@ -58,7 +58,18 @@ class Validators{
 
  final validarToneladas=StreamTransformer<String,String>.fromHandlers(
     handleData: (t,sink){
-      (t.length>1)?sink.add(t):sink.addError("Ingrese este campo");
+       bool valid = 
+      RegExp(r'(^\-?\d*\.?\d*)$').hasMatch(t);
+      
+       if(valid){
+        double x = double.parse(t);
+        print("Value x $x");
+        if(x>0)
+          sink.add(t);
+      }else{ 
+          sink.addError('Ingrese este campo'); 
+      }
+      // (t.length>1)?sink.add(t):sink.addError("Ingrese este campo");
     }
   );
 }

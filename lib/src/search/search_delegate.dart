@@ -62,6 +62,7 @@ class DataSearch extends SearchDelegate{
       );
     }
     
+    
     return FutureBuilder(
       future: productProvider.searchProduct(query),
       builder: (BuildContext context,AsyncSnapshot<List<ProductoModel>> snapshot){
