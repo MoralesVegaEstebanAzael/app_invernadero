@@ -31,7 +31,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   ClientBloc _clientBloc;
   // FeatureBloc _featureBloc;
   List<ItemShoppingCartModel> itemsFinal=List();
-  int _radioValue=0;
+  int _radioValue=-1;
   //Stream<List<ShoppingCartModel>> _stream;
   bool _isLoading=false;
   String tipo_entrega;
@@ -537,7 +537,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     setState(() {
       _radioValue = value;
     });
-
+    
     (value == 1) ? tipo_entrega='Recoger': '';
     print("-------- ${tipo_entrega}");
   }

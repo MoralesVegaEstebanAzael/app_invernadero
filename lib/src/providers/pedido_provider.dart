@@ -31,7 +31,7 @@ class PedidoProvider{
     List<int> list = await _dbProvider.getItemsSCid(); //ids
     List<double> cantidades = await _dbProvider.getItemsSCcantidades(); // cantidades
     List<String> unidades = await _dbProvider.getItemsSCmedidas(); //unidades caja kilo
-    
+    print("Envioooo....... $tipoEnvio     $tipoEntrega");
     print(list);
     print(cantidades);
     print(unidades);
@@ -54,7 +54,7 @@ class PedidoProvider{
         "cantidades":cantidades,
         "unidades":unidades, 
         "tipo_envio" : tipoEnvio,
-        "tipo_entrega":tipoEnvio==0?'': tipoEntrega
+        "tipo_entrega":tipoEnvio==0?tipoEntrega:''  //0 = direccion de envio -> 1-recoger
         }
         )
     );

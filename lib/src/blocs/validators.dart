@@ -61,7 +61,7 @@ class Validators{
        bool valid = 
       RegExp(r"^[0-9]{1,10}$").hasMatch(t);
       print("cantidad");
-
+      
        if(valid){
         int x = int.parse(t);
         print("Value x $x");
