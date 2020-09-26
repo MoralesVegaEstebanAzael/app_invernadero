@@ -42,6 +42,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void initState() {
     super.initState();
     itemsFinal = _shoppingCartBloc.getItemsFinalList();
+    _shoppingCartBloc.onChangeIsLoading(false);
   }
 
   @override
@@ -58,6 +59,34 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
   @override
   Widget build(BuildContext context) {
+    // return StreamBuilder(
+    //   key: _scaffoldKey,
+    //   stream: _shoppingCartBloc.isLoadingStream ,
+    //   initialData: _shoppingCartBloc.isLoading ,
+    //   builder: (BuildContext context, AsyncSnapshot snapshot){
+    //     return Stack(
+    //       key: _scaffoldKey,
+    //       children: <Widget>[
+    //         Positioned(
+    //           child: Scaffold(
+    //             key: _scaffoldKey,
+    //             appBar: _appBar(),
+    //             backgroundColor: Colors.white,
+    //             body: Positioned(child:  _listItems()),
+    //           ),
+    //         ),
+    //         snapshot.data?  
+    //         Positioned.fill(child:  Container(
+    //           color:Colors.white,
+    //           child: Center(
+    //             child:SpinKitCircle(color: miTema.accentColor),
+    //           ),
+    //         )):
+    //         Container()
+    //       ],
+    //     );
+    //   },
+    // );
     return Scaffold(
       key: _scaffoldKey,
       appBar: _appBar(),
@@ -65,14 +94,32 @@ class _CheckoutPageState extends State<CheckoutPage> {
       body: Stack(
         children:<Widget>[
           Positioned(child:  _listItems()),
-          
-          _isLoading? Positioned.fill(child:  Container(
+
+          StreamBuilder(
+            stream: _shoppingCartBloc.isLoadingStream ,
+            initialData: _shoppingCartBloc.isLoading ,
+            builder: (BuildContext context, AsyncSnapshot snapshot){
+              print("Dataaaa::: ${snapshot.data}");
+              if(snapshot.data){
+                return Positioned.fill(child:  Container(
                       color:Colors.white,
                       child: Center(
                         child:SpinKitCircle(color: miTema.accentColor),
                       ),
-                    ))
-          : Container()
+                    ));
+              }else{
+                return Container();
+              }
+            },
+          ),
+          
+          // _isLoading? Positioned.fill(child:  Container(
+          //             color:Colors.white,
+          //             child: Center(
+          //               child:SpinKitCircle(color: miTema.accentColor),
+          //             ),
+          //           ))
+          // : Container()
         ]
       ),
     );
@@ -438,7 +485,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     String addressCountry = 'Mexico';
     String addressState = 'Oaxaca';
     String addressPhoneNumber = cliente.celular;
-
+    _shoppingCartBloc.onChangeIsLoading(true);
     Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext context) => 
@@ -454,7 +501,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     Navigator.pop(_scaffoldKey.currentContext);
                                   });
 
-                               
                                
 
                               },

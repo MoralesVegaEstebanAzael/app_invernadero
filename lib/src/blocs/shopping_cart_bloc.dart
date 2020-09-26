@@ -33,15 +33,19 @@ class ShoppingCartBloc with Validators{
   final _tipoEnvioPaypalController = new BehaviorSubject<int>();
   final _tipoEntregaControllerPaypal = new BehaviorSubject<String>();
 
+  final _isLoadingController = new BehaviorSubject<bool>();
 
   Stream<List<ItemShoppingCartModel>> get  itemsPaypalStream => _itemsPaypalController.stream;
   Stream<int> get tipoEnvioPayPalStream => _tipoEnvioPaypalController.stream;
   Stream<String> get tipoEntrega => _tipoEntregaControllerPaypal.stream;
 
+  Stream<bool> get isLoadingStream => _isLoadingController.stream;
+
   Function(List<ItemShoppingCartModel>) get onChangeItemsPayPal => _itemsPaypalController.sink.add;
   Function(int) get onChangeTipoEnvioPayPal => _tipoEnvioPaypalController.sink.add;
   Function(String) get onChangeTipoEntrega => _tipoEntregaControllerPaypal.sink.add;
 
+  Function(bool) get onChangeIsLoading => _isLoadingController.sink.add;
   
   List<ItemShoppingCartModel> get listItemPaypalValue => _itemsPaypalController.value;
   int get tipoEnvioValue => _tipoEnvioPaypalController.value;
@@ -65,9 +69,9 @@ class ShoppingCartBloc with Validators{
   //insertar valores al stream
   Function(String) get changeToneladas => _toneladasController.sink.add;
 
-  String get email =>_toneladasController.value;
+  String get email => _toneladasController.value;
 
-
+  bool get isLoading => _isLoadingController.value;
 
   void insertItem(ProductoModel p,String unidades,dynamic cantidad){
 
@@ -105,7 +109,7 @@ class ShoppingCartBloc with Validators{
       db.insertItemSC(item);
       countItems();
       cargarArtic();
-
+      
       shoppingCartFetch();
     }
   }

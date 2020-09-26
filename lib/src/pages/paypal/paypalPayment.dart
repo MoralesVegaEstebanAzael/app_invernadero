@@ -200,7 +200,7 @@ class PaypalPaymentState extends State<PaypalPayment> {
                 services
                   .executePayment(executeUrl, payerID, accessToken)
                   .then((id) {
-                  
+                  // _shoppingCartBloc.onChangeIsLoading(true);
                   widget.onFinish(id);
                   //  Navigator.of(context).pop();
                   

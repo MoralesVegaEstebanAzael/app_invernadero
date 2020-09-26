@@ -102,8 +102,8 @@ class PaypalServices {
         shoppingCartBloc.tipoEnvioValue,
         shoppingCartBloc.tipoEntregaValue
         );
-    if(f)print("*****devolvio true");
-    else print("****devolvio false");
+    if(f)shoppingCartBloc.onChangeIsLoading(true);
+    else shoppingCartBloc.onChangeIsLoading(false);
 
     print("******end pedido");
   }
