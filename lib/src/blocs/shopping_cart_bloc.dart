@@ -87,7 +87,7 @@ class ShoppingCartBloc with Validators{
         if(unidades==AppConfig.uniMedidaKilo){
             item = ItemShoppingCartModel(
                   producto: p,
-                  subtotal: c*p.precioMay,//<<-----comprando por kilos
+                  subtotal: c*p.precioMen,//<<-----comprando por kilos
                   unidad: unidades,  
                   kilos: c
                 );
